@@ -10,7 +10,7 @@ export default function NewFinancePage() {
           <ChevronLeft size={20} />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Tambah Anggaran</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Tambah Anggaran</h1>
           <p className="text-slate-500 mt-1">Masukkan data pendapatan atau pengeluaran baru.</p>
         </div>
       </div>

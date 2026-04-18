@@ -23,7 +23,7 @@ export default async function AdminStaffPage() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Struktur Organisasi</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Struktur Organisasi</h1>
           <p className="text-slate-500 mt-1">Kelola perangkat desa dan bagan organisasi.</p>
         </div>
         <Link href="/admin/staff/new" className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
