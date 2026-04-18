@@ -95,3 +95,14 @@ export async function getVillageInfo() {
     return mockVillageInfo;
   }
 }
+
+export async function getProfiles() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .order('updated_at', { ascending: false });
+  
+  if (error) throw error;
+  return data;
+}
