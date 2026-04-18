@@ -18,6 +18,7 @@ const menuItems = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Statistik', href: '/admin/statistics', icon: BarChart3 },
   { name: 'Konten Desa', href: '/admin/content', icon: FileText },
+  { name: 'Berita & Agenda', href: '/admin/posts', icon: FileText },
   { name: 'Manajemen User', href: '/admin/users', icon: Users },
   { name: 'Pengaturan', href: '/admin/settings', icon: Settings },
 ];
