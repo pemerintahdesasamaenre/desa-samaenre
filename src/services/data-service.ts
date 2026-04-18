@@ -8,20 +8,46 @@ export async function getDemographics() {
   try {
     const { data, error } = await supabase
       .from('demographics')
-      .select('*, categories(*)');
+      .select('*, category:categories(*)');
 
     if (error || !data || data.length === 0) {
       console.warn('Using fallback mock data for demographics');
       return mockDemographics;
     }
 
-    // Transform raw data to the structure expected by charts if needed
-    // For now, let's assume the mock data structure is what we want for the home page
-    // but the raw data is needed for the admin page.
-    // Actually, if data is present, we should transform it.
-    // BUT the home page already uses it assuming it's the transformed structure.
+    // Initialize the structure with defaults
+    const result: any = {
+      population: { total: 0, households: 0, male: 0, female: 0 },
+      hamlets: [],
+      occupations: [],
+      education: [],
+      marital_status: [],
+      religion: []
+    };
+
+    data.forEach((item: any) => {
+      const slug = item.category?.slug;
+      
+      if (slug === 'populasi') {
+        const label = item.label.toLowerCase();
+        if (label.includes('total')) result.population.total = item.value;
+        else if (label.includes('keluarga')) result.population.households = item.value;
+        else if (label.includes('laki')) result.population.male = item.value;
+        else if (label.includes('perempuan')) result.population.female = item.value;
+      } else if (slug === 'dusun') {
+        result.hamlets.push({ name: item.label, value: item.value });
+      } else if (slug === 'pekerjaan') {
+        result.occupations.push({ label: item.label, value: item.value });
+      } else if (slug === 'pendidikan') {
+        result.education.push({ label: item.label, value: item.value });
+      } else if (slug === 'status-perkawinan') {
+        result.marital_status.push({ label: item.label, value: item.value });
+      } else if (slug === 'agama') {
+        result.religion.push({ label: item.label, value: item.value });
+      }
+    });
     
-    return mockDemographics; // Temporary fallback to keep home page working
+    return result;
   } catch (e) {
     console.warn('Supabase not connected, using fallback mock data');
     return mockDemographics;
