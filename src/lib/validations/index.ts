@@ -4,7 +4,7 @@ export const demographicSchema = z.object({
   category_id: z.string().uuid({ message: "Invalid category ID" }),
   label: z.string().min(1, "Label is required"),
   value: z.number().int().nonnegative({ message: "Value must be a positive number" }),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 
 export type DemographicInput = z.infer<typeof demographicSchema>;

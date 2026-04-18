@@ -76,12 +76,12 @@ export default function FinanceCharts({ data }: FinanceChartsProps) {
               <XAxis dataKey="name" />
               <YAxis tickFormatter={(value) => `Rp ${value / 1e6}jt`} />
               <Tooltip 
-                formatter={(value: number) => formatCurrency(value)}
+                formatter={(value: any) => formatCurrency(value)}
                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
               />
               <Bar dataKey="total" radius={[4, 4, 0, 0]}>
-                {summaryData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.name === 'Pendapatan' ? '#10b981' : '#ef4444'} />
+                {summaryData.map((dataEntry, index) => (
+                  <Cell key={`cell-${index}`} fill={dataEntry.name === 'Pendapatan' ? '#10b981' : '#ef4444'} />
                 ))}
               </Bar>
             </BarChart>
@@ -104,11 +104,11 @@ export default function FinanceCharts({ data }: FinanceChartsProps) {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {incomeByCategory.map((entry, index) => (
+                  {incomeByCategory.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                <Tooltip formatter={(value: any) => formatCurrency(value)} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -129,11 +129,11 @@ export default function FinanceCharts({ data }: FinanceChartsProps) {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {expenseByCategory.map((entry, index) => (
+                  {expenseByCategory.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                <Tooltip formatter={(value: any) => formatCurrency(value)} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>

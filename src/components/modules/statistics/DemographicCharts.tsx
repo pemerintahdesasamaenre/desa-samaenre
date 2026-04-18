@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+
 import {
   BarChart,
   Bar,
@@ -21,7 +21,7 @@ interface ChartProps {
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
-export const DemographicCharts: React.FC<ChartProps> = ({ data }) => {
+export const DemographicCharts = ({ data }: ChartProps) => {
   const genderData = [
     { name: 'Laki-laki', value: data.population.male },
     { name: 'Perempuan', value: data.population.female }
@@ -45,7 +45,7 @@ export const DemographicCharts: React.FC<ChartProps> = ({ data }) => {
                 dataKey="value"
                 label
               >
-                {genderData.map((entry, index) => (
+                {genderData.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>

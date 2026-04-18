@@ -9,19 +9,26 @@ interface StatCardProps {
 
 export const StatCard: React.FC<StatCardProps> = ({ label, value, unit, icon }) => {
   return (
-    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-transform hover:-translate-y-1 flex items-center gap-4">
-      {icon && (
-        <div className="p-3 bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl">
-          {icon}
-        </div>
-      )}
-      <div>
-        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
-          {label}
-        </p>
-        <div className="flex items-baseline">
-          <span className="text-2xl font-bold text-slate-900 dark:text-white">{value}</span>
-          {unit && <span className="ml-2 text-slate-400 dark:text-slate-500 text-xs">{unit}</span>}
+    <div className="glass-premium p-8 rounded-[2.5rem] hover-lift group border-white/20 dark:border-white/10 transition-all duration-700 relative overflow-hidden">
+      {/* Decorative background glow */}
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors duration-700"></div>
+      
+      <div className="flex flex-col gap-6 relative z-10">
+        {icon && (
+          <div className="w-16 h-16 bg-white/50 dark:bg-black/20 backdrop-blur-xl text-primary rounded-[1.5rem] flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 transition-all duration-500 shadow-xl border border-white/50 dark:border-white/10">
+            {React.cloneElement(icon as React.ReactElement<{ size: number }>, { size: 32 })}
+          </div>
+        )}
+        <div className="space-y-2">
+          <p className="text-muted-foreground/80 text-xs font-black uppercase tracking-[0.2em]">
+            {label}
+          </p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-black text-foreground tracking-tighter group-hover:text-primary transition-colors duration-500">
+              {value}
+            </span>
+            {unit && <span className="text-muted-foreground/40 text-[10px] font-bold uppercase tracking-widest">{unit}</span>}
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+
 import { usePathname } from 'next/navigation';
 import { Mail, Phone, MapPin, Globe, MessageCircle, Share2 } from 'lucide-react';
 

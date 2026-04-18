@@ -1,13 +1,9 @@
 import Link from 'next/link'
-import { Plus, Search, Filter, Calendar, FileText, MoreVertical, Trash2, Edit } from 'lucide-react'
+import { Plus, Calendar, FileText, Trash2, Edit } from 'lucide-react'
 import { getPosts, deletePost } from '@/actions/posts'
 import { revalidatePath } from 'next/cache'
 
-async function DeleteAction({ id }: { id: string }) {
-  'use server'
-  await deletePost(id)
-  revalidatePath('/admin/posts')
-}
+
 
 export default async function AdminPostsPage() {
   const posts = await getPosts()

@@ -110,69 +110,128 @@ export async function getProfiles() {
 export async function getHomepageData() {
   const supabase = await createClient();
 
+  // 1. Fetch Village Info (always needed)
   const villageInfoPromise = supabase.from('village_info').select('name').single();
   
-  const populationPromise = supabase
-    .from('demographics')
-    .select('value')
-    .eq('label', 'Total Populasi')
-    .single();
-
-  const budgetPromise = supabase
-    .from('finances')
-    .select('amount')
-    .eq('type', 'income')
-    .eq('year', new Date().getFullYear());
-
-  const hamletsPromise = supabase
-    .from('demographics')
-    .select('id', { count: 'exact' })
-    .eq('category_id', 'c3d4e5f6-a7b8-9012-3456-7890abcdef01'); // Assuming 'populasi' category id is stable
-
-  const staffCountPromise = supabase
-    .from('staff_members')
-    .select('id', { count: 'exact' });
-
+  // 2. Fetch Latest News (always needed)
   const postsPromise = supabase
     .from('posts')
     .select('title, slug, created_at, categories(name)')
     .eq('status', 'published')
     .order('created_at', { ascending: false })
     .limit(3);
-    
+
+  // 3. Fetch Staff Summary
+  const staffCountPromise = supabase
+    .from('staff_members')
+    .select('id', { count: 'exact' });
+
   const staffPromise = supabase
     .from('staff_members')
     .select('name, position, photo_url')
-    .in('position', ['Kepala Desa', 'Sekretaris Desa'])
+    .order('order_index', { ascending: true })
     .limit(4);
 
+  // 4. Fetch Budget (Try current year, then latest available)
+  const fetchBudget = async () => {
+    const currentYear = new Date().getFullYear();
+    const { data: currentData } = await supabase
+      .from('finances')
+      .select('amount')
+      .eq('type', 'income')
+      .eq('year', currentYear);
+    
+    if (currentData && currentData.length > 0) {
+      return currentData.reduce((sum, item) => sum + item.amount, 0);
+    }
+
+    // Fallback to latest year
+    const { data: latestYearData } = await supabase
+      .from('finances')
+      .select('year')
+      .eq('type', 'income')
+      .order('year', { ascending: false })
+      .limit(1);
+    
+    if (latestYearData && latestYearData.length > 0) {
+      const { data: latestData } = await supabase
+        .from('finances')
+        .select('amount')
+        .eq('type', 'income')
+        .eq('year', latestYearData[0].year);
+      return latestData?.reduce((sum, item) => sum + item.amount, 0) || 0;
+    }
+    return 0;
+  };
+
+  // 5. Fetch Population and Hamlet Count (using slugs)
+  const fetchDemographicStats = async () => {
+    const { data: cats } = await supabase
+      .from('categories')
+      .select('id, slug')
+      .in('slug', ['populasi', 'dusun']);
+    
+    const popCat = cats?.find(c => c.slug === 'populasi');
+    const dusunCat = cats?.find(c => c.slug === 'dusun');
+
+    let population = 0;
+    let hamletCount = 0;
+
+    if (popCat) {
+      const { data: popData } = await supabase
+        .from('demographics')
+        .select('value')
+        .eq('category_id', popCat.id)
+        .ilike('label', '%total%')
+        .limit(1);
+      population = popData?.[0]?.value || 0;
+    }
+
+    if (dusunCat) {
+      const { count } = await supabase
+        .from('demographics')
+        .select('id', { count: 'exact' })
+        .eq('category_id', dusunCat.id);
+      hamletCount = count || 0;
+    } else {
+      // Fallback: If no 'dusun' category, maybe check 'populasi' for any label with 'dusun'
+      const { count } = await supabase
+        .from('demographics')
+        .select('id', { count: 'exact' })
+        .ilike('label', '%dusun%');
+      hamletCount = count || 0;
+    }
+
+    return { population, hamletCount };
+  };
+
+  // --- Parallel Execution ---
   const [
-    villageInfo,
-    population,
+    villageInfoRes,
+    postsRes,
+    staffCountRes,
+    staffRes,
     budget,
-    hamlets,
-    staffCount,
-    posts,
-    staff
+    demoStats
   ] = await Promise.all([
     villageInfoPromise,
-    populationPromise,
-    budgetPromise,
-    hamletsPromise,
-    staffCountPromise,
     postsPromise,
-    staffPromise
+    staffCountPromise,
+    staffPromise,
+    fetchBudget(),
+    fetchDemographicStats()
   ]);
 
-  const totalBudget = budget.data?.reduce((sum, item) => sum + item.amount, 0) || 0;
-
   return {
-    villageName: villageInfo.data?.name || 'Desa',
-    population: population.data?.value || 0,
-    budget: totalBudget,
-    hamletCount: hamlets.count || 0,
-    staffCount: staffCount.count || 0,
-    posts: posts.data || [],
-    staff: staff.data || [],
+    villageName: villageInfoRes.data?.name || 'Desa Kami',
+    population: demoStats.population,
+    budget: budget,
+    hamletCount: demoStats.hamletCount,
+    staffCount: staffCountRes.count || 0,
+    posts: (postsRes.data || []).map((post: any) => ({
+      ...post,
+      categories: Array.isArray(post.categories) ? post.categories[0] : post.categories
+    })),
+    staff: staffRes.data || [],
   };
 }

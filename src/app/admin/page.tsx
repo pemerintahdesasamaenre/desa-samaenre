@@ -1,6 +1,6 @@
 import { getDemographics } from '@/services/data-service';
 import { StatCard } from '@/components/ui/StatCard';
-import { User, Activity, FileText, Bell } from 'lucide-react';
+import { Activity, Bell } from 'lucide-react';
 
 export default async function AdminDashboard() {
   const demographics = await getDemographics();
@@ -67,5 +67,3 @@ export default async function AdminDashboard() {
   );
 }
 
-// Helper to avoid build error for missing icons in map
-const BarChart = () => <Activity size={18} />;

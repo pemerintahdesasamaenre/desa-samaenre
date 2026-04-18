@@ -14,32 +14,59 @@ interface VillageApparatusProps {
 
 export default function VillageApparatus({ staff }: VillageApparatusProps) {
   return (
-    <div className="py-12 bg-slate-50 dark:bg-slate-900">
+    <section id="staff" className="py-32 bg-slate-100/50 dark:bg-slate-900/50 scroll-mt-32 relative overflow-hidden">
+      {/* Decorative background accent */}
+      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+      
       <div className="max-w-7xl mx-auto px-4 text-center">
-        <h2 className="text-3xl font-bold">Kenali Perangkat Desa Anda</h2>
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="space-y-6 mb-20 animate-fade-in">
+          <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-none">
+            Aparatur <span className="text-gradient">Struktur Desa</span>
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-xl font-medium leading-relaxed">
+            Pelayanan profesional dengan integritas tinggi untuk seluruh lapisan masyarakat.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {staff.map((member) => (
-            <div key={member.name} className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md border border-slate-200 dark:border-slate-700">
-              <div className="relative w-32 h-32 mx-auto rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700">
+            <div 
+              key={member.name} 
+              className="glass-premium p-10 rounded-[3.5rem] hover-lift border-white/20 dark:border-white/5 transition-all duration-700 group relative bg-white/40 dark:bg-slate-900/40"
+            >
+              <div className="relative w-48 h-48 mx-auto rounded-[2.5rem] overflow-hidden bg-white/50 dark:bg-black/40 shadow-2xl border-4 border-white/50 dark:border-white/10 group-hover:scale-105 group-hover:rotate-2 transition-all duration-700">
                 {member.photo_url ? (
-                  <Image src={member.photo_url} alt={member.name} layout="fill" objectFit="cover" />
+                  <Image 
+                    src={member.photo_url} 
+                    alt={member.name} 
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-400">
-                    <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                  <div className="w-full h-full flex items-center justify-center text-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
+                    <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                   </div>
                 )}
               </div>
-              <h3 className="mt-4 text-xl font-bold">{member.name}</h3>
-              <p className="mt-1 text-blue-600 font-semibold">{member.position}</p>
+              <div className="mt-8 space-y-2">
+                <h3 className="text-2xl font-black text-foreground group-hover:text-primary transition-colors">{member.name}</h3>
+                <p className="text-primary font-black text-[10px] uppercase tracking-[0.2em] bg-primary/10 dark:bg-white/5 py-2 px-4 rounded-full inline-block">
+                  {member.position}
+                </p>
+              </div>
             </div>
           ))}
         </div>
-        <div className="mt-12">
-          <Link href="/tentang" className="px-8 py-3 border border-slate-300 dark:border-slate-600 rounded-xl font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+
+        <div className="mt-24">
+          <Link 
+            href="/tentang" 
+            className="inline-flex items-center gap-4 px-12 py-5 bg-foreground text-background rounded-2xl font-black text-lg hover-lift transition-all duration-500 shadow-2xl"
+          >
             Lihat Struktur Lengkap
           </Link>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

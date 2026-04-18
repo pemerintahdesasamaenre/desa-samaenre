@@ -7,36 +7,43 @@ export default async function TentangPage() {
   const villageInfo = await getVillageInfo();
 
   return (
-    <main className="min-h-screen bg-slate-50 pt-32 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-background pt-32 pb-20 overflow-hidden relative">
+      <div className="absolute top-0 left-0 w-full h-96 bg-primary/5 -skew-y-6 -translate-y-48"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header Section */}
-        <section className="text-center mb-16">
-          <h1 className="text-4xl font-extrabold text-slate-900 mb-4">Tentang Desa {villageInfo.name}</h1>
-          <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+        <section className="text-center mb-24 space-y-6">
+          <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-sm font-bold uppercase tracking-widest">
+            Identitas Desa
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter">
+            Tentang <span className="text-primary">{villageInfo.name}</span>
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light">
             Mengenal lebih dekat sejarah, visi, misi, dan struktur organisasi pemerintahan Desa {villageInfo.name}.
           </p>
         </section>
 
         {/* Vision & Mission */}
-        <section className="grid md:grid-cols-2 gap-8 mb-20">
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-            <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center text-sm">01</span>
-              Visi
-            </h2>
-            <p className="text-slate-600 italic text-lg leading-relaxed">
+        <section className="grid md:grid-cols-2 gap-8 mb-32">
+          <div className="glass p-12 rounded-[3rem] hover-lift space-y-6">
+            <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center text-2xl font-black">
+              01
+            </div>
+            <h2 className="text-3xl font-black text-foreground">Visi</h2>
+            <p className="text-muted-foreground italic text-xl leading-relaxed">
               "{villageInfo.vision}"
             </p>
           </div>
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-            <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center text-sm">02</span>
-              Misi
-            </h2>
-            <ul className="space-y-3">
-              {villageInfo.mission.map((item, index) => (
-                <li key={index} className="flex gap-3 text-slate-600">
-                  <span className="text-primary font-bold">•</span>
+          <div className="glass p-12 rounded-[3rem] hover-lift space-y-6">
+            <div className="w-16 h-16 bg-secondary/10 text-secondary rounded-2xl flex items-center justify-center text-2xl font-black">
+              02
+            </div>
+            <h2 className="text-3xl font-black text-foreground">Misi</h2>
+            <ul className="space-y-4">
+              {villageInfo.mission.map((item: string, index: number) => (
+                <li key={index} className="flex gap-4 text-muted-foreground text-lg leading-snug">
+                  <span className="text-primary font-black">•</span>
                   {item}
                 </li>
               ))}
@@ -46,26 +53,29 @@ export default async function TentangPage() {
 
         {/* History */}
         {villageInfo.history && (
-          <section className="mb-20 bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-slate-100">
-            <h2 className="text-3xl font-bold text-slate-900 mb-6 text-center">Sejarah Desa</h2>
-            <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
-              {villageInfo.history.split('\n').map((para, i) => (
-                <p key={i} className="mb-4">{para}</p>
-              ))}
+          <section className="mb-32">
+            <div className="glass p-12 md:p-20 rounded-[4rem] relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+               <h2 className="text-4xl font-black text-foreground mb-12 text-center text-gradient">Sejarah Singkat</h2>
+               <div className="prose prose-xl prose-slate dark:prose-invert max-w-none text-muted-foreground leading-relaxed font-light">
+                 {villageInfo.history.split('\n').map((para: string, i: number) => (
+                   <p key={i} className="mb-8">{para}</p>
+                 ))}
+               </div>
             </div>
           </section>
         )}
 
         {/* Organizational Chart */}
         <section id="staff" className="scroll-mt-32">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-slate-900 mb-4">Struktur Organisasi</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-4xl font-black text-foreground tracking-tight">Struktur Pemerintahan</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               Susunan organisasi Pemerintah Desa {villageInfo.name} yang bertugas melayani masyarakat dengan integritas dan dedikasi.
             </p>
           </div>
           
-          <div className="bg-white p-4 md:p-10 rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          <div className="glass p-8 md:p-16 rounded-[4rem] shadow-2xl border-white/10">
             <OrgChartTree staff={staff} />
           </div>
         </section>

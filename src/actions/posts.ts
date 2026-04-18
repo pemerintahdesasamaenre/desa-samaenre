@@ -47,7 +47,10 @@ export async function getPosts(status?: 'draft' | 'published') {
   const { data, error } = await query.order('created_at', { ascending: false })
   
   if (error) return []
-  return data
+  return (data || []).map((post: any) => ({
+    ...post,
+    categories: Array.isArray(post.categories) ? post.categories[0] : post.categories
+  }))
 }
 
 export async function getPostBySlug(slug: string) {
@@ -58,8 +61,11 @@ export async function getPostBySlug(slug: string) {
     .eq('slug', slug)
     .single()
   
-  if (error) return null
-  return data
+  if (error || !data) return null
+  return {
+    ...data,
+    categories: Array.isArray(data.categories) ? data.categories[0] : data.categories
+  }
 }
 
 export async function deletePost(id: string) {
