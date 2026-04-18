@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { usePathname } from 'next/navigation';
-import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, MessageCircle, Share2 } from 'lucide-react';
 
 export const Footer = () => {
   const pathname = usePathname();
@@ -59,13 +59,13 @@ export const Footer = () => {
             <h3 className="text-white font-semibold mb-6">Ikuti Kami</h3>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 transition-all">
-                <Facebook size={20} />
+                <Globe size={20} />
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-pink-600 transition-all">
-                <Instagram size={20} />
+                <MessageCircle size={20} />
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-sky-500 transition-all">
-                <Twitter size={20} />
+                <Share2 size={20} />
               </a>
             </div>
           </div>
