@@ -14,7 +14,7 @@ interface VillageApparatusProps {
 
 export default function VillageApparatus({ staff }: VillageApparatusProps) {
   return (
-    <section id="staff" className="py-32 bg-slate-100/50 dark:bg-slate-900/50 scroll-mt-32 relative overflow-hidden">
+    <section id="staff" className="py-32 bg-background scroll-mt-32 relative overflow-hidden">
       {/* Decorative background accent */}
       <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
       
@@ -32,9 +32,9 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
           {staff.map((member) => (
             <div 
               key={member.name} 
-              className="glass-premium p-10 rounded-[3.5rem] hover-lift border-white/20 dark:border-white/5 transition-all duration-700 group relative bg-card/40 dark:bg-card/20 hover:bg-card/60 dark:hover:bg-card/30"
+              className="glass-premium p-10 rounded-[3.5rem] hover-lift transition-all duration-700 group relative"
             >
-              <div className="relative w-48 h-48 mx-auto rounded-[2.5rem] overflow-hidden bg-white/50 dark:bg-white/10 shadow-2xl border-4 border-white/50 dark:border-white/10 group-hover:scale-105 group-hover:rotate-2 transition-all duration-700">
+              <div className="relative w-48 h-48 mx-auto rounded-[2.5rem] overflow-hidden bg-card shadow-2xl border-4 border-border/50 group-hover:scale-105 group-hover:rotate-2 transition-all duration-700">
                 {member.photo_url ? (
                   <Image 
                     src={member.photo_url} 

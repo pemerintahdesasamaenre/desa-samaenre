@@ -44,7 +44,7 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
             <Link 
               key={post.slug} 
               href={`/posts/${post.slug}`}
-              className="glass-premium p-1 p-10 rounded-[3.5rem] hover-lift group relative overflow-hidden flex flex-col justify-between h-full bg-card/40 dark:bg-card/20 hover:bg-card/60 dark:hover:bg-card/30 transition-all duration-500"
+              className="glass-premium p-1 p-10 rounded-[3.5rem] hover-lift group relative overflow-hidden flex flex-col justify-between h-full transition-all duration-500"
             >
               {/* Card visual highlight */}
               <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
@@ -54,7 +54,7 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
                   <span className="px-5 py-2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg shadow-primary/20">
                     {post.categories?.name || 'Berita'}
                   </span>
-                  <div className="flex items-center gap-2 text-muted-foreground font-bold text-xs uppercase tracking-widest">
+                  <div className="flex items-center gap-2 text-foreground/60 dark:text-muted-foreground font-bold text-xs uppercase tracking-widest">
                     <Calendar size={14} className="text-primary" />
                     {new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                   </div>
@@ -64,7 +64,7 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
                   {post.title}
                 </h3>
                 
-                <p className="text-muted-foreground line-clamp-3 text-base leading-relaxed font-medium italic group-hover:text-foreground transition-colors">
+                <p className="text-foreground/70 dark:text-muted-foreground line-clamp-3 text-base leading-relaxed font-medium italic group-hover:text-foreground transition-colors">
                   &quot;Baca selengkapnya mengenai {post.title} untuk mendapatkan informasi lebih rinci dan mendalam...&quot;
                 </p>
               </div>
