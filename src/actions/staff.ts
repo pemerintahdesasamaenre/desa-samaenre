@@ -1,37 +1,34 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { staffMemberSchema, type StaffMemberInput } from '@/lib/validations'
 import { revalidatePath } from 'next/cache'
 
-export async function createStaffMember(data: any) {
+export async function upsertStaffMember(data: StaffMemberInput, id?: string) {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  const { error } = await supabase
-    .from('staff_members')
-    .insert(data)
+  if (!user) return { error: 'Unauthorized' }
+
+  const validated = staffMemberSchema.safeParse(data)
+  if (!validated.success) return { error: validated.error.flatten().fieldErrors }
+
+  const payload = id ? { id, ...validated.data } : validated.data
+
+  const { error } = await supabase.from('staff_members').upsert(payload)
 
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/content')
-  return { success: true }
-}
-
-export async function updateStaffMember(id: string, data: any) {
-  const supabase = await createClient()
-
-  const { error } = await supabase
-    .from('staff_members')
-    .update(data)
-    .eq('id', id)
-
-  if (error) return { error: error.message }
-
-  revalidatePath('/admin/content')
+  revalidatePath('/admin/staff')
+  revalidatePath('/tentang')
   return { success: true }
 }
 
 export async function deleteStaffMember(id: string) {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) return { error: 'Unauthorized' }
 
   const { error } = await supabase
     .from('staff_members')
@@ -40,6 +37,7 @@ export async function deleteStaffMember(id: string) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/content')
+  revalidatePath('/admin/staff')
+  revalidatePath('/tentang')
   return { success: true }
 }
