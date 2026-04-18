@@ -2,5 +2,5 @@
 
 - [x] Task 1: Project Initialization & Strict TS Config (In Progress)
 - [x] Task 2: Supabase Integration Setup (@supabase/ssr)
-- [ ] Task 3: Database Schema Migration & RLS
+- [x] Task 3: Database Schema Migration & RLS
 - [ ] Task 4: Base Types & Zod Schemas
