@@ -51,3 +51,13 @@ export interface Finance {
   note: string | null;
   updated_at: string;
 }
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  position: string;
+  photo_url: string | null;
+  parent_id: string | null;
+  order_index: number;
+  created_at: string;
+}

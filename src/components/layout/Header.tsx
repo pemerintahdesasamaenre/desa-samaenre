@@ -16,8 +16,8 @@ export const Header = () => {
 
   const navLinks = [
     { name: 'Beranda', href: '/' },
-    { name: 'Statistik', href: '#statistics' },
-    { name: 'Aparatur', href: '#staff' },
+    { name: 'Statistik', href: '/#statistics' },
+    { name: 'Tentang', href: '/tentang' },
     { name: 'Transparansi', href: '/transparansi' },
   ];
 

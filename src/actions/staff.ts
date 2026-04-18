@@ -24,6 +24,21 @@ export async function upsertStaffMember(data: StaffMemberInput, id?: string) {
   return { success: true }
 }
 
+export async function getStaffMembers() {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('staff_members')
+    .select('*')
+    .order('order_index', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching staff members:', error)
+    return []
+  }
+
+  return data
+}
+
 export async function deleteStaffMember(id: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
