@@ -23,3 +23,16 @@ export const villageInfoSchema = z.object({
 });
 
 export type VillageInfoInput = z.infer<typeof villageInfoSchema>;
+
+export const postSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  slug: z.string().min(3, "Slug must be at least 3 characters"),
+  content: z.string().min(10, "Content must be at least 10 characters"),
+  image_url: z.string().url().optional().or(z.literal('')),
+  category_id: z.string().uuid("Invalid category ID"),
+  type: z.enum(['news', 'agenda']),
+  status: z.enum(['draft', 'published']).default('draft'),
+  event_date: z.string().optional().or(z.literal('')),
+});
+
+export type PostInput = z.infer<typeof postSchema>;
