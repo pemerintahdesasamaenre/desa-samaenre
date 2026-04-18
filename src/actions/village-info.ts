@@ -13,10 +13,14 @@ export async function updateVillageInfo(id: number, data: VillageInfoInput) {
     return { error: validated.error.flatten().fieldErrors }
   }
 
+  // Use upsert to handle case where ID 1 doesn't exist yet
   const { error } = await supabase
     .from('village_info')
-    .update(validated.data)
-    .eq('id', id)
+    .upsert({
+      id,
+      ...validated.data,
+      updated_at: new Date().toISOString()
+    })
 
   if (error) {
     return { error: error.message }

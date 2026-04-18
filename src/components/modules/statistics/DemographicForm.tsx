@@ -59,58 +59,58 @@ export default function DemographicForm({ categories, initialData, isEditing }: 
         </Link>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-          <h2 className="text-xl font-bold text-slate-900">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
             {isEditing ? 'Edit Data Demografi' : 'Tambah Data Demografi Baru'}
           </h2>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             Isi formulir di bawah untuk {isEditing ? 'memperbarui' : 'menambahkan'} data statistik desa.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           {error && (
-            <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm">
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 rounded-xl text-sm">
               {error}
             </div>
           )}
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">Kategori</label>
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Kategori</label>
             <select 
               name="category_id" 
               defaultValue={initialData?.category_id || ''}
               required
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none bg-white transition-all"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 transition-all"
             >
-              <option value="" disabled>Pilih Kategori...</option>
+              <option value="" disabled className="dark:bg-slate-800">Pilih Kategori...</option>
               {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                <option key={cat.id} value={cat.id} className="dark:bg-slate-800">{cat.name}</option>
               ))}
             </select>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">Label (Nama Data)</label>
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Label (Nama Data)</label>
             <input 
               name="label" 
               defaultValue={initialData?.label}
               placeholder="Contoh: Laki-Laki, Petani, Dusun A..."
               required
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">Jumlah (Value)</label>
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Jumlah (Value)</label>
             <input 
               name="value" 
               type="number"
               defaultValue={initialData?.value || 0}
               required
               min="0"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
             />
           </div>
 
@@ -118,7 +118,7 @@ export default function DemographicForm({ categories, initialData, isEditing }: 
             <button 
               type="submit" 
               disabled={loading}
-              className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-200"
+              className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-200 dark:shadow-blue-900/20"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
               {isEditing ? 'Simpan Perubahan' : 'Tambah Data'}
