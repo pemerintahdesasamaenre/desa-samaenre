@@ -1,20 +1,30 @@
+import { Suspense } from 'react'
 import { getFinances } from '@/actions/finances'
 import FinanceCharts from '@/components/modules/finance/FinanceCharts'
 import { StatCard } from '@/components/ui/StatCard'
+import YearFilter from '@/components/modules/finance/YearFilter'
 
 export const metadata = {
   title: 'Transparansi Keuangan - Profil Desa',
   description: 'Transparansi anggaran pendapatan dan belanja desa.',
 }
 
-interface PageProps {
-  searchParams: Promise<{ year?: string }>
+// Wrapper component to allow Suspense
+function TransparencyPageContent({ searchParams }: PageProps) {
+  return (
+    <Suspense fallback={<div className="text-center p-12">Memuat data...</div>}>
+      <PageContent searchParams={searchParams} />
+    </Suspense>
+  )
 }
 
-export default async function TransparencyPage({ searchParams }: PageProps) {
-  const { year: yearParam } = await searchParams
+interface PageProps {
+  searchParams: { year?: string }
+}
+
+async function PageContent({ searchParams }: PageProps) {
   const currentYear = new Date().getFullYear()
-  const selectedYear = yearParam ? parseInt(yearParam) : currentYear
+  const selectedYear = searchParams.year ? parseInt(searchParams.year) : currentYear
   
   const finances = await getFinances(selectedYear)
 
@@ -36,8 +46,6 @@ export default async function TransparencyPage({ searchParams }: PageProps) {
     }).format(value)
   }
 
-  const years = Array.from({ length: 5 }, (_, i) => currentYear - i)
-
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
@@ -47,27 +55,7 @@ export default async function TransparencyPage({ searchParams }: PageProps) {
             Laporan realisasi anggaran pendapatan dan belanja desa tahun {selectedYear}.
           </p>
         </div>
-
-        <div className="flex items-center gap-2">
-          <label htmlFor="year-select" className="text-sm font-medium text-slate-700">
-            Tahun:
-          </label>
-          <form method="GET" action="/transparansi">
-            <select
-              id="year-select"
-              name="year"
-              defaultValue={selectedYear}
-              onChange={(e) => e.target.form?.submit()}
-              className="rounded-lg border-slate-200 text-sm focus:ring-blue-500 focus:border-blue-500"
-            >
-              {years.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
-          </form>
-        </div>
+        <YearFilter currentYear={currentYear} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -137,3 +125,5 @@ export default async function TransparencyPage({ searchParams }: PageProps) {
     </main>
   )
 }
+
+export default TransparencyPageContent;

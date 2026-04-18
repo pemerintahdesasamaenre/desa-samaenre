@@ -106,3 +106,73 @@ export async function getProfiles() {
   if (error) throw error;
   return data;
 }
+
+export async function getHomepageData() {
+  const supabase = await createClient();
+
+  const villageInfoPromise = supabase.from('village_info').select('name').single();
+  
+  const populationPromise = supabase
+    .from('demographics')
+    .select('value')
+    .eq('label', 'Total Populasi')
+    .single();
+
+  const budgetPromise = supabase
+    .from('finances')
+    .select('amount')
+    .eq('type', 'income')
+    .eq('year', new Date().getFullYear());
+
+  const hamletsPromise = supabase
+    .from('demographics')
+    .select('id', { count: 'exact' })
+    .eq('category_id', 'c3d4e5f6-a7b8-9012-3456-7890abcdef01'); // Assuming 'populasi' category id is stable
+
+  const staffCountPromise = supabase
+    .from('staff_members')
+    .select('id', { count: 'exact' });
+
+  const postsPromise = supabase
+    .from('posts')
+    .select('title, slug, created_at, categories(name)')
+    .eq('status', 'published')
+    .order('created_at', { ascending: false })
+    .limit(3);
+    
+  const staffPromise = supabase
+    .from('staff_members')
+    .select('name, position, photo_url')
+    .in('position', ['Kepala Desa', 'Sekretaris Desa'])
+    .limit(4);
+
+  const [
+    villageInfo,
+    population,
+    budget,
+    hamlets,
+    staffCount,
+    posts,
+    staff
+  ] = await Promise.all([
+    villageInfoPromise,
+    populationPromise,
+    budgetPromise,
+    hamletsPromise,
+    staffCountPromise,
+    postsPromise,
+    staffPromise
+  ]);
+
+  const totalBudget = budget.data?.reduce((sum, item) => sum + item.amount, 0) || 0;
+
+  return {
+    villageName: villageInfo.data?.name || 'Desa',
+    population: population.data?.value || 0,
+    budget: totalBudget,
+    hamletCount: hamlets.count || 0,
+    staffCount: staffCount.count || 0,
+    posts: posts.data || [],
+    staff: staff.data || [],
+  };
+}
