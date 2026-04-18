@@ -41,3 +41,13 @@ export interface VillageInfo {
   location: Record<string, any>;
   updated_at: string;
 }
+
+export interface Finance {
+  id: string;
+  year: number;
+  type: 'income' | 'expense' | 'financing';
+  category_name: string;
+  amount: number;
+  note: string | null;
+  updated_at: string;
+}

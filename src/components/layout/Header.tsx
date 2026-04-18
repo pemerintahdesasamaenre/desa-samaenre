@@ -18,7 +18,7 @@ export const Header = () => {
     { name: 'Beranda', href: '/' },
     { name: 'Statistik', href: '#statistics' },
     { name: 'Aparatur', href: '#staff' },
-    { name: 'Transparansi', href: '#finance' },
+    { name: 'Transparansi', href: '/transparansi' },
   ];
 
   return (
