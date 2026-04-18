@@ -116,19 +116,23 @@ BEGIN
     WHERE id = auth.uid() AND role = 'admin'
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-COMMENT ON FUNCTION public.is_admin() IS 'Security-definer function to check if the current user is an admin.';
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+COMMENT ON FUNCTION public.is_admin() IS 'Returns true if the current authenticated user has the admin role. Bypasses RLS via SECURITY DEFINER.';
 
 -- Function to automatically create a profile for a new user
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
   INSERT INTO public.profiles (id, full_name, role)
-  VALUES (new.id, new.raw_user_meta_data->>'full_name', 'admin');
+  VALUES (
+    new.id, 
+    COALESCE(new.raw_user_meta_data->>'full_name', 'User Baru'), 
+    'admin' -- Default to admin for initial setup/MVP
+  );
   RETURN new;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-COMMENT ON FUNCTION public.handle_new_user() IS 'Trigger function to populate a new profile upon user sign-up.';
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+COMMENT ON FUNCTION public.handle_new_user() IS 'Trigger function to populate a new profile upon user sign-up. Ensures search_path is set for security.';
 
 -- Trigger for new user creation
 CREATE TRIGGER on_auth_user_created
@@ -164,9 +168,12 @@ ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.finances ENABLE ROW LEVEL SECURITY;
 
 -- Policies for 'profiles'
-CREATE POLICY "Allow authenticated users to view their own profile" ON public.profiles FOR SELECT USING (auth.uid() = id);
-CREATE POLICY "Allow users to update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
-CREATE POLICY "Allow admins to manage all profiles" ON public.profiles FOR ALL USING (public.is_admin());
+-- Non-recursive: Users can see and update their own profiles
+CREATE POLICY "Users can view own profile" ON public.profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+
+-- Admin Management (Recursive-safe because is_admin is SECURITY DEFINER)
+CREATE POLICY "Admins can manage all profiles" ON public.profiles FOR ALL USING (public.is_admin());
 
 -- Policies for public-read tables
 CREATE POLICY "Allow public read access" ON public.categories FOR SELECT USING (true);
