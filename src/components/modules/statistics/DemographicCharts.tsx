@@ -19,7 +19,6 @@ interface ChartProps {
   data: any;
 }
 
-const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
 export const DemographicCharts = ({ data }: ChartProps) => {
   const genderData = [
@@ -47,7 +46,8 @@ export const DemographicCharts = ({ data }: ChartProps) => {
                   outerRadius={110}
                   paddingAngle={10}
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                  labelLine={false}
                 >
                   {genderData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={index === 0 ? '#3b82f6' : '#ec4899'} />
@@ -85,13 +85,13 @@ export const DemographicCharts = ({ data }: ChartProps) => {
                   axisLine={false} 
                   tickLine={false}
                   tick={{ fill: 'currentColor', fontSize: 13, fontWeight: 700 }}
-                  className="text-foreground/60 dark:text-foreground/80"
+                  className="text-foreground/80 dark:text-foreground/90"
                 />
                 <YAxis 
                   axisLine={false} 
                   tickLine={false}
                   tick={{ fill: 'currentColor', fontSize: 13, fontWeight: 700 }}
-                  className="text-foreground/60 dark:text-foreground/80"
+                  className="text-foreground/80 dark:text-foreground/90"
                 />
                 <Tooltip 
                    cursor={{ fill: 'currentColor', className: 'text-primary/5' }}

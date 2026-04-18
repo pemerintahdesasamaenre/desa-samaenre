@@ -20,14 +20,14 @@ export const StatCard: React.FC<StatCardProps> = ({ label, value, unit, icon }) 
           </div>
         )}
         <div className="space-y-2">
-          <p className="text-foreground/70 dark:text-muted-foreground font-black uppercase tracking-[0.25em] text-[10px] sm:text-xs">
+          <p className="text-foreground/80 dark:text-muted-foreground font-black uppercase tracking-[0.25em] text-[10px] sm:text-xs">
             {label}
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="text-4xl sm:text-5xl font-black text-foreground tracking-tighter group-hover:text-primary transition-colors duration-500">
+            <span className="text-4xl sm:text-5xl font-black text-foreground tracking-tighter group-hover:text-primary transition-colors duration-500 drop-shadow-sm">
               {value}
             </span>
-            {unit && <span className="text-foreground/60 dark:text-muted-foreground font-black uppercase text-[10px] tracking-widest">{unit}</span>}
+            {unit && <span className="text-foreground/80 dark:text-muted-foreground font-black uppercase text-[10px] tracking-widest">{unit}</span>}
           </div>
         </div>
       </div>

@@ -37,10 +37,10 @@ export default function HeroSection({ villageName }: HeroSectionProps) {
           </h1>
         </div>
         
-        <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light animate-fade-in animation-delay-500">
-          Mewujudkan tata kelola desa yang <span className="text-foreground font-black border-b-2 border-primary/40">transparan</span>, 
-          <span className="text-foreground font-black border-b-2 border-blue-400/40"> inovatif</span>, dan 
-          <span className="text-foreground font-black border-b-2 border-secondary/40"> mandiri</span> demi kesejahteraan seluruh masyarakat.
+        <p className="text-xl md:text-2xl text-foreground font-medium max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-500">
+          Mewujudkan tata kelola desa yang <span className="text-primary font-black border-b-2 border-primary/40">transparan</span>, 
+          <span className="text-blue-600 dark:text-blue-400 font-black border-b-2 border-blue-400/40"> inovatif</span>, dan 
+          <span className="text-secondary font-black border-b-2 border-secondary/40"> mandiri</span> demi kesejahteraan seluruh masyarakat.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8 animate-fade-in animation-delay-700">

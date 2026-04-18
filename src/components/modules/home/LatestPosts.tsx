@@ -26,7 +26,7 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
               Kabar <br/>
               <span className="text-gradient">Terbaru Desa</span>
             </h2>
-            <p className="text-muted-foreground max-w-xl text-xl font-medium leading-relaxed">
+            <p className="text-foreground/80 font-medium max-w-xl text-xl leading-relaxed">
               Tetap terhubung dengan perkembangan terbaru, kegiatan, dan pengumuman resmi dari desa kami.
             </p>
           </div>

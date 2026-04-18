@@ -23,7 +23,7 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
           <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-none">
             Aparatur <span className="text-gradient">Struktur Desa</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-xl font-medium leading-relaxed">
+          <p className="text-foreground/80 max-w-2xl mx-auto text-xl font-medium leading-relaxed">
             Pelayanan profesional dengan integritas tinggi untuk seluruh lapisan masyarakat.
           </p>
         </div>

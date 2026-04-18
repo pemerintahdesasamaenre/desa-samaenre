@@ -14,6 +14,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
+  --color-card-60: color-mix(in srgb, var(--card), transparent 40%);
+  --color-card-70: color-mix(in srgb, var(--card), transparent 30%);
   
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
@@ -99,11 +101,13 @@
 
 @layer utilities {
   .glass {
-    @apply bg-card/60 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-xl;
+    background-color: var(--color-card-60);
+    @apply backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-xl;
   }
 
   .glass-premium {
-    @apply bg-card/70 backdrop-blur-2xl border border-white/30 dark:border-white/10 shadow-2xl ring-1 ring-white/10;
+    background-color: var(--color-card-70);
+    @apply backdrop-blur-2xl border border-white/30 dark:border-white/10 shadow-2xl ring-1 ring-white/10;
   }
   
   .text-gradient {
