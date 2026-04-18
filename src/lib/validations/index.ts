@@ -36,3 +36,13 @@ export const postSchema = z.object({
 });
 
 export type PostInput = z.infer<typeof postSchema>;
+
+export const financeSchema = z.object({
+  year: z.number().int().min(2000).max(2100),
+  type: z.enum(['income', 'expense', 'financing']),
+  category_name: z.string().min(1, "Category name is required"),
+  amount: z.number().int().nonnegative(),
+  note: z.string().optional().or(z.literal('')),
+});
+
+export type FinanceInput = z.infer<typeof financeSchema>;
