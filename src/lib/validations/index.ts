@@ -46,3 +46,13 @@ export const financeSchema = z.object({
 });
 
 export type FinanceInput = z.infer<typeof financeSchema>;
+
+export const staffMemberSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  position: z.string().min(1, "Position is required"),
+  photo_url: z.string().url().optional().or(z.literal('')),
+  parent_id: z.string().uuid().optional().nullable(),
+  order_index: z.number().int().default(0),
+});
+
+export type StaffMemberInput = z.infer<typeof staffMemberSchema>;
