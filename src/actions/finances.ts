@@ -40,3 +40,21 @@ export async function getFinances(year?: number) {
 
   return data as Finance[]
 }
+
+export async function deleteFinanceEntry(id: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) return { error: 'Unauthorized' }
+
+  const { error } = await supabase
+    .from('finances')
+    .delete()
+    .eq('id', id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/finances')
+  revalidatePath('/transparansi')
+  return { success: true }
+}

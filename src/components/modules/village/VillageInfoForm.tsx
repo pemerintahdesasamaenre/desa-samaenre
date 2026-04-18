@@ -42,13 +42,15 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
         email: formData.get('email') as string,
         phone: formData.get('phone') as string,
         address: formData.get('address') as string,
+        maps_url: formData.get('maps_url') as string,
       }
     };
 
     try {
       const result = await updateVillageInfo(initialData.id, data);
       if (result.error) {
-        setError(typeof result.error === 'string' ? result.error : 'Gagal memvalidasi data.');
+        const errorMessages = Object.values(result.error).flat().join(', ');
+        setError(errorMessages || 'Gagal memvalidasi data.');
       } else {
         router.refresh();
         alert('Data desa berhasil diperbarui!');
@@ -85,6 +87,32 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
               name="email" 
               type="email"
               defaultValue={initialData.contact_info?.email} 
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Telepon</label>
+            <input 
+              name="phone" 
+              defaultValue={initialData.contact_info?.phone} 
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">URL Google Maps</label>
+            <input 
+              name="maps_url" 
+              type="url"
+              defaultValue={initialData.contact_info?.maps_url} 
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
+            />
+          </div>
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Alamat Kantor Desa</label>
+            <textarea 
+              name="address" 
+              rows={2}
+              defaultValue={initialData.contact_info?.address} 
               className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
             />
           </div>

@@ -10,7 +10,9 @@ import {
   Users, 
   Settings, 
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Wallet,
+  Network
 } from 'lucide-react';
 import { logout } from '@/actions/auth';
 
@@ -19,6 +21,8 @@ const menuItems = [
   { name: 'Statistik', href: '/admin/statistics', icon: BarChart3 },
   { name: 'Konten Desa', href: '/admin/content', icon: FileText },
   { name: 'Berita & Agenda', href: '/admin/posts', icon: FileText },
+  { name: 'Transparansi', href: '/admin/finances', icon: Wallet },
+  { name: 'Struktur Organisasi', href: '/admin/staff', icon: Network },
   { name: 'Manajemen User', href: '/admin/users', icon: Users },
   { name: 'Pengaturan', href: '/admin/settings', icon: Settings },
 ];
