@@ -3,7 +3,7 @@ import mockDemographics from '@/data/mock/demographics.json';
 import mockVillageInfo from '@/data/mock/village-info.json';
 
 export async function getDemographics() {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   try {
     const { data, error } = await supabase
@@ -23,7 +23,7 @@ export async function getDemographics() {
 }
 
 export async function getVillageInfo() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   try {
     const { data, error } = await supabase
