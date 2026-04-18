@@ -1,0 +1,17 @@
+{
+  "name": "Desa Contoh",
+  "vision": "Terwujudnya Desa yang Mandiri, Sejahtera, dan Berbudaya.",
+  "mission": [
+    "Meningkatkan kualitas pelayanan publik berbasis digital.",
+    "Mengembangkan potensi ekonomi lokal melalui UMKM dan Pertanian.",
+    "Membangun infrastruktur desa yang merata dan berkelanjutan.",
+    "Meningkatkan kualitas sumber daya manusia yang agamis dan kompetitif."
+  ],
+  "history": "Desa ini didirikan pada tahun...",
+  "contact_info": {
+    "email": "kontak@desacontoh.go.id",
+    "phone": "0812-3456-7890",
+    "address": "Jl. Utama No. 1, Kecamatan X, Kabupaten Y",
+    "maps_url": "https://maps.google.com/..."
+  }
+}

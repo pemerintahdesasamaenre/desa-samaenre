@@ -1,0 +1,47 @@
+{
+  "population": {
+    "total": 2025,
+    "households": 659,
+    "male": 1012,
+    "female": 1013
+  },
+  "hamlets": [
+    { "name": "Maddenge", "value": 492 },
+    { "name": "Satoa", "value": 532 },
+    { "name": "Ujung", "value": 1001 }
+  ],
+  "occupations": [
+    { "label": "Mengurus Rumah Tangga", "value": 475 },
+    { "label": "Pelajar/Mahasiswa", "value": 422 },
+    { "label": "Belum/Tidak Bekerja", "value": 373 },
+    { "label": "Petani/Pekebun", "value": 321 },
+    { "label": "Wiraswasta", "value": 119 },
+    { "label": "Karyawan Swasta", "value": 86 },
+    { "label": "Pegawai Negeri Sipil (PNS)", "value": 83 },
+    { "label": "Pensiunan", "value": 40 },
+    { "label": "Guru", "value": 28 },
+    { "label": "Karyawan Honorer", "value": 13 }
+  ],
+  "education": [
+    { "label": "Tidak/Belum Sekolah", "value": 400 },
+    { "label": "Tamat SD/Sederajat", "value": 600 },
+    { "label": "SLTP/Sederajat", "value": 350 },
+    { "label": "SLTA/Sederajat", "value": 500 },
+    { "label": "Diploma/Sarjana", "value": 175 }
+  ],
+  "marital_status": [
+    { "label": "Belum Kawin", "value": 949 },
+    { "label": "Kawin", "value": 917 },
+    { "label": "Cerai Mati", "value": 117 },
+    { "label": "Cerai Hidup", "value": 39 },
+    { "label": "Kawin Tidak Tercatat", "value": 3 }
+  ],
+  "religion": [
+    { "label": "Islam", "value": 2025 },
+    { "label": "Kristen", "value": 0 },
+    { "label": "Katolik", "value": 0 },
+    { "label": "Hindu", "value": 0 },
+    { "label": "Buddha", "value": 0 },
+    { "label": "Konghucu", "value": 0 }
+  ]
+}
