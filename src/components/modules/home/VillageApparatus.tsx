@@ -32,9 +32,9 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
           {staff.map((member) => (
             <div 
               key={member.name} 
-              className="glass-premium p-10 rounded-[3.5rem] hover-lift border-white/20 dark:border-white/5 transition-all duration-700 group relative bg-white/40 dark:bg-slate-900/40"
+              className="glass-premium p-10 rounded-[3.5rem] hover-lift border-white/20 dark:border-white/5 transition-all duration-700 group relative bg-card/40 dark:bg-card/20 hover:bg-card/60 dark:hover:bg-card/30"
             >
-              <div className="relative w-48 h-48 mx-auto rounded-[2.5rem] overflow-hidden bg-white/50 dark:bg-black/40 shadow-2xl border-4 border-white/50 dark:border-white/10 group-hover:scale-105 group-hover:rotate-2 transition-all duration-700">
+              <div className="relative w-48 h-48 mx-auto rounded-[2.5rem] overflow-hidden bg-white/50 dark:bg-white/10 shadow-2xl border-4 border-white/50 dark:border-white/10 group-hover:scale-105 group-hover:rotate-2 transition-all duration-700">
                 {member.photo_url ? (
                   <Image 
                     src={member.photo_url} 
@@ -43,14 +43,14 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
+                  <div className="w-full h-full flex items-center justify-center text-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10 dark:from-white/5 dark:to-white/10">
                     <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                   </div>
                 )}
               </div>
               <div className="mt-8 space-y-2">
                 <h3 className="text-2xl font-black text-foreground group-hover:text-primary transition-colors">{member.name}</h3>
-                <p className="text-primary font-black text-[10px] uppercase tracking-[0.2em] bg-primary/10 dark:bg-white/5 py-2 px-4 rounded-full inline-block">
+                <p className="text-primary font-black text-[10px] uppercase tracking-[0.2em] bg-primary/10 dark:bg-primary/20 py-2 px-4 rounded-full inline-block">
                   {member.position}
                 </p>
               </div>
