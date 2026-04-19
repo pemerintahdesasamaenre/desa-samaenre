@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Calendar, Clock, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, ArrowLeft, Eye } from 'lucide-react';
 import { getPostBySlug } from '@/actions/posts';
+import { incrementPostView } from '@/actions/analytics';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import ShareButtons from '@/components/modules/posts/ShareButtons';
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   // Bersihkan konten dari simbol markdown untuk deskripsi SEO
   const description = post.content
-    .replace(/[#*`_~\[\]]/g, '') // Hapus simbol markdown
+    .replace(/[#*`_~\[\]]/g, '')
     .substring(0, 160)
     .trim() + '...';
   const url = `${process.env.NEXT_PUBLIC_APP_URL}/posts/${post.slug}`;
@@ -50,6 +51,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
   if (!post || post.status !== 'published') {
     notFound();
   }
+
+  // Increment view counter automatically
+  await incrementPostView(post.id);
 
   const postUrl = `${process.env.NEXT_PUBLIC_APP_URL}/posts/${post.slug}`;
 
@@ -84,6 +88,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
                   <div className="flex items-center gap-2 text-sm text-muted-foreground font-bold">
                     <Clock size={16} className="text-primary" />
                     <span>5 mnt baca</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground font-bold">
+                    <Eye size={16} className="text-primary" />
+                    <span>{post.views.toLocaleString()} pelihat</span>
                   </div>
                 </div>
 

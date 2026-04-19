@@ -1,5 +1,5 @@
--- Merged Initial Schema (Complete)
--- This file contains the complete database structure, constraints, and RLS policies.
+-- Merged Initial Schema (Complete with Analytics)
+-- This file contains the complete database structure, constraints, RLS policies, and analytics.
 
 -- 1. EXTENSIONS
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS public.demographics (
   CONSTRAINT demographics_category_id_label_key UNIQUE (category_id, label)
 );
 
--- Posts
+-- Posts with View Counter
 CREATE TABLE IF NOT EXISTS public.posts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS public.posts (
   type TEXT NOT NULL CHECK (type IN ('news', 'agenda')),
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
   event_date TIMESTAMP WITH TIME ZONE,
+  views INTEGER DEFAULT 0 NOT NULL,
   author_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
@@ -88,6 +89,21 @@ CREATE TABLE IF NOT EXISTS public.finances (
   amount BIGINT NOT NULL DEFAULT 0,
   note TEXT,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+);
+
+-- Page Analytics (Path-based Tracking)
+CREATE TABLE IF NOT EXISTS public.page_analytics (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  page_path TEXT NOT NULL UNIQUE,
+  views_count BIGINT DEFAULT 0 NOT NULL,
+  last_visited TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+);
+
+-- Daily Analytics (Global Date-based Tracking)
+CREATE TABLE IF NOT EXISTS public.daily_analytics (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  visit_date DATE NOT NULL UNIQUE DEFAULT CURRENT_DATE,
+  views_count BIGINT DEFAULT 0 NOT NULL
 );
 
 -- 3. FUNCTIONS & TRIGGERS
@@ -148,6 +164,36 @@ CREATE TRIGGER update_village_info_updated_at BEFORE UPDATE ON public.village_in
 DROP TRIGGER IF EXISTS update_finances_updated_at ON public.finances;
 CREATE TRIGGER update_finances_updated_at BEFORE UPDATE ON public.finances FOR EACH ROW EXECUTE PROCEDURE public.update_updated_at_column();
 
+-- Analytics Helper Functions
+CREATE OR REPLACE FUNCTION public.increment_post_views(post_id UUID)
+RETURNS void AS $$
+BEGIN
+  UPDATE public.posts
+  SET views = views + 1
+  WHERE id = post_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION public.increment_page_views(path TEXT)
+RETURNS void AS $$
+BEGIN
+  -- Track total per page
+  INSERT INTO public.page_analytics (page_path, views_count, last_visited)
+  VALUES (path, 1, NOW())
+  ON CONFLICT (page_path)
+  DO UPDATE SET 
+    views_count = public.page_analytics.views_count + 1,
+    last_visited = NOW();
+
+  -- Track daily total across site
+  INSERT INTO public.daily_analytics (visit_date, views_count)
+  VALUES (CURRENT_DATE, 1)
+  ON CONFLICT (visit_date)
+  DO UPDATE SET 
+    views_count = public.daily_analytics.views_count + 1;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- 4. ROW LEVEL SECURITY (RLS)
 
 -- Enable RLS
@@ -158,6 +204,8 @@ ALTER TABLE public.staff_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.demographics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.finances ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.page_analytics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.daily_analytics ENABLE ROW LEVEL SECURITY;
 
 -- Policies for public-read tables
 DROP POLICY IF EXISTS "Allow public read access" ON public.categories;
@@ -177,6 +225,12 @@ CREATE POLICY "Allow public read access on published posts" ON public.posts FOR 
 
 DROP POLICY IF EXISTS "Allow public read access" ON public.finances;
 CREATE POLICY "Allow public read access" ON public.finances FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public read access on analytics" ON public.page_analytics;
+CREATE POLICY "Allow public read access on analytics" ON public.page_analytics FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public read access on daily analytics" ON public.daily_analytics;
+CREATE POLICY "Allow public read access on daily analytics" ON public.daily_analytics FOR SELECT USING (true);
 
 -- Admin Management Policies
 DROP POLICY IF EXISTS "Admins can manage all profiles" ON public.profiles;
@@ -199,3 +253,9 @@ CREATE POLICY "Allow admin to manage posts" ON public.posts FOR ALL USING (publi
 
 DROP POLICY IF EXISTS "Allow admin to manage finances" ON public.finances;
 CREATE POLICY "Allow admin to manage finances" ON public.finances FOR ALL USING (public.is_admin());
+
+DROP POLICY IF EXISTS "Allow admin to manage analytics" ON public.page_analytics;
+CREATE POLICY "Allow admin to manage analytics" ON public.page_analytics FOR ALL USING (public.is_admin());
+
+DROP POLICY IF EXISTS "Allow admin to manage daily analytics" ON public.daily_analytics;
+CREATE POLICY "Allow admin to manage daily analytics" ON public.daily_analytics FOR ALL USING (public.is_admin());

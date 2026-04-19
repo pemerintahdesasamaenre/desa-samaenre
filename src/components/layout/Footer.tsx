@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, Phone, MapPin, Globe, MessageCircle, Share2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, MessageCircle, Share2, Eye, TrendingUp } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 export const Footer = () => {
   const pathname = usePathname();
   const [villageInfo, setVillageInfo] = useState<any>(null);
+  const [totalViews, setTotalViews] = useState<number>(0);
+  const [todayViews, setTodayViews] = useState<number>(0);
 
   useEffect(() => {
     const fetchInfo = async () => {
@@ -17,7 +19,32 @@ export const Footer = () => {
       const { data } = await supabase.from('village_info').select('*').single();
       if (data) setVillageInfo(data);
     };
+
+    const fetchAnalytics = async () => {
+      const supabase = createClient();
+      
+      // Fetch Total Views
+      const { data: pageData } = await supabase.from('page_analytics').select('views_count');
+      if (pageData) {
+        const total = pageData.reduce((acc, curr) => acc + Number(curr.views_count), 0);
+        setTotalViews(total);
+      }
+
+      // Fetch Today's Views
+      const today = new Date().toISOString().split('T')[0];
+      const { data: dailyData } = await supabase
+        .from('daily_analytics')
+        .select('views_count')
+        .eq('visit_date', today)
+        .single();
+      
+      if (dailyData) {
+        setTodayViews(Number(dailyData.views_count));
+      }
+    };
+
     fetchInfo();
+    fetchAnalytics();
   }, []);
 
   if (pathname.startsWith('/admin') || pathname.startsWith('/login')) {
@@ -53,6 +80,24 @@ export const Footer = () => {
             <p className="text-sm leading-relaxed opacity-70 font-medium">
               {villageInfo?.vision || 'Mewujudkan tata kelola desa yang transparan, inovatif, dan mandiri demi kesejahteraan seluruh masyarakat.'}
             </p>
+            
+            {/* Analytics Badges */}
+            <div className="flex flex-wrap gap-3">
+              <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-2xl border border-white/10 backdrop-blur-sm">
+                 <TrendingUp size={16} className="text-primary" />
+                 <div className="flex flex-col">
+                    <span className="text-[10px] font-black uppercase tracking-widest opacity-50 whitespace-nowrap">Hari Ini</span>
+                    <span className="text-sm font-black tabular-nums">{todayViews.toLocaleString()}</span>
+                 </div>
+              </div>
+              <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-2xl border border-white/10 backdrop-blur-sm">
+                 <Eye size={16} className="text-primary" />
+                 <div className="flex flex-col">
+                    <span className="text-[10px] font-black uppercase tracking-widest opacity-50 whitespace-nowrap">Total</span>
+                    <span className="text-sm font-black tabular-nums">{totalViews.toLocaleString()}</span>
+                 </div>
+              </div>
+            </div>
           </div>
 
           {/* Navigation */}
@@ -125,7 +170,7 @@ export const Footer = () => {
           <p>&copy; {new Date().getFullYear()} Pemerintah Desa {villageInfo?.name || ''}. Seluruh hak cipta dilindungi.</p>
           <div className="flex gap-6">
             <Link href="/login" className="hover:text-primary transition-colors">Admin Login</Link>
-            <span>Versi 2.0.0</span>
+            <span>Versi 2.1.0</span>
           </div>
         </div>
       </div>
