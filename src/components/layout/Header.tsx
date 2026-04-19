@@ -101,6 +101,8 @@ export const Header = () => {
             <button 
               onClick={() => setIsOpen(!isOpen)} 
               className="p-2 text-foreground hover:bg-primary/10 rounded-xl transition-colors"
+              aria-label={isOpen ? "Tutup menu" : "Buka menu"}
+              aria-expanded={isOpen}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>

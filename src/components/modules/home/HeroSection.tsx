@@ -21,16 +21,16 @@ export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps
               sizes="100vw"
               className="object-cover"
               priority
-              quality={100}
+              quality={80}
             />
             {/* Settingan Timpa Gambar Lama: Overlay Gelap Tunggal yang Kuat */}
             <div className="absolute inset-0 bg-black/60"></div>
           </>
         ) : (
           <>
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 animate-pulse"></div>
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-blob"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] animate-blob animation-delay-2000"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10"></div>
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]"></div>
           </>
         )}
         

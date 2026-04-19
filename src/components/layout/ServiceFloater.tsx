@@ -84,6 +84,8 @@ Terima kasih.`
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Tutup layanan mandiri" : "Buka layanan mandiri"}
+        aria-expanded={isOpen}
         className={`
           relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl group
           ${isOpen ? 'bg-destructive rotate-90 scale-90' : 'bg-primary hover:scale-110'}
@@ -126,6 +128,7 @@ Terima kasih.`
                 </div>
                 <button 
                   onClick={() => setIsOpen(false)}
+                  aria-label="Tutup modal"
                   className="p-2 hover:bg-white/10 rounded-full transition-colors sm:hidden"
                 >
                   <X size={20} />

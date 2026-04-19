@@ -142,13 +142,14 @@ export const Footer = () => {
           <div>
             <h3 className="font-black mb-8 uppercase tracking-[0.2em] text-[10px] opacity-50">Media Sosial</h3>
             <div className="flex gap-4 mb-8">
-              {[Globe, MessageCircle].map((Icon, idx) => (
-                <a key={idx} href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all shadow-xl">
-                  <Icon size={20} />
-                </a>
-              ))}
+              <a href="#" aria-label="Kunjungi Website Resmi" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all shadow-xl">
+                <Globe size={20} />
+              </a>
+              <a href="#" aria-label="Hubungi via WhatsApp" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all shadow-xl">
+                <MessageCircle size={20} />
+              </a>
               {contact.maps_url && (
-                <a href={contact.maps_url} target="_blank" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all shadow-xl">
+                <a href={contact.maps_url} target="_blank" aria-label="Bagikan Lokasi" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all shadow-xl">
                   <Share2 size={20} />
                 </a>
               )}
