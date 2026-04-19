@@ -8,6 +8,8 @@ import { Save, Loader2, ArrowLeft, FolderOpen, Tag, Settings2 } from 'lucide-rea
 import Link from 'next/link'
 import CustomSelect from '@/components/ui/CustomSelect'
 
+import ImageUpload from '@/components/ui/ImageUpload'
+
 interface Category {
   id: string
   name: string
@@ -181,14 +183,12 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
             </div>
           )}
 
-          <div className="md:col-span-2 space-y-2">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">URL Gambar (Opsional)</label>
-            <input
-              type="url"
+          <div className="md:col-span-2">
+            <ImageUpload 
+              label="Gambar Sampul"
+              folder="posts"
               value={formData.image_url}
-              onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-              className="w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-              placeholder="https://example.com/image.jpg"
+              onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
             />
           </div>
 

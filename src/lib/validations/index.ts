@@ -14,6 +14,8 @@ export const villageInfoSchema = z.object({
   vision: z.string().optional(),
   mission: z.array(z.string()).default([]),
   history: z.string().optional(),
+  logo_url: z.string().url().optional().or(z.literal('')).nullable(),
+  header_banner_url: z.string().url().optional().or(z.literal('')).nullable(),
   contact_info: z.object({
     email: z.string().email().optional().or(z.literal('')),
     phone: z.string().optional(),
