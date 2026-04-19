@@ -1,8 +1,43 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Calendar, Clock, Share2, MessageCircle, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, ArrowLeft } from 'lucide-react';
 import { getPostBySlug } from '@/actions/posts';
 import Image from 'next/image';
+import type { Metadata } from 'next';
+import ShareButtons from '@/components/modules/posts/ShareButtons';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const post = await getPostBySlug(resolvedParams.slug);
+
+  if (!post) {
+    return {
+      title: 'Berita Tidak Ditemukan',
+    };
+  }
+
+  const description = post.content.substring(0, 160).replace(/[#*]/g, '') + '...';
+  const url = `${process.env.NEXT_PUBLIC_APP_URL}/posts/${post.slug}`;
+
+  return {
+    title: post.title,
+    description,
+    openGraph: {
+      title: post.title,
+      description,
+      url,
+      type: 'article',
+      publishedTime: post.created_at,
+      images: post.image_url ? [{ url: post.image_url }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description,
+      images: post.image_url ? [post.image_url] : [],
+    },
+  };
+}
 
 export default async function PostDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
@@ -11,6 +46,8 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
   if (!post || post.status !== 'published') {
     notFound();
   }
+
+  const postUrl = `${process.env.NEXT_PUBLIC_APP_URL}/posts/${post.slug}`;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -80,24 +117,8 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
                 ))}
               </div>
 
-              {/* Footer / Sharing */}
-              <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-10">
-                <div className="flex items-center gap-6">
-                  <span className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Bagikan</span>
-                  <div className="flex gap-4">
-                    {[Share2, MessageCircle].map((Icon, idx) => (
-                      <button key={idx} className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-white transition-all hover-lift">
-                        <Icon size={20} />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <button className="flex items-center gap-3 px-8 py-4 glass rounded-2xl text-foreground font-bold hover:bg-primary hover:text-white transition-all hover-lift">
-                  <Share2 size={18} />
-                  Salin Tautan
-                </button>
-              </div>
+              {/* Footer / Sharing Component */}
+              <ShareButtons title={post.title} url={postUrl} />
             </div>
           </div>
         </article>

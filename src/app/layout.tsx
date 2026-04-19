@@ -12,9 +12,51 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://profil-desa.id';
+
 export const metadata: Metadata = {
-  title: "Profil Resmi Desa Digital",
-  description: "Informasi publik, statistik, dan pelayanan desa digital.",
+  metadataBase: new URL(appUrl),
+  title: {
+    default: "Profil Resmi Desa Digital",
+    template: "%s | Desa Digital"
+  },
+  description: "Portal informasi publik, statistik penduduk, transparansi anggaran, dan pelayanan desa digital yang mandiri dan inovatif.",
+  keywords: ["desa digital", "profil desa", "pelayanan publik", "transparansi anggaran", "statistik desa"],
+  authors: [{ name: "Pemerintah Desa" }],
+  creator: "Desa Digital",
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    url: appUrl,
+    title: "Profil Resmi Desa Digital",
+    description: "Informasi publik, statistik, dan pelayanan desa digital.",
+    siteName: "Desa Digital",
+    images: [
+      {
+        url: "/og-image.jpg", // Pastikan file ini ada di public folder nantinya
+        width: 1200,
+        height: 630,
+        alt: "Profil Desa Digital",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Profil Resmi Desa Digital",
+    description: "Portal informasi dan pelayanan desa digital.",
+    images: ["/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({
