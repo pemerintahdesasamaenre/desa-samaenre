@@ -3,19 +3,30 @@
 import { createClient } from '@/lib/supabase/server'
 import { villageInfoSchema, type VillageInfoInput } from '@/lib/validations'
 import { revalidatePath } from 'next/cache'
+import { deleteImage } from '../lib/supabase/storage'
 
 export async function updateVillageInfo(id: number, data: VillageInfoInput) {
   const supabase = await createClient()
 
-  // Validate data
+  // 1. Get current info to check for old assets
+  const { data: currentInfo } = await supabase.from('village_info').select('*').eq('id', id).single()
+
   const validated = villageInfoSchema.safeParse(data)
   if (!validated.success) {
     console.error('Validation Error Village Info:', validated.error.flatten().fieldErrors)
     return { error: validated.error.flatten().fieldErrors }
   }
 
-  // Use upsert to handle case where ID 1 doesn't exist yet
-  // We ensure all new fields like area_size and boundaries are included
+  // 2. Delete old Logo if changed
+  if (currentInfo?.logo_url && currentInfo.logo_url !== validated.data.logo_url) {
+    await deleteImage(currentInfo.logo_url)
+  }
+
+  // 3. Delete old Banner if changed
+  if (currentInfo?.header_banner_url && currentInfo.header_banner_url !== validated.data.header_banner_url) {
+    await deleteImage(currentInfo.header_banner_url)
+  }
+
   const { error } = await supabase
     .from('village_info')
     .upsert({

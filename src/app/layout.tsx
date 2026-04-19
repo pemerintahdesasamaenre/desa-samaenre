@@ -24,6 +24,15 @@ export const metadata: Metadata = {
   keywords: ["desa digital", "profil desa", "pelayanan publik", "transparansi anggaran", "statistik desa"],
   authors: [{ name: "Pemerintah Desa" }],
   creator: "Desa Digital",
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png' },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "id_ID",
@@ -33,7 +42,7 @@ export const metadata: Metadata = {
     siteName: "Desa Digital",
     images: [
       {
-        url: "/og-image.jpg", // Pastikan file ini ada di public folder nantinya
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Profil Desa Digital",
@@ -44,7 +53,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Profil Resmi Desa Digital",
     description: "Portal informasi dan pelayanan desa digital.",
-    images: ["/og-image.jpg"],
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,

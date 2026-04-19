@@ -8,11 +8,37 @@ export default async function TentangPage() {
   const villageInfo = await getVillageInfo();
   const contact = villageInfo?.contact_info || {};
 
-  const embedUrl = contact.maps_url || `https://maps.google.com/maps?q=${encodeURIComponent(`${villageInfo.name} ${contact.address || ''}`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+  // Logika Pemrosesan URL yang Fleksibel
+  const getMapsUrls = (url: string) => {
+    const fallbackSearch = `https://www.google.com/maps/search/${encodeURIComponent(`${villageInfo.name} ${contact.address || ''}`)}`;
+    
+    if (!url) {
+      return {
+        embed: `${fallbackSearch}&output=embed`,
+        external: fallbackSearch
+      };
+    }
+
+    // Jika ini adalah link EMBED (sudah matang)
+    if (url.includes('/maps/embed') || url.includes('output=embed')) {
+      return {
+        embed: url,
+        external: url.includes('/maps/embed') ? fallbackSearch : url // Link embed tidak bisa dibuka di tab baru
+      };
+    }
+
+    // Jika ini adalah link TEMPAT/SEARCH (seperti yang Anda berikan)
+    return {
+      embed: `${url}&output=embed`, // Tambahkan output=embed agar bisa masuk iframe
+      external: url
+    };
+  };
+
+  const { embed: embedUrl, external: externalUrl } = getMapsUrls(contact.maps_url);
 
   return (
-    <main className="min-h-screen bg-background pt-32 pb-20 overflow-hidden relative">
-      {/* Standard App Background Pattern */}
+    <main className="min-h-screen bg-background pt-32 pb-20 overflow-hidden relative text-foreground font-sans">
+      {/* Background Pattern */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] dark:opacity-20 brightness-100 contrast-150"></div>
         <div className="absolute top-0 right-0 w-full h-96 bg-primary/5 skew-y-3 -translate-y-48"></div>
@@ -22,7 +48,7 @@ export default async function TentangPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header Section */}
         <section className="text-center mb-24 space-y-6 animate-fade-in">
-          <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-black uppercase tracking-widest">
+          <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-sm font-bold uppercase tracking-widest">
             Profil Resmi
           </div>
           <h1 className="text-6xl md:text-9xl font-black text-foreground tracking-tighter leading-none">
@@ -35,7 +61,7 @@ export default async function TentangPage() {
 
         {/* Geography & Boundaries Section */}
         <section className="grid lg:grid-cols-3 gap-8 mb-32">
-           <div className="lg:col-span-1 bg-emerald-600 p-12 rounded-[3rem] text-white space-y-6 shadow-2xl shadow-emerald-600/20 relative overflow-hidden group">
+           <div className="lg:col-span-1 bg-emerald-600 p-12 rounded-[3rem] text-white space-y-6 shadow-2xl shadow-emerald-600/20 relative overflow-hidden group border-none">
               <div className="absolute -bottom-10 -right-10 opacity-10 group-hover:scale-110 transition-transform duration-700">
                  <MapIcon size={240} />
               </div>
@@ -70,7 +96,7 @@ export default async function TentangPage() {
                       </div>
                       <div>
                         <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">{boundary.label}</p>
-                        <p className="font-bold text-foreground text-xl leading-tight">{boundary.value || '-'}</p>
+                        <p className="font-bold text-xl leading-tight">{boundary.value || '-'}</p>
                       </div>
                    </div>
                  ))}
@@ -81,7 +107,7 @@ export default async function TentangPage() {
         {/* Vision & Mission Section */}
         <section className="grid md:grid-cols-2 gap-8 mb-32">
           <div className="glass p-12 rounded-[3rem] space-y-6">
-            <h2 className="text-3xl font-black text-foreground flex items-center gap-3 tracking-tight">
+            <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight">
                <div className="w-2 h-8 bg-primary rounded-full"></div>
                Visi
             </h2>
@@ -90,7 +116,7 @@ export default async function TentangPage() {
             </p>
           </div>
           <div className="glass p-12 rounded-[3rem] space-y-6">
-            <h2 className="text-3xl font-black text-foreground flex items-center gap-3 tracking-tight">
+            <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight">
                <div className="w-2 h-8 bg-secondary rounded-full"></div>
                Misi
             </h2>
@@ -107,7 +133,7 @@ export default async function TentangPage() {
           </div>
         </section>
 
-        {/* History Section - FIXED: NOW ADAPTIVE TO THEMES */}
+        {/* History Section */}
         {villageInfo.history && (
           <section className="mb-32">
             <div className="glass-premium p-12 md:p-24 rounded-[4rem] relative overflow-hidden shadow-2xl">
@@ -125,13 +151,13 @@ export default async function TentangPage() {
         {/* Organizational Chart Section */}
         <section id="staff" className="scroll-mt-32 mb-32">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-4xl md:text-6xl font-black text-foreground tracking-tight">Struktur Pemerintahan</h2>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tight text-foreground leading-none">Struktur Pemerintahan</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-medium">
               Susunan organisasi Pemerintah Desa {villageInfo.name} yang bertugas melayani masyarakat dengan integritas.
             </p>
           </div>
           
-          <div className="glass p-8 md:p-16 rounded-[4rem] overflow-x-auto">
+          <div className="glass p-8 md:p-16 rounded-[4rem] overflow-x-auto border border-border/50">
             <OrgChartTree staff={staff} />
           </div>
         </section>
@@ -141,54 +167,52 @@ export default async function TentangPage() {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Contact Details Card */}
             <div className="lg:col-span-1 glass p-10 rounded-[3.5rem] space-y-10">
-              <h2 className="text-3xl font-black text-foreground mb-4 leading-none">Kontak <br/><span className="text-primary uppercase tracking-tighter">Resmi Kami</span></h2>
+              <h2 className="text-3xl font-black mb-4 leading-none uppercase tracking-tighter">Kontak <br/><span className="text-primary italic">Resmi Kami</span></h2>
               
               <div className="space-y-8">
                 <div className="flex gap-5">
-                  <div className="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 shadow-inner">
+                  <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary shrink-0 shadow-inner">
                     <MapPin size={28} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Alamat</h4>
-                    <p className="text-foreground font-bold leading-relaxed">{contact.address || 'Alamat Kantor Desa'}</p>
+                    <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Alamat</h4>
+                    <p className="font-bold leading-relaxed">{contact.address || 'Alamat Kantor Desa'}</p>
                   </div>
                 </div>
                 
                 <div className="flex gap-5">
-                  <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center text-emerald-600 shrink-0 shadow-inner">
+                  <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary shrink-0 shadow-inner">
                     <Phone size={28} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Telepon</h4>
-                    <p className="text-foreground font-bold leading-relaxed">{contact.phone || '-'}</p>
+                    <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Telepon</h4>
+                    <p className="font-bold leading-relaxed">{contact.phone || '-'}</p>
                   </div>
                 </div>
 
                 <div className="flex gap-5">
-                  <div className="w-14 h-14 bg-purple-50 dark:bg-purple-900/20 rounded-2xl flex items-center justify-center text-purple-600 shrink-0 shadow-inner">
+                  <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary shrink-0 shadow-inner">
                     <Mail size={28} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Email</h4>
-                    <p className="text-foreground font-bold leading-relaxed break-all">{contact.email || '-'}</p>
+                    <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Email</h4>
+                    <p className="font-bold leading-relaxed break-all">{contact.email || '-'}</p>
                   </div>
                 </div>
               </div>
               
-              {contact.maps_url && (
-                <a 
-                  href={contact.maps_url} 
-                  target="_blank" 
-                  className="w-full flex items-center justify-center gap-3 bg-foreground text-background py-5 rounded-2xl font-black hover:scale-105 transition-all shadow-xl uppercase tracking-tighter"
-                >
-                  <Globe size={20} />
-                  Buka di Google Maps
-                </a>
-              )}
+              <a 
+                href={externalUrl} 
+                target="_blank" 
+                className="w-full flex items-center justify-center gap-3 bg-primary text-primary-foreground py-5 rounded-[2rem] font-black hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-primary/30 uppercase tracking-widest text-xs"
+              >
+                <MapPin size={20} />
+                Buka di Google Maps
+              </a>
             </div>
 
             {/* Map Display */}
-            <div className="lg:col-span-2 glass rounded-[3.5rem] overflow-hidden min-h-[500px] relative group border-none!">
+            <div className="lg:col-span-2 glass rounded-[3.5rem] overflow-hidden min-h-[500px] relative group border-none">
               <iframe
                 title="Lokasi Desa"
                 src={embedUrl}
@@ -196,7 +220,7 @@ export default async function TentangPage() {
                 allowFullScreen
                 loading="lazy"
               ></iframe>
-              <div className="absolute top-8 right-8 px-5 py-2.5 bg-background/90 backdrop-blur-md rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-foreground shadow-xl border border-border">
+              <div className="absolute top-8 right-8 px-5 py-2.5 bg-background/90 backdrop-blur-md rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-primary shadow-xl border border-border">
                 Peta Wilayah Desa
               </div>
             </div>

@@ -5,20 +5,25 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Landmark } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import Image from 'next/image';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [villageName, setVillageName] = useState('Desa Kami');
+  const [logoUrl, setLogoUrl] = useState('/logo.png');
   const pathname = usePathname();
 
   useEffect(() => {
     const fetchInfo = async () => {
       const supabase = createClient();
-      const { data } = await supabase.from('village_info').select('name').single();
+      const { data } = await supabase.from('village_info').select('name, logo_url').single();
       if (data?.name) setVillageName(data.name);
+      if (data?.logo_url) setLogoUrl(data.logo_url);
     };
     fetchInfo();
   }, []);
+
+  // ... rest of the component
 
   // Jangan tampilkan header di halaman admin atau login
   if (pathname.startsWith('/admin') || pathname.startsWith('/login')) {
@@ -40,8 +45,14 @@ export const Header = () => {
         <div className="glass rounded-2xl md:rounded-full px-6 py-3 flex justify-between items-center transition-all duration-500 hover:shadow-2xl">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-lg group-hover:rotate-12 transition-transform duration-300">
-              <Landmark size={24} />
+            <div className="w-12 h-12 relative flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <Image 
+                src={logoUrl} 
+                alt="Logo Desa" 
+                width={48} 
+                height={48} 
+                className="object-contain"
+              />
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-lg tracking-tight text-foreground group-hover:text-primary transition-colors">

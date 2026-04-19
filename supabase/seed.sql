@@ -23,7 +23,7 @@ INSERT INTO public.village_info (id, name, vision, mission, history, area_size, 
  'Desa Samaenre memiliki sejarah panjang sebagai pusat pertanian di wilayah Mallawa. Berdiri sejak masa kolonial, desa ini terus berkembang menjadi wilayah yang adaptif terhadap teknologi...', 
  '15.45 km²', 
  '{"north": "Desa Mallawa", "south": "Kecamatan Camba", "east": "Kabupaten Bone", "west": "Hutan Lindung"}',
- '{"email": "kontak@samaenre.desa.id", "phone": "6281234567890", "address": "Jl. Poros Maros-Bone KM. 50, Kec. Mallawa, Kab. Maros", "maps_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63614.623466179924!2d119.79991164855173!3d-4.784787768717349!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dbe69042aecc4fb%3A0xef615dd54a9f5b1c!2sSamaenre%2C%20Mallawa%2C%20Maros%20Regency%2C%20South%20Sulawesi!5e0!3m2!1sen!2sid!4v1776570115024!5m2!1sen!2sid"}')
+ '{"email": "kontak@samaenre.desa.id", "phone": "6281234567890", "address": "Jl. Poros Maros-Bone KM. 50, Kec. Mallawa, Kab. Maros", "maps_url": "https://www.google.com/maps/place/Samaenre,+Mallawa,+Maros+Regency,+South+Sulawesi/@-4.784789,119.8411115,13z/data=!3m1!4b1!4m6!3m5!1s0x2dbe69042aecc4fb:0xef615dd54a9f5b1c!8m2!3d-4.782142!4d119.8468043!16s%2Fg%2F1hc0g_blp?hl=en&entry=ttu&g_ep=EgoyMDI2MDQxNS4wIKXMDSoASAFQAw%3D%3D"}')
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
   vision = EXCLUDED.vision,
