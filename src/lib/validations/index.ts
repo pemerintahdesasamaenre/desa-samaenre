@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const demographicSchema = z.object({
-  category_id: z.string().uuid({ message: "Invalid category ID" }),
+  category_id: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, "Kategori tidak valid"),
   label: z.string().min(1, "Label is required"),
   value: z.number().int().nonnegative({ message: "Value must be a positive number" }),
   metadata: z.record(z.string(), z.any()).optional(),
@@ -29,7 +29,10 @@ export const postSchema = z.object({
   slug: z.string().min(3, "Slug must be at least 3 characters"),
   content: z.string().min(10, "Content must be at least 10 characters"),
   image_url: z.string().url().optional().or(z.literal('')),
-  category_id: z.string().uuid("Invalid category ID"),
+  category_id: z.preprocess(
+    (val) => (val === '' || val === undefined ? null : val),
+    z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, "Kategori tidak valid").nullable().optional()
+  ),
   type: z.enum(['news', 'agenda']),
   status: z.enum(['draft', 'published']).default('draft'),
   event_date: z.string().optional().or(z.literal('')),
@@ -51,7 +54,7 @@ export const staffMemberSchema = z.object({
   name: z.string().min(1, "Name is required"),
   position: z.string().min(1, "Position is required"),
   photo_url: z.string().url().optional().or(z.literal('')),
-  parent_id: z.string().uuid().optional().nullable(),
+  parent_id: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, "ID tidak valid").optional().nullable(),
   order_index: z.number().int().default(0),
 });
 

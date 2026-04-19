@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { createDemographic, updateDemographic } from '@/actions/demographics';
 import { Save, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import CustomSelect from '@/components/ui/CustomSelect';
+import { FolderOpen } from 'lucide-react';
 
 interface DemographicFormProps {
   categories: any[];
@@ -76,20 +78,18 @@ export default function DemographicForm({ categories, initialData, isEditing }: 
             </div>
           )}
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Kategori</label>
-            <select 
-              name="category_id" 
-              defaultValue={initialData?.category_id || ''}
-              required
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 transition-all"
-            >
-              <option value="" disabled className="dark:bg-slate-800">Pilih Kategori...</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id} className="dark:bg-slate-800">{cat.name}</option>
-              ))}
-            </select>
-          </div>
+          <CustomSelect 
+            name="category_id" 
+            defaultValue={initialData?.category_id || ''}
+            options={categories}
+            label="Kategori Statistik"
+            icon={FolderOpen}
+            required
+            onChange={(val) => {
+              // Untuk DemographicForm yang menggunakan FormData, kita perlu trigger input hidden
+              // Tapi CustomSelect sudah memiliki input hidden dengan name="category_id"
+            }}
+          />
 
           <div className="space-y-2">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Label (Nama Data)</label>

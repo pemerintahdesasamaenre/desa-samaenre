@@ -11,14 +11,55 @@ export async function createPost(data: PostInput) {
   if (!user) return { error: 'Unauthorized' }
 
   const validated = postSchema.safeParse(data)
-  if (!validated.success) return { error: validated.error.flatten().fieldErrors }
+  if (!validated.success) {
+    console.error('Validation Error:', validated.error.flatten().fieldErrors)
+    return { error: validated.error.flatten().fieldErrors }
+  }
 
-  const { error } = await supabase.from('posts').insert({
+  // Sanitize data: pastikan UUID kosong menjadi null
+  const postData = {
     ...validated.data,
-    author_id: user.id
-  })
+    author_id: user.id,
+    category_id: validated.data.category_id || null,
+    event_date: validated.data.event_date || null
+  }
 
-  if (error) return { error: error.message }
+  const { error } = await supabase.from('posts').insert(postData)
+
+  if (error) {
+    console.error('Database Error:', error)
+    return { error: error.message }
+  }
+
+  revalidatePath('/admin/posts')
+  revalidatePath('/')
+  return { success: true }
+}
+
+export async function updatePost(id: string, data: PostInput) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) return { error: 'Unauthorized' }
+
+  const validated = postSchema.safeParse(data)
+  if (!validated.success) {
+    console.error('Validation Error:', validated.error.flatten().fieldErrors)
+    return { error: validated.error.flatten().fieldErrors }
+  }
+
+  const postData = {
+    ...validated.data,
+    category_id: validated.data.category_id || null,
+    event_date: validated.data.event_date || null
+  }
+
+  const { error } = await supabase.from('posts').update(postData).eq('id', id)
+
+  if (error) {
+    console.error('Database Error:', error)
+    return { error: error.message }
+  }
 
   revalidatePath('/admin/posts')
   revalidatePath('/')
