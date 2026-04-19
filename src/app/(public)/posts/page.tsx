@@ -1,15 +1,14 @@
 import Link from 'next/link'
 import { Clock, ChevronRight } from 'lucide-react'
 import { getPosts } from '@/actions/posts'
+import Image from 'next/image'
 
 export default async function PublicPostsPage() {
   const posts = await getPosts()
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      
-      
-      <main className="flex-1 pt-32 pb-20 overflow-hidden relative">
+      <main className="flex-1 pt-32 pb-20 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-96 bg-primary/5 -skew-y-3 -translate-y-48"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -36,10 +35,11 @@ export default async function PublicPostsPage() {
                   {/* Thumbnail */}
                   <div className="aspect-[16/10] bg-muted relative overflow-hidden">
                     {post.image_url ? (
-                      <img 
+                      <Image 
                         src={post.image_url} 
                         alt={post.title} 
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                     ) : (
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent group-hover:scale-110 transition-transform duration-700 flex items-center justify-center text-muted-foreground/20 italic font-black text-2xl rotate-12">
@@ -78,8 +78,6 @@ export default async function PublicPostsPage() {
         )}
       </div>
       </main>
-
-
     </div>
   )
 }

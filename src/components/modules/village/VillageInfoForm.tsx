@@ -7,7 +7,21 @@ import { Save, Loader2, Plus, Trash2, Globe, Info, HelpCircle } from 'lucide-rea
 import ImageUpload from '@/components/ui/ImageUpload';
 
 interface VillageInfoFormProps {
-  initialData: any;
+  initialData: {
+    id: number;
+    name: string;
+    vision?: string;
+    mission?: string[];
+    history?: string;
+    logo_url?: string;
+    header_banner_url?: string;
+    contact_info?: {
+      email?: string;
+      phone?: string;
+      address?: string;
+      maps_url?: string;
+    }
+  };
 }
 
 export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
@@ -32,31 +46,28 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
     setMissions(newMissions);
   };
 
-  // FUNGSI PEMBERSIH NOMOR TELEPON (Mitigasi Admin Paste Format Berantakan)
+  // FUNGSI PEMBERSIH NOMOR TELEPON
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value;
-    
-    // 1. Ambil hanya angka saja
+    const val = e.target.value;
     let cleaned = val.replace(/\D/g, '');
-    
-    // 2. Mitigasi jika user memasukkan kode negara dengan tanda + (misal: +62)
-    // Karakter '+' sudah hilang karena regex \D, jadi kita hanya cek angka depannya
     if (val.startsWith('+62')) cleaned = '62' + cleaned.substring(2);
-    
     setPhoneNumber(cleaned);
   };
 
   const handleMapsInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let input = e.target.value.trim();
-    if (!input) { setMapsUrl(''); return; }
-    if (input.includes('<iframe')) {
-      const srcMatch = input.match(/src="([^"]+)"/);
+    const trimmedInput = e.target.value.trim();
+    if (!trimmedInput) { 
+      setMapsUrl(''); 
+      return; 
+    }
+    if (trimmedInput.includes('<iframe')) {
+      const srcMatch = trimmedInput.match(/src="([^"]+)"/);
       if (srcMatch && srcMatch[1]) {
         setMapsUrl(srcMatch[1]);
         return;
       }
     }
-    setMapsUrl(input);
+    setMapsUrl(trimmedInput);
   };
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -74,7 +85,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
       header_banner_url: bannerUrl,
       contact_info: {
         email: formData.get('email') as string,
-        phone: phoneNumber, // Gunakan nomor yang sudah dibersihkan
+        phone: phoneNumber, 
         address: formData.get('address') as string,
         maps_url: mapsUrl, 
       }
@@ -91,7 +102,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
         router.refresh();
         alert('Data desa berhasil diperbarui!');
       }
-    } catch (err) {
+    } catch {
       setError('Terjadi kesalahan koneksi.');
     } finally {
       setLoading(false);
@@ -133,7 +144,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
                   name="email" 
                   type="email"
                   defaultValue={initialData.contact_info?.email} 
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
                 />
               </div>
               <div className="space-y-2">

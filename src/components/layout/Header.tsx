@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Landmark } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import ThemeToggle from './ThemeToggle';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,7 +72,6 @@ export const Header = () => {
             })}
             <div className="w-px h-6 bg-border mx-2" />
             <div className="flex items-center gap-3">
-              {/* <ThemeToggle /> */}
               <Link 
                 href="/login" 
                 className="bg-foreground text-background px-6 py-2 rounded-full text-sm font-bold hover:scale-105 transition-transform active:scale-95 shadow-lg"
@@ -83,9 +81,8 @@ export const Header = () => {
             </div>
           </nav>
 
-          {/* Mobile Toggle & ThemeToggle */}
+          {/* Mobile Toggle */}
           <div className="md:hidden flex items-center gap-2">
-            {/* <ThemeToggle /> */}
             <button 
               onClick={() => setIsOpen(!isOpen)} 
               className="p-2 text-foreground hover:bg-primary/10 rounded-xl transition-colors"

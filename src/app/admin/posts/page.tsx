@@ -1,10 +1,20 @@
 import { getPosts } from '@/actions/posts'
 import Link from 'next/link'
-import { Plus, Edit2, FileText, Calendar, Eye, Tag, Info } from 'lucide-react'
+import { Plus, Edit2, FileText, Calendar, Eye } from 'lucide-react'
 import DeletePostButton from '@/components/modules/posts/DeletePostButton'
 
+interface PostWithCategory {
+  id: string;
+  title: string;
+  slug: string;
+  created_at: string;
+  type: 'news' | 'agenda';
+  status: 'draft' | 'published';
+  categories?: { name: string } | null;
+}
+
 export default async function PostsPage() {
-  const posts = await getPosts()
+  const posts = (await getPosts()) as unknown as PostWithCategory[]
 
   return (
     <div className="space-y-6 md:space-y-8">
@@ -39,7 +49,7 @@ export default async function PostsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {posts.map((post: any) => (
+              {posts.map((post) => (
                 <tr key={post.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
@@ -86,7 +96,7 @@ export default async function PostsPage() {
 
         {/* Mobile View (Card List) */}
         <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
-          {posts.map((post: any) => (
+          {posts.map((post) => (
             <div key={post.id} className="p-5 space-y-4">
               <div className="flex justify-between items-start gap-4">
                 <div className="space-y-1">

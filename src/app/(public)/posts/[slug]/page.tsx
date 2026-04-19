@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Calendar, Clock, Share2, MessageCircle, ArrowLeft } from 'lucide-react';
 import { getPostBySlug } from '@/actions/posts';
+import Image from 'next/image';
 
 export default async function PostDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
@@ -13,8 +14,6 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      
-
       <main className="flex-1 pt-32 pb-20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-full h-96 bg-primary/5 skew-y-3 -translate-y-48"></div>
 
@@ -65,10 +64,11 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
               {/* Cover Image */}
               {post.image_url && (
                 <div className="relative aspect-video rounded-[3rem] overflow-hidden shadow-2xl">
-                  <img
+                  <Image
                     src={post.image_url}
                     alt={post.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </div>
               )}

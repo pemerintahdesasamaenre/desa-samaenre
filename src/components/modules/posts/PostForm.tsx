@@ -142,7 +142,7 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
             placeholder="Pilih Kategori..."
             icon={FolderOpen}
             options={categories}
-            value={formData.category_id}
+            value={formData.category_id || ''}
             onChange={(val) => setFormData(prev => ({ ...prev, category_id: val }))}
             required
           />
@@ -187,7 +187,7 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
             <ImageUpload 
               label="Gambar Sampul"
               folder="posts"
-              value={formData.image_url}
+              value={formData.image_url || ''}
               onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
             />
           </div>

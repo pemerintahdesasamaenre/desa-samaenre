@@ -1,9 +1,9 @@
-import { getPostBySlug, getCategories } from '@/actions/posts'
+import { getCategories } from '@/actions/posts'
 import { createClient } from '@/lib/supabase/server'
 import PostForm from '@/components/modules/posts/PostForm'
 import { notFound } from 'next/navigation'
 
-export default async function EditPostPage({ params }: { params: { id: string } }) {
+export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
   

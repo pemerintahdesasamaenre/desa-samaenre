@@ -85,7 +85,7 @@ export default function DemographicForm({ categories, initialData, isEditing }: 
             label="Kategori Statistik"
             icon={FolderOpen}
             required
-            onChange={(val) => {
+            onChange={(_) => {
               // Untuk DemographicForm yang menggunakan FormData, kita perlu trigger input hidden
               // Tapi CustomSelect sudah memiliki input hidden dengan name="category_id"
             }}

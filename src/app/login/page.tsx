@@ -1,4 +1,5 @@
 import { login } from '@/actions/auth';
+import Link from 'next/link';
 
 export default async function LoginPage({
   searchParams,
@@ -79,9 +80,9 @@ export default async function LoginPage({
         </form>
         
         <div className="text-center mt-4">
-          <a href="/" className="text-sm text-blue-600 hover:text-blue-500">
+          <Link href="/" className="text-sm text-blue-600 hover:text-blue-500">
             &larr; Kembali ke Beranda
-          </a>
+          </Link>
         </div>
       </div>
     </div>

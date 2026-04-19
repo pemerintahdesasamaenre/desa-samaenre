@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState, useRef } from 'react'
-import { Upload, X, ImageIcon, Loader2 } from 'lucide-react'
+import { Upload, X, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { uploadImage } from '@/lib/supabase/storage'
 
 interface ImageUploadProps {
-  value?: string
+  value?: string | null
   onChange: (url: string) => void
   folder: string
   label?: string
@@ -29,8 +29,9 @@ export default function ImageUpload({ value, onChange, folder, label = "Gambar" 
     try {
       const publicUrl = await uploadImage(file, folder)
       onChange(publicUrl)
-    } catch (error: any) {
-      alert('Gagal mengunggah gambar: ' + error.message)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      alert('Gagal mengunggah gambar: ' + message)
       setPreview(value || null) // Revert to previous value on error
     } finally {
       setUploading(false)
@@ -58,10 +59,11 @@ export default function ImageUpload({ value, onChange, folder, label = "Gambar" 
       >
         {preview ? (
           <>
-            <img 
+            <Image 
               src={preview} 
               alt="Preview" 
-              className={`h-full w-full object-cover transition-opacity duration-300 ${uploading ? 'opacity-40' : 'opacity-100'}`}
+              fill
+              className={`object-cover transition-opacity duration-300 ${uploading ? 'opacity-40' : 'opacity-100'}`}
             />
             {!uploading && (
               <button

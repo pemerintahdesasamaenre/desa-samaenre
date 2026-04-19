@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { Mail, Phone, MapPin, Globe, MessageCircle, Share2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -46,10 +47,10 @@ export const Footer = () => {
           <div>
             <h3 className="text-white font-bold mb-8 uppercase tracking-widest text-xs">Navigasi</h3>
             <ul className="space-y-4 text-sm font-semibold">
-              <li><a href="/" className="hover:text-blue-500 transition-colors">Beranda</a></li>
-              <li><a href="/posts" className="hover:text-blue-500 transition-colors">Kabar Desa</a></li>
-              <li><a href="/statistik" className="hover:text-blue-500 transition-colors">Statistik Desa</a></li>
-              <li><a href="/tentang" className="hover:text-blue-500 transition-colors">Profil Desa</a></li>
+              <li><Link href="/" className="hover:text-blue-500 transition-colors">Beranda</Link></li>
+              <li><Link href="/posts" className="hover:text-blue-500 transition-colors">Kabar Desa</Link></li>
+              <li><Link href="/statistik" className="hover:text-blue-500 transition-colors">Statistik Desa</Link></li>
+              <li><Link href="/tentang" className="hover:text-blue-500 transition-colors">Profil Desa</Link></li>
             </ul>
           </div>
 
@@ -103,7 +104,7 @@ export const Footer = () => {
         <div className="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
           <p>&copy; {new Date().getFullYear()} Pemerintah Desa {villageInfo?.name || ''}. Seluruh hak cipta dilindungi.</p>
           <div className="flex gap-6">
-            <a href="/login" className="hover:text-blue-500 transition-colors">Admin Login</a>
+            <Link href="/login" className="hover:text-blue-500 transition-colors">Admin Login</Link>
             <span>Versi 1.0.0</span>
           </div>
         </div>

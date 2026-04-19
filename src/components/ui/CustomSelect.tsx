@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { ChevronDown, Check, LucideIcon, HelpCircle } from 'lucide-react'
 
 interface Option {
@@ -38,8 +38,8 @@ export default function CustomSelect({
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (value !== undefined) setSelectedId(value)
-  }, [value])
+    if (value !== undefined && value !== selectedId) setSelectedId(value)
+  }, [value, selectedId])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

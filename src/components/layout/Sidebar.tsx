@@ -37,8 +37,8 @@ export const Sidebar = () => {
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+    if (isOpen) setIsOpen(false);
+  }, [pathname, isOpen]);
 
   return (
     <>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { MessageCircle, X, Send, User, CreditCard, ClipboardList, Info, HelpCircle, Edit3 } from 'lucide-react'
+import { MessageCircle, X, Send, User, CreditCard, ClipboardList, HelpCircle, Edit3 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import CustomSelect from '@/components/ui/CustomSelect'
 
@@ -16,7 +16,7 @@ const SERVICES = [
 
 export default function ServiceFloater() {
   const [isOpen, setIsOpen] = useState(false)
-  const [villageInfo, setVillageInfo] = useState<any>(null)
+  const [villageInfo, setVillageInfo] = useState<{name: string, contact_info: {phone: string}} | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     nik: '',
@@ -29,7 +29,7 @@ export default function ServiceFloater() {
     const fetchVillageInfo = async () => {
       const supabase = createClient()
       const { data } = await supabase.from('village_info').select('name, contact_info').single()
-      if (data) setVillageInfo(data)
+      if (data) setVillageInfo(data as any)
     }
     fetchVillageInfo()
   }, [])

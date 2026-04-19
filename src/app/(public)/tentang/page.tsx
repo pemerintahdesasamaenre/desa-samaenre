@@ -1,7 +1,7 @@
 import { getStaffMembers } from '@/actions/staff';
 import { getVillageInfo } from '@/services/data-service';
 import OrgChartTree from '@/components/modules/village/OrgChartTree';
-import { MapPin, Mail, Phone, Globe } from 'lucide-react';
+import { MapPin, Mail, Phone } from 'lucide-react';
 
 export default async function TentangPage() {
   const staff = await getStaffMembers();
@@ -38,7 +38,7 @@ export default async function TentangPage() {
             </div>
             <h2 className="text-3xl font-black text-foreground">Visi</h2>
             <p className="text-muted-foreground italic text-xl leading-relaxed">
-              "{villageInfo.vision}"
+              &quot;{villageInfo.vision}&quot;
             </p>
           </div>
           <div className="glass p-12 rounded-[3rem] hover-lift space-y-6 border border-white/20">
