@@ -9,7 +9,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps) {
   return (
-    <div className="relative h-[95vh] flex items-center justify-center overflow-hidden bg-background">
+    <div className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-background">
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
         {bannerUrl ? (
@@ -22,12 +22,11 @@ export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps
               priority
               quality={100}
             />
-            {/* Overlay menggunakan Hijau Tua Transparan */}
-            <div className="absolute inset-0 bg-secondary/60 backdrop-blur-[2px]"></div>
+            {/* Settingan Timpa Gambar Lama: Overlay Gelap Tunggal yang Kuat */}
+            <div className="absolute inset-0 bg-black/60"></div>
           </>
         ) : (
           <>
-            {/* Gradient menggunakan Hijau Tosca & Hijau Tua */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 animate-pulse"></div>
             <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-blob"></div>
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] animate-blob animation-delay-2000"></div>
@@ -50,18 +49,18 @@ export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps
         </div>
 
         <div className="space-y-4">
-          <h1 className="text-6xl md:text-9xl font-black tracking-tighter text-white dark:text-foreground leading-[0.85] animate-slide-up drop-shadow-2xl">
+          <h1 className="text-6xl md:text-9xl font-black tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-[0.85] animate-slide-up">
             Desa <br/>
-            <span className="text-gradient">
+            <span className="text-gradient drop-shadow-2xl">
               {villageName}
             </span>
           </h1>
         </div>
         
-        <p className={`text-xl md:text-2xl font-medium max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-500 ${bannerUrl ? 'text-slate-100' : 'text-foreground'}`}>
+        <p className={`text-xl md:text-2xl font-medium max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-500 drop-shadow-lg ${bannerUrl ? 'text-white/90' : 'text-foreground'}`}>
           Mewujudkan tata kelola desa yang <span className="text-primary font-black border-b-2 border-primary/40 text-glow">transparan</span>, 
-          <span className="text-emerald-500 font-black border-b-2 border-emerald-500/40"> inovatif</span>, dan 
-          <span className="text-secondary font-black border-b-2 border-secondary/40"> mandiri</span> demi kesejahteraan seluruh masyarakat.
+          <span className="text-primary font-black border-b-2 border-primary/40 text-glow"> inovatif</span>, dan 
+          <span className="text-primary font-black border-b-2 border-primary/40 text-glow"> mandiri</span> demi kesejahteraan seluruh masyarakat.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8 animate-fade-in animation-delay-700">
@@ -73,7 +72,7 @@ export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps
           </Link>
           <Link 
             href="/transparansi" 
-            className="w-full sm:w-auto px-12 py-5 glass-premium text-foreground rounded-[2rem] font-black text-lg hover:bg-white/10 transition-all border border-white/20"
+            className="w-full sm:w-auto px-12 py-5 glass-premium text-white dark:text-foreground rounded-[2rem] font-black text-lg hover:bg-white/10 transition-all border border-white/20 shadow-xl"
           >
             Lihat Anggaran
           </Link>
@@ -82,8 +81,8 @@ export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps
       
       {/* Scroll Indicator */}
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 animate-bounce opacity-80">
-        <div className="w-8 h-12 rounded-full border-2 border-foreground/30 flex justify-center p-2 backdrop-blur-sm">
-          <div className="w-1.5 h-3 bg-foreground rounded-full animate-scroll"></div>
+        <div className="w-8 h-12 rounded-full border-2 border-white/30 flex justify-center p-2 backdrop-blur-sm">
+          <div className="w-1.5 h-3 bg-white rounded-full animate-scroll"></div>
         </div>
       </div>
     </div>
