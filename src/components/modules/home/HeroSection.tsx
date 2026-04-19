@@ -18,10 +18,12 @@ export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps
               src={bannerUrl} 
               alt={`Banner ${villageName}`}
               fill
-              sizes="100vw"
+              sizes="(max-width: 768px) 100vw, 100vw"
               className="object-cover"
               priority
-              quality={80}
+              quality={60}
+              fetchPriority="high"
+              decoding="async"
             />
             {/* Settingan Timpa Gambar Lama: Overlay Gelap Tunggal yang Kuat */}
             <div className="absolute inset-0 bg-black/60"></div>

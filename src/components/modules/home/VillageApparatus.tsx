@@ -42,6 +42,8 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
                     fill
                     sizes="192px"
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
+                    quality={60}
+                    decoding="async"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10 dark:from-white/5 dark:to-white/10">

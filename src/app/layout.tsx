@@ -75,6 +75,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
+      <head>
+        <link rel="dns-prefetch" href="https://jfjiotllfhujzigvxmpf.supabase.co" />
+        <link rel="preconnect" href="https://jfjiotllfhujzigvxmpf.supabase.co" crossOrigin="anonymous" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
         {children}
       </body>

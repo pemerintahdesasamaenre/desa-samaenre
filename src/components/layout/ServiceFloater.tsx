@@ -106,11 +106,11 @@ Terima kasih.`
         <div className="fixed inset-0 z-[10000] flex items-end sm:items-center justify-center sm:justify-end sm:p-10 p-0">
           {/* Backdrop Overlay */}
           <div 
-            className="absolute inset-0 bg-background/60 backdrop-blur-md animate-in fade-in duration-300"
+            className="absolute inset-0 bg-background/40 sm:backdrop-blur-md animate-in fade-in duration-200"
             onClick={() => setIsOpen(false)}
           />
 
-          <div className="relative w-full sm:w-[420px] max-h-[92vh] sm:max-h-[85vh] bg-card rounded-t-[2.5rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-border overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-10 sm:zoom-in-95 transition-all duration-500 sm:duration-300">
+          <div className="relative w-full sm:w-[420px] max-h-[92vh] sm:max-h-[85vh] bg-card rounded-t-[2.5rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-border overflow-hidden animate-in slide-in-from-bottom-full transition-all duration-300">
             {/* Handle for Mobile Bottom Sheet */}
             <div className="flex justify-center pt-3 sm:hidden">
               <div className="w-10 h-1 bg-muted-foreground/20 rounded-full" />

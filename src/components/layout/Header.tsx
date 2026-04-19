@@ -42,9 +42,9 @@ export const Header = () => {
   ];
 
   return (
-    <header className="fixed top-0 w-full z-50 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-        <div className="glass rounded-2xl md:rounded-full px-6 py-3 flex justify-between items-center transition-all duration-500 hover:shadow-2xl">
+    <header className="fixed top-0 w-full z-50 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 mt-4">
+        <div className="bg-card/80 backdrop-blur-md rounded-2xl md:rounded-full px-6 py-3 flex justify-between items-center shadow-lg transition-all">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-12 h-12 relative flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -55,6 +55,7 @@ export const Header = () => {
                 height={48} 
                 className="object-contain"
                 style={{ height: 'auto' }}
+                decoding="async"
               />
             </div>
             <div className="flex flex-col">

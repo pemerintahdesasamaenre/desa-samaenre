@@ -12,7 +12,7 @@ export default function PublicLayout({
     <>
       <ViewTracker />
       <Header />
-      <div>
+      <div className="animate-in fade-in duration-500">
         {children}
       </div>
       <Footer />

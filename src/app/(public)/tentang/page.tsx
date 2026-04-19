@@ -211,13 +211,14 @@ export default async function TentangPage() {
             </div>
 
             {/* Map Display */}
-            <div className="lg:col-span-2 glass rounded-[3.5rem] overflow-hidden min-h-[500px] relative group border-none">
+            <div className="lg:col-span-2 glass rounded-[3.5rem] overflow-hidden min-h-[400px] sm:min-h-[500px] relative group border-none">
               <iframe
                 title="Lokasi Desa"
                 src={embedUrl}
                 className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-1000"
                 allowFullScreen
                 loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               ></iframe>
               <div className="absolute top-8 right-8 px-5 py-2.5 bg-background/90 backdrop-blur-md rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-primary shadow-xl border border-border">
                 Peta Wilayah Desa
