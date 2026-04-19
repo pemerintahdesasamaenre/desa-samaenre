@@ -64,9 +64,9 @@ export default function CustomSelect({
   return (
     <div className="space-y-2" ref={containerRef}>
       {label && (
-        <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+        <label className="text-sm font-semibold text-foreground/70 flex items-center gap-2">
           {label}
-          {required && <span className="text-red-500">*</span>}
+          {required && <span className="text-destructive">*</span>}
         </label>
       )}
       
@@ -78,29 +78,29 @@ export default function CustomSelect({
           onClick={() => setIsOpen(!isOpen)}
           className={`w-full flex items-center justify-between p-3.5 rounded-xl border transition-all text-left ${
             isOpen 
-              ? 'border-blue-500 ring-4 ring-blue-500/10 bg-white dark:bg-slate-900 shadow-sm' 
-              : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:bg-white dark:hover:bg-slate-900'
-          } ${error ? 'border-red-500' : ''}`}
+              ? 'border-primary ring-4 ring-primary/10 bg-background shadow-sm' 
+              : 'border-border bg-muted/30 hover:bg-background'
+          } ${error ? 'border-destructive' : ''}`}
         >
           <div className="flex items-center gap-3">
-            <div className={`p-1.5 rounded-lg ${selectedOption ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'}`}>
+            <div className={`p-1.5 rounded-lg ${selectedOption ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
               <Icon size={16} />
             </div>
-            <span className={selectedOption ? 'text-slate-900 dark:text-white font-medium' : 'text-slate-400'}>
+            <span className={selectedOption ? 'text-foreground font-medium' : 'text-muted-foreground'}>
               {selectedOption ? selectedOption.name : placeholder}
             </span>
           </div>
           <ChevronDown 
             size={18} 
-            className={`text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+            className={`text-muted-foreground transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
           />
         </button>
 
         {isOpen && (
-          <div className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none overflow-hidden animate-in fade-in zoom-in duration-200">
+          <div className="absolute z-50 w-full mt-2 bg-popover border border-border rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="max-h-60 overflow-y-auto p-2 space-y-1">
               {options.length === 0 && (
-                <div className="p-4 text-center text-sm text-slate-400">
+                <div className="p-4 text-center text-sm text-muted-foreground">
                   Tidak ada opsi tersedia
                 </div>
               )}
@@ -111,8 +111,8 @@ export default function CustomSelect({
                   onClick={() => handleSelect(opt.id)}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-colors ${
                     selectedId === opt.id 
-                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 font-bold' 
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      ? 'bg-primary/10 text-primary font-bold' 
+                      : 'text-foreground hover:bg-muted'
                   }`}
                 >
                   {opt.name}
@@ -124,7 +124,7 @@ export default function CustomSelect({
         )}
       </div>
       
-      {error && <p className="text-xs text-red-500 font-medium pl-1">{error}</p>}
+      {error && <p className="text-xs text-destructive font-medium pl-1">{error}</p>}
     </div>
   )
 }

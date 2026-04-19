@@ -15,16 +15,16 @@ interface VillageApparatusProps {
 export default function VillageApparatus({ staff }: VillageApparatusProps) {
   return (
     <section id="staff" className="py-32 bg-background scroll-mt-32 relative overflow-hidden">
-      {/* Decorative background accent */}
-      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+      {/* Decorative background accent using primary tosca */}
+      <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
       
       <div className="max-w-7xl mx-auto px-4 text-center">
         <div className="space-y-6 mb-20 animate-fade-in">
           <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-none">
-            Aparatur <span className="text-gradient">Struktur Desa</span>
+            Aparatur <br/> <span className="text-gradient">Struktur Desa</span>
           </h2>
           <p className="text-foreground/80 max-w-2xl mx-auto text-xl font-medium leading-relaxed">
-            Pelayanan profesional dengan integritas tinggi untuk seluruh lapisan masyarakat.
+            Pelayanan profesional dengan integritas tinggi untuk seluruh lapisan masyarakat Desa Samaenre.
           </p>
         </div>
 
@@ -32,9 +32,9 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
           {staff.map((member) => (
             <div 
               key={member.name} 
-              className="glass-premium p-10 rounded-[3.5rem] hover-lift transition-all duration-700 group relative"
+              className="glass-premium p-10 rounded-[3.5rem] hover-lift transition-all duration-700 group relative shadow-2xl shadow-primary/5"
             >
-              <div className="relative w-48 h-48 mx-auto rounded-[2.5rem] overflow-hidden bg-card shadow-2xl border-4 border-border/50 group-hover:scale-105 group-hover:rotate-2 transition-all duration-700">
+              <div className="relative w-48 h-48 mx-auto rounded-[2.5rem] overflow-hidden bg-card shadow-2xl border-4 border-primary/20 group-hover:border-primary/50 group-hover:scale-105 group-hover:rotate-2 transition-all duration-700">
                 {member.photo_url ? (
                   <Image 
                     src={member.photo_url} 
@@ -48,7 +48,7 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
                   </div>
                 )}
               </div>
-              <div className="mt-8 space-y-2">
+              <div className="mt-8 space-y-2 text-center">
                 <h3 className="text-2xl font-black text-foreground group-hover:text-primary transition-colors">{member.name}</h3>
                 <p className="text-primary font-black text-[10px] uppercase tracking-[0.2em] bg-primary/10 dark:bg-primary/20 py-2 px-4 rounded-full inline-block">
                   {member.position}
@@ -61,7 +61,7 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
         <div className="mt-24">
           <Link 
             href="/tentang" 
-            className="inline-flex items-center gap-4 px-12 py-5 bg-foreground text-background rounded-2xl font-black text-lg hover-lift transition-all duration-500 shadow-2xl"
+            className="inline-flex items-center gap-4 px-12 py-5 bg-secondary text-secondary-foreground rounded-2xl font-black text-lg hover-lift hover:bg-primary transition-all duration-500 shadow-xl shadow-secondary/20"
           >
             Lihat Struktur Lengkap
           </Link>

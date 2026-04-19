@@ -45,7 +45,6 @@ export default function ServiceFloater() {
       phoneNumber = '62' + phoneNumber
     }
 
-    // Gunakan input manual jika memilih 'lainnya'
     const selectedServiceName = formData.service === 'lainnya' 
       ? formData.manualService 
       : SERVICES.find(s => s.id === formData.service)?.name || formData.service
@@ -75,9 +74,9 @@ Terima kasih.`
       {/* Tooltip */}
       {!isOpen && (
         <div className="absolute right-full mr-4 bottom-2 hidden md:block animate-in fade-in slide-in-from-right-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl shadow-xl whitespace-nowrap">
-            <p className="text-xs font-bold text-slate-900 dark:text-white">Butuh bantuan administrasi?</p>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Klik untuk layanan pengajuan via WA</p>
+          <div className="bg-card border border-border p-3 rounded-2xl shadow-xl whitespace-nowrap">
+            <p className="text-xs font-bold text-foreground tracking-tight font-sans">Butuh bantuan administrasi?</p>
+            <p className="text-[10px] text-muted-foreground font-medium">Klik untuk layanan pengajuan via WA</p>
           </div>
         </div>
       )}
@@ -87,37 +86,37 @@ Terima kasih.`
         onClick={() => setIsOpen(!isOpen)}
         className={`
           relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl group
-          ${isOpen ? 'bg-red-500 rotate-90 scale-90' : 'bg-emerald-500 hover:bg-emerald-600 scale-100 hover:scale-110'}
+          ${isOpen ? 'bg-destructive rotate-90 scale-90' : 'bg-primary hover:scale-110'}
         `}
       >
         {isOpen ? (
-          <X className="text-white" size={32} />
+          <X className="text-destructive-foreground" size={32} />
         ) : (
           <div className="relative">
-            <MessageCircle className="text-white fill-white/10" size={32} />
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-emerald-500 rounded-full animate-ping"></span>
+            <MessageCircle className="text-primary-foreground fill-current/10" size={32} />
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive border-2 border-primary rounded-full animate-ping"></span>
           </div>
         )}
       </button>
 
       {/* Service Modal */}
       {isOpen && (
-        <div className="absolute bottom-20 right-0 w-[90vw] md:w-[400px] max-h-[85vh] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-300 origin-bottom-right">
+        <div className="absolute bottom-20 right-0 w-[90vw] md:w-[400px] max-h-[85vh] bg-card rounded-[2.5rem] shadow-2xl border border-border overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-300 origin-bottom-right">
           {/* Header */}
-          <div className="bg-emerald-600 p-8 text-white relative">
+          <div className="bg-primary p-8 text-primary-foreground relative">
             <div className="absolute top-0 right-0 p-8 opacity-10">
               <MessageCircle size={100} />
             </div>
             <h3 className="text-2xl font-black leading-tight tracking-tighter uppercase italic">Layanan <br/>Mandiri</h3>
-            <p className="text-emerald-50 text-[10px] font-bold uppercase tracking-widest mt-2 border-l-2 border-white/30 pl-3">Desa {villageInfo?.name}</p>
+            <p className="text-primary-foreground/80 text-[10px] font-bold uppercase tracking-widest mt-2 border-l-2 border-primary-foreground/30 pl-3">Desa {villageInfo?.name}</p>
           </div>
 
           {/* Form Content */}
           <div className="p-8 overflow-y-auto max-h-[calc(85vh-160px)] custom-scrollbar">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 text-foreground">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                  <User size={12} className="text-emerald-500" /> Identitas Pengaju
+                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                  <User size={12} className="text-primary" /> Identitas Pengaju
                 </label>
                 <input
                   required
@@ -125,13 +124,13 @@ Terima kasih.`
                   placeholder="Nama Lengkap Sesuai KTP"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl px-4 py-3.5 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                  className="w-full bg-muted/30 border-none rounded-2xl px-4 py-3.5 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                  <CreditCard size={12} className="text-emerald-500" /> NIK Warga
+                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                  <CreditCard size={12} className="text-primary" /> NIK Warga
                 </label>
                 <input
                   required
@@ -141,7 +140,7 @@ Terima kasih.`
                   placeholder="16 Digit NIK"
                   value={formData.nik}
                   onChange={(e) => setFormData({...formData, nik: e.target.value.replace(/\D/g, '')})}
-                  className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl px-4 py-3.5 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                  className="w-full bg-muted/30 border-none rounded-2xl px-4 py-3.5 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none"
                 />
               </div>
 
@@ -157,47 +156,46 @@ Terima kasih.`
                 />
               </div>
 
-              {/* Manual Service Input (Tampil jika 'lainnya' terpilih) */}
               {formData.service === 'lainnya' && (
                 <div className="space-y-1.5 animate-in slide-in-from-top-2 duration-300">
-                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                    <Edit3 size={12} className="text-emerald-500" /> Nama Surat / Layanan
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                    <Edit3 size={12} className="text-primary" /> Nama Surat / Layanan
                   </label>
                   <input
                     required
                     type="text"
-                    placeholder="Sebutkan jenis layanan yang dibutuhkan"
+                    placeholder="Sebutkan jenis layanan"
                     value={formData.manualService}
                     onChange={(e) => setFormData({...formData, manualService: e.target.value})}
-                    className="w-full bg-emerald-50/50 dark:bg-emerald-900/10 border-2 border-emerald-100 dark:border-emerald-900/20 rounded-2xl px-4 py-3.5 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+                    className="w-full bg-primary/5 border-2 border-primary/20 rounded-2xl px-4 py-3.5 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none"
                   />
                 </div>
               )}
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                  <HelpCircle size={12} className="text-emerald-500" /> Detail Keperluan
+                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                  <HelpCircle size={12} className="text-primary" /> Detail Keperluan
                 </label>
                 <textarea
                   required
-                  placeholder="Tuliskan alasan pengajuan atau detail tambahan..."
+                  placeholder="Tuliskan detail pengajuan..."
                   value={formData.notes}
                   onChange={(e) => setFormData({...formData, notes: e.target.value})}
                   rows={3}
-                  className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl px-4 py-3.5 text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 transition-all outline-none resize-none"
+                  className="w-full bg-muted/30 border-none rounded-2xl px-4 py-3.5 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none resize-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-5 rounded-[1.8rem] font-black text-sm tracking-tighter flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/30 transition-all active:scale-95"
+                className="w-full bg-primary hover:opacity-90 text-primary-foreground py-5 rounded-[1.8rem] font-black text-sm tracking-tighter flex items-center justify-center gap-3 shadow-xl shadow-primary/20 transition-all active:scale-95"
               >
                 AJUKAN KE WHATSAPP
                 <Send size={20} />
               </button>
               
-              <p className="text-[9px] text-center text-slate-400 dark:text-slate-500 font-bold uppercase tracking-tight leading-relaxed">
-                *Permohonan diproses manual oleh petugas desa. <br/> Pastikan NIK dan Nama sudah benar.
+              <p className="text-[9px] text-center text-muted-foreground font-bold uppercase tracking-tight leading-relaxed">
+                *Permohonan diproses manual oleh petugas desa. <br/> Pastikan data sudah benar.
               </p>
             </form>
           </div>

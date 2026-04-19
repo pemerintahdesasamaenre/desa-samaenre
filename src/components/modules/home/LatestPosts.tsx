@@ -18,7 +18,7 @@ interface LatestPostsProps {
 export default function LatestPosts({ posts }: LatestPostsProps) {
   return (
     <section className="py-32 px-4 bg-background relative overflow-hidden">
-      {/* Decorative background element */}
+      {/* Decorative background element using primary (Tosca) */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10"></div>
       
       <div className="max-w-7xl mx-auto">
@@ -34,7 +34,7 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
           </div>
           <Link 
             href="/posts" 
-            className="group flex items-center gap-3 bg-secondary/10 dark:bg-white/5 border border-secondary/20 dark:border-white/10 px-8 py-4 rounded-2xl font-black hover:bg-primary hover:text-white transition-all duration-500"
+            className="group flex items-center gap-3 bg-secondary/10 dark:bg-primary/10 border border-secondary/20 dark:border-primary/20 px-8 py-4 rounded-2xl font-black hover:bg-primary hover:text-primary-foreground transition-all duration-500 shadow-xl shadow-primary/5"
           >
             Lihat Semua Berita
             <ChevronRight size={24} className="group-hover:translate-x-2 transition-transform" />
@@ -46,7 +46,7 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
             <Link 
               key={post.slug} 
               href={`/posts/${post.slug}`}
-              className="glass-premium rounded-[3.5rem] hover-lift group relative overflow-hidden flex flex-col h-full transition-all duration-500 border border-border/50"
+              className="glass-premium rounded-[3.5rem] hover-lift group relative overflow-hidden flex flex-col h-full transition-all duration-500 border border-border/50 shadow-2xl shadow-primary/5"
             >
               {/* Image Container */}
               <div className="relative h-64 w-full overflow-hidden">
@@ -58,12 +58,12 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                 ) : (
-                  <div className="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                  <div className="w-full h-full bg-accent dark:bg-secondary/20 flex items-center justify-center text-primary/30">
                     <ImageIcon size={48} strokeWidth={1} />
                   </div>
                 )}
                 <div className="absolute top-6 left-6">
-                  <span className="px-5 py-2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg">
+                  <span className="px-5 py-2 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg">
                     {post.categories?.name || 'Berita'}
                   </span>
                 </div>
