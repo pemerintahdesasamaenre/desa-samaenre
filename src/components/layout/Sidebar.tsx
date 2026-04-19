@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -35,10 +35,12 @@ export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close sidebar on route change (mobile)
-  useEffect(() => {
-    if (isOpen) setIsOpen(false);
-  }, [pathname, isOpen]);
+  // Close sidebar on route change (mobile) - using a local ref to track previous pathname
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setIsOpen(false);
+    setPrevPathname(pathname);
+  }
 
   return (
     <>

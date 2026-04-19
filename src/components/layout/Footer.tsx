@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 
 export const Footer = () => {
   const pathname = usePathname();
-  const [villageInfo, setVillageInfo] = useState<any>(null);
+  const [villageInfo, setVillageInfo] = useState<Record<string, any> | null>(null);
   const [totalViews, setTotalViews] = useState<number>(0);
   const [todayViews, setTodayViews] = useState<number>(0);
 

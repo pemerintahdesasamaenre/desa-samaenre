@@ -201,7 +201,7 @@ export async function getHomepageData() {
     budget,
     hamletCount: demo.hamletCount,
     staffCount: sCount.count || 0,
-    posts: (posts.data || []).map((p: any) => ({ ...p, categories: Array.isArray(p.categories) ? p.categories[0] : p.categories })),
+    posts: (posts.data || []).map((p) => ({ ...p, categories: Array.isArray(p.categories) ? (p.categories[0] as {name: string}) : (p.categories as unknown as {name: string}) })),
     staff: staff.data || [],
   };
 }

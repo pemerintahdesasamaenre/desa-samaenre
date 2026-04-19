@@ -37,9 +37,12 @@ export default function CustomSelect({
   const [selectedId, setSelectedId] = useState(value || defaultValue || '')
   const containerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (value !== undefined && value !== selectedId) setSelectedId(value)
-  }, [value, selectedId])
+  // Sync state with prop during render (React 19 pattern)
+  const [prevValue, setPrevValue] = useState(value)
+  if (value !== prevValue) {
+    setSelectedId(value || '')
+    setPrevValue(value)
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
