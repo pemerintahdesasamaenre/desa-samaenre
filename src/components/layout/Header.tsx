@@ -17,8 +17,10 @@ export const Header = () => {
     const fetchInfo = async () => {
       const supabase = createClient();
       const { data } = await supabase.from('village_info').select('name, logo_url').single();
-      if (data?.name) setVillageName(data.name);
-      if (data?.logo_url) setLogoUrl(data.logo_url);
+      if (data) {
+        if (data.name) setVillageName(data.name);
+        if (data.logo_url) setLogoUrl(data.logo_url);
+      }
     };
     fetchInfo();
   }, []);

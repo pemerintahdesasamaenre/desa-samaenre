@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail, Phone, MapPin, Globe, MessageCircle, Share2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -32,8 +33,20 @@ export const Footer = () => {
           {/* Brand & Mission */}
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-black text-xl shadow-lg shadow-primary/20">
-                {villageInfo?.name?.[0] || 'S'}
+              <div className="w-12 h-12 relative flex items-center justify-center">
+                {villageInfo?.logo_url ? (
+                  <Image 
+                    src={villageInfo.logo_url} 
+                    alt="Logo Desa" 
+                    width={48} 
+                    height={48} 
+                    className="object-contain"
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-black text-xl shadow-lg shadow-primary/20">
+                    {villageInfo?.name?.[0] || 'S'}
+                  </div>
+                )}
               </div>
               <h2 className="text-foreground-secondary text-2xl font-black tracking-tighter">Desa {villageInfo?.name || 'Samaenre'}</h2>
             </div>
@@ -74,7 +87,7 @@ export const Footer = () => {
                 <div className="p-2 bg-white/10 rounded-lg text-primary">
                   <Mail size={18} />
                 </div>
-                <span className="break-all">{contact.email || 'info@desa.go.id'}</span>
+                <span className="break-all">{contact.email || 'info@samaenre.desa.id'}</span>
               </li>
             </ul>
           </div>
