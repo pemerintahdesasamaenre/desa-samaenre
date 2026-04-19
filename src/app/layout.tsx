@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
   description: "Portal informasi publik, statistik penduduk, transparansi anggaran, dan pelayanan desa digital yang mandiri dan inovatif.",
   keywords: ["desa digital", "profil desa", "pelayanan publik", "transparansi anggaran", "statistik desa"],
-  authors: [{ name: "Pemerintah Desa" }],
+  authors: [{ name: "KKN 78 UINAM" }],
   creator: "Desa Digital",
   icons: {
     icon: [

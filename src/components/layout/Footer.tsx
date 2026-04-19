@@ -22,7 +22,7 @@ export const Footer = () => {
 
     const fetchAnalytics = async () => {
       const supabase = createClient();
-      
+
       // Fetch Total Views
       const { data: pageData } = await supabase.from('page_analytics').select('views_count');
       if (pageData) {
@@ -37,7 +37,7 @@ export const Footer = () => {
         .select('views_count')
         .eq('visit_date', today)
         .single();
-      
+
       if (dailyData) {
         setTodayViews(Number(dailyData.views_count));
       }
@@ -62,11 +62,11 @@ export const Footer = () => {
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 relative flex items-center justify-center">
                 {villageInfo?.logo_url ? (
-                  <Image 
-                    src={villageInfo.logo_url} 
-                    alt="Logo Desa" 
-                    width={48} 
-                    height={48} 
+                  <Image
+                    src={villageInfo.logo_url}
+                    alt="Logo Desa"
+                    width={48}
+                    height={48}
                     className="object-contain"
                   />
                 ) : (
@@ -80,22 +80,22 @@ export const Footer = () => {
             <p className="text-sm leading-relaxed opacity-70 font-medium">
               {villageInfo?.vision || 'Mewujudkan tata kelola desa yang transparan, inovatif, dan mandiri demi kesejahteraan seluruh masyarakat.'}
             </p>
-            
+
             {/* Analytics Badges */}
             <div className="flex flex-wrap gap-3">
               <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-2xl border border-white/10 backdrop-blur-sm">
-                 <TrendingUp size={16} className="text-primary" />
-                 <div className="flex flex-col">
-                    <span className="text-[10px] font-black uppercase tracking-widest opacity-50 whitespace-nowrap">Hari Ini</span>
-                    <span className="text-sm font-black tabular-nums">{todayViews.toLocaleString()}</span>
-                 </div>
+                <TrendingUp size={16} className="text-primary" />
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-50 whitespace-nowrap">Hari Ini</span>
+                  <span className="text-sm font-black tabular-nums">{todayViews.toLocaleString()}</span>
+                </div>
               </div>
               <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-2xl border border-white/10 backdrop-blur-sm">
-                 <Eye size={16} className="text-primary" />
-                 <div className="flex flex-col">
-                    <span className="text-[10px] font-black uppercase tracking-widest opacity-50 whitespace-nowrap">Total</span>
-                    <span className="text-sm font-black tabular-nums">{totalViews.toLocaleString()}</span>
-                 </div>
+                <Eye size={16} className="text-primary" />
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-50 whitespace-nowrap">Total</span>
+                  <span className="text-sm font-black tabular-nums">{totalViews.toLocaleString()}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -153,8 +153,8 @@ export const Footer = () => {
               )}
             </div>
             {contact.maps_url && (
-              <a 
-                href={contact.maps_url} 
+              <a
+                href={contact.maps_url}
                 target="_blank"
                 className="inline-flex items-center gap-2 text-[10px] font-black tracking-widest text-primary bg-primary/10 px-5 py-2.5 rounded-xl hover:bg-primary/20 transition-all uppercase"
               >
@@ -167,7 +167,7 @@ export const Footer = () => {
 
         {/* Copyright */}
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em] opacity-40">
-          <p>&copy; {new Date().getFullYear()} Pemerintah Desa {villageInfo?.name || ''}. Seluruh hak cipta dilindungi.</p>
+          <p>&copy; {new Date().getFullYear()} KKN 78 UINAM Desa {villageInfo?.name || ''}. Seluruh hak cipta dilindungi.</p>
           <div className="flex gap-6">
             <Link href="/login" className="hover:text-primary transition-colors">Admin Login</Link>
             <span>Versi 2.1.0</span>
