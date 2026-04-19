@@ -7,11 +7,11 @@ export default function AdminLayout({
 }) {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex transition-colors duration-300">
-      {/* Fixed Sidebar */}
+      {/* Sidebar with responsive behavior */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 ml-64 p-8">
+      <div className="flex-1 lg:ml-64 p-4 md:p-8 pt-20 lg:pt-8 transition-all duration-300">
         <div className="max-w-6xl mx-auto text-slate-900 dark:text-slate-100">
           {children}
         </div>
