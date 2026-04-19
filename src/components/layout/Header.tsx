@@ -73,7 +73,7 @@ export const Header = () => {
             })}
             <div className="w-px h-6 bg-border mx-2" />
             <div className="flex items-center gap-3">
-              <ThemeToggle />
+              {/* <ThemeToggle /> */}
               <Link 
                 href="/login" 
                 className="bg-foreground text-background px-6 py-2 rounded-full text-sm font-bold hover:scale-105 transition-transform active:scale-95 shadow-lg"
@@ -85,7 +85,7 @@ export const Header = () => {
 
           {/* Mobile Toggle & ThemeToggle */}
           <div className="md:hidden flex items-center gap-2">
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
             <button 
               onClick={() => setIsOpen(!isOpen)} 
               className="p-2 text-foreground hover:bg-primary/10 rounded-xl transition-colors"

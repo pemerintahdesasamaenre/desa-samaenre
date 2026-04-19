@@ -7,7 +7,8 @@ export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // Check initial preference
+    // Disable Dark Mode for now
+    /*
     const savedTheme = localStorage.getItem('theme');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
@@ -15,9 +16,15 @@ export default function ThemeToggle() {
       setIsDark(true);
       document.documentElement.classList.add('dark');
     }
+    */
+    
+    // Force light mode
+    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.add('light');
   }, []);
 
   const toggleTheme = () => {
+    /* 
     if (isDark) {
       document.documentElement.classList.remove('dark');
       document.documentElement.classList.add('light');
@@ -29,8 +36,13 @@ export default function ThemeToggle() {
       localStorage.setItem('theme', 'dark');
       setIsDark(true);
     }
+    */
   };
 
+  // Return null or a placeholder if component still used somewhere
+  return null;
+
+  /*
   return (
     <button
       onClick={toggleTheme}
@@ -40,4 +52,5 @@ export default function ThemeToggle() {
       {isDark ? <Sun size={20} /> : <Moon size={20} />}
     </button>
   );
+  */
 }
