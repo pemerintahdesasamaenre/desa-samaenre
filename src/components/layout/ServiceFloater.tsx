@@ -101,103 +101,126 @@ Terima kasih.`
 
       {/* Service Modal */}
       {isOpen && (
-        <div className="absolute bottom-20 right-0 w-[90vw] md:w-[400px] max-h-[85vh] bg-card rounded-[2.5rem] shadow-2xl border border-border overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-300 origin-bottom-right">
-          {/* Header */}
-          <div className="bg-primary p-8 text-primary-foreground relative">
-            <div className="absolute top-0 right-0 p-8 opacity-10">
-              <MessageCircle size={100} />
+        <div className="fixed inset-0 z-[10000] flex items-end sm:items-center justify-center sm:justify-end sm:p-10 p-0">
+          {/* Backdrop Overlay */}
+          <div 
+            className="absolute inset-0 bg-background/60 backdrop-blur-md animate-in fade-in duration-300"
+            onClick={() => setIsOpen(false)}
+          />
+
+          <div className="relative w-full sm:w-[420px] max-h-[92vh] sm:max-h-[85vh] bg-card rounded-t-[2.5rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-border overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-10 sm:zoom-in-95 transition-all duration-500 sm:duration-300">
+            {/* Handle for Mobile Bottom Sheet */}
+            <div className="flex justify-center pt-3 sm:hidden">
+              <div className="w-10 h-1 bg-muted-foreground/20 rounded-full" />
             </div>
-            <h3 className="text-2xl font-black leading-tight tracking-tighter uppercase italic">Layanan <br/>Mandiri</h3>
-            <p className="text-primary-foreground/80 text-[10px] font-bold uppercase tracking-widest mt-2 border-l-2 border-primary-foreground/30 pl-3">Desa {villageInfo?.name}</p>
-          </div>
 
-          {/* Form Content */}
-          <div className="p-8 overflow-y-auto max-h-[calc(85vh-160px)] custom-scrollbar">
-            <form onSubmit={handleSubmit} className="space-y-6 text-foreground">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                  <User size={12} className="text-primary" /> Identitas Pengaju
-                </label>
-                <input
-                  required
-                  type="text"
-                  placeholder="Nama Lengkap Sesuai KTP"
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full bg-muted/30 border-none rounded-2xl px-4 py-3.5 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none"
-                />
+            {/* Header - More compact on mobile */}
+            <div className="bg-primary p-4 sm:p-8 text-primary-foreground relative mt-1 sm:mt-0">
+              <div className="absolute top-0 right-0 p-8 opacity-10 hidden sm:block">
+                <MessageCircle size={100} />
               </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                  <CreditCard size={12} className="text-primary" /> NIK Warga
-                </label>
-                <input
-                  required
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={16}
-                  placeholder="16 Digit NIK"
-                  value={formData.nik}
-                  onChange={(e) => setFormData({...formData, nik: e.target.value.replace(/\D/g, '')})}
-                  className="w-full bg-muted/30 border-none rounded-2xl px-4 py-3.5 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none"
-                />
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg sm:text-2xl font-black leading-tight tracking-tighter uppercase italic">Layanan Mandiri</h3>
+                  <p className="text-primary-foreground/80 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest mt-1 border-l-2 border-primary-foreground/30 pl-2">Desa {villageInfo?.name}</p>
+                </div>
+                <button 
+                  onClick={() => setIsOpen(false)}
+                  className="p-2 hover:bg-white/10 rounded-full transition-colors sm:hidden"
+                >
+                  <X size={20} />
+                </button>
               </div>
+            </div>
 
-              <div className="space-y-1.5">
-                <CustomSelect
-                  label="Jenis Layanan"
-                  options={SERVICES.map(s => ({ id: s.id, name: s.name }))}
-                  value={formData.service}
-                  onChange={(val) => setFormData({...formData, service: val})}
-                  icon={ClipboardList}
-                  placeholder="Pilih jenis surat/layanan..."
-                  required
-                />
-              </div>
-
-              {formData.service === 'lainnya' && (
-                <div className="space-y-1.5 animate-in slide-in-from-top-2 duration-300">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                    <Edit3 size={12} className="text-primary" /> Nama Surat / Layanan
+            {/* Form Content - Compact spacing on mobile */}
+            <div className="p-5 sm:p-8 overflow-y-auto max-h-[calc(92vh-100px)] sm:max-h-[calc(85vh-160px)] custom-scrollbar">
+              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-6 text-foreground">
+                <div className="space-y-1">
+                  <label className="text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                    <User size={10} className="text-primary" /> Identitas Pengaju
                   </label>
                   <input
                     required
                     type="text"
-                    placeholder="Sebutkan jenis layanan"
-                    value={formData.manualService}
-                    onChange={(e) => setFormData({...formData, manualService: e.target.value})}
-                    className="w-full bg-primary/5 border-2 border-primary/20 rounded-2xl px-4 py-3.5 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none"
+                    placeholder="Nama Lengkap"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    className="w-full bg-muted/30 border-none rounded-xl px-4 py-2.5 sm:py-3.5 text-xs sm:text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none"
                   />
                 </div>
-              )}
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                  <HelpCircle size={12} className="text-primary" /> Detail Keperluan
-                </label>
-                <textarea
-                  required
-                  placeholder="Tuliskan detail pengajuan..."
-                  value={formData.notes}
-                  onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                  rows={3}
-                  className="w-full bg-muted/30 border-none rounded-2xl px-4 py-3.5 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none resize-none"
-                />
-              </div>
+                <div className="space-y-1">
+                  <label className="text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                    <CreditCard size={10} className="text-primary" /> NIK Warga
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={16}
+                    placeholder="16 Digit NIK"
+                    value={formData.nik}
+                    onChange={(e) => setFormData({...formData, nik: e.target.value.replace(/\D/g, '')})}
+                    className="w-full bg-muted/30 border-none rounded-xl px-4 py-2.5 sm:py-3.5 text-xs sm:text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                className="w-full bg-primary hover:opacity-90 text-primary-foreground py-5 rounded-[1.8rem] font-black text-sm tracking-tighter flex items-center justify-center gap-3 shadow-xl shadow-primary/20 transition-all active:scale-95"
-              >
-                AJUKAN KE WHATSAPP
-                <Send size={20} />
-              </button>
-              
-              <p className="text-[9px] text-center text-muted-foreground font-bold uppercase tracking-tight leading-relaxed">
-                *Permohonan diproses manual oleh petugas desa. <br/> Pastikan data sudah benar.
-              </p>
-            </form>
+                <div className="space-y-1">
+                  <CustomSelect
+                    label="Jenis Layanan"
+                    options={SERVICES.map(s => ({ id: s.id, name: s.name }))}
+                    value={formData.service}
+                    onChange={(val) => setFormData({...formData, service: val})}
+                    icon={ClipboardList}
+                    placeholder="Pilih layanan..."
+                    required
+                  />
+                </div>
+
+                {formData.service === 'lainnya' && (
+                  <div className="space-y-1 animate-in slide-in-from-top-2 duration-300">
+                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                      <Edit3 size={10} className="text-primary" /> Nama Layanan
+                    </label>
+                    <input
+                      required
+                      type="text"
+                      placeholder="Jenis layanan"
+                      value={formData.manualService}
+                      onChange={(e) => setFormData({...formData, manualService: e.target.value})}
+                      className="w-full bg-primary/5 border-2 border-primary/20 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none"
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-1">
+                  <label className="text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                    <HelpCircle size={10} className="text-primary" /> Detail Keperluan
+                  </label>
+                  <textarea
+                    required
+                    placeholder="Tuliskan detail..."
+                    value={formData.notes}
+                    onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                    rows={2}
+                    className="w-full bg-muted/30 border-none rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold text-foreground focus:ring-2 focus:ring-primary transition-all outline-none resize-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-primary hover:opacity-90 text-primary-foreground py-3.5 sm:py-5 rounded-[1.2rem] sm:rounded-[1.8rem] font-black text-xs sm:text-sm tracking-tighter flex items-center justify-center gap-3 shadow-xl shadow-primary/20 transition-all active:scale-95 mt-2"
+                >
+                  KIRIM KE WHATSAPP
+                  <Send size={18} />
+                </button>
+                
+                <p className="text-[8px] sm:text-[9px] text-center text-muted-foreground font-bold uppercase tracking-tight leading-relaxed">
+                  *Diproses manual oleh petugas desa.
+                </p>
+              </form>
+            </div>
           </div>
         </div>
       )}
