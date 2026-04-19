@@ -23,11 +23,14 @@ const PREMIUM_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-3 rounded-xl shadow-xl backdrop-blur-md">
-        <p className="text-xs font-black text-foreground mb-1">{label || payload[0].name}</p>
-        <p className="text-sm font-black text-primary">
-          {payload[0].value.toLocaleString()} <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Jiwa</span>
-        </p>
+      <div className="glass-premium p-4 rounded-2xl shadow-2xl backdrop-blur-2xl border border-white/20 dark:border-white/5 min-w-[120px]">
+        <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-1">{label || payload[0].name}</p>
+        <div className="flex items-baseline gap-2">
+          <span className="text-xl font-black text-primary tabular-nums">
+            {payload[0].value.toLocaleString()}
+          </span>
+          <span className="text-[10px] font-bold text-foreground/50 uppercase tracking-wider">Jiwa</span>
+        </div>
       </div>
     );
   }
