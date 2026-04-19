@@ -1,5 +1,5 @@
--- Merged Initial Schema
--- This single file contains the complete database schema for the application.
+-- Merged Initial Schema (Complete)
+-- This file contains the complete database structure, constraints, and RLS policies.
 
 -- 1. EXTENSIONS
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -13,9 +13,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   role TEXT DEFAULT 'admin' NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
-COMMENT ON TABLE public.profiles IS 'Stores user-specific data, extending the auth.users table.';
 
--- Categories (for posts, demographics, etc.)
+-- Categories
 CREATE TABLE IF NOT EXISTS public.categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
@@ -25,9 +24,8 @@ CREATE TABLE IF NOT EXISTS public.categories (
   metadata JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
-COMMENT ON TABLE public.categories IS 'Generic categorization for different types of content.';
 
--- Village Info (singleton table)
+-- Village Info (Singleton)
 CREATE TABLE IF NOT EXISTS public.village_info (
   id INT PRIMARY KEY DEFAULT 1,
   name TEXT NOT NULL,
@@ -36,12 +34,14 @@ CREATE TABLE IF NOT EXISTS public.village_info (
   history TEXT,
   contact_info JSONB DEFAULT '{}'::jsonb,
   location JSONB DEFAULT '{}'::jsonb,
+  area_size TEXT,
+  boundaries JSONB DEFAULT '{"north": "", "south": "", "east": "", "west": ""}'::jsonb,
+  logo_url TEXT,
+  header_banner_url TEXT,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
-COMMENT ON TABLE public.village_info IS 'Singleton table to store general village information.';
 
-
--- Staff Members (for organizational chart)
+-- Staff Members
 CREATE TABLE IF NOT EXISTS public.staff_members (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS public.staff_members (
   parent_id UUID REFERENCES public.staff_members(id) ON DELETE SET NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
-COMMENT ON TABLE public.staff_members IS 'Stores data about village officials and their hierarchy.';
 
 -- Demographics
 CREATE TABLE IF NOT EXISTS public.demographics (
@@ -60,11 +59,11 @@ CREATE TABLE IF NOT EXISTS public.demographics (
   label TEXT NOT NULL,
   value INTEGER NOT NULL DEFAULT 0,
   metadata JSONB DEFAULT '{}'::jsonb,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+  CONSTRAINT demographics_category_id_label_key UNIQUE (category_id, label)
 );
-COMMENT ON TABLE public.demographics IS 'Stores statistical data about the village population.';
 
--- Posts (News & Agenda)
+-- Posts
 CREATE TABLE IF NOT EXISTS public.posts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
@@ -79,9 +78,8 @@ CREATE TABLE IF NOT EXISTS public.posts (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
-COMMENT ON TABLE public.posts IS 'Stores articles for news and agenda items.';
 
--- Finances (APBDDes)
+-- Finances
 CREATE TABLE IF NOT EXISTS public.finances (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   year INTEGER NOT NULL,
@@ -91,21 +89,8 @@ CREATE TABLE IF NOT EXISTS public.finances (
   note TEXT,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
-COMMENT ON TABLE public.finances IS 'Stores financial data for transparency reports.';
 
 -- 3. FUNCTIONS & TRIGGERS
-
--- Drop existing triggers and functions to ensure idempotency
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-DROP TRIGGER IF EXISTS update_posts_updated_at ON public.posts;
-DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
-DROP TRIGGER IF EXISTS update_demographics_updated_at ON public.demographics;
-DROP TRIGGER IF EXISTS update_village_info_updated_at ON public.village_info;
-DROP TRIGGER IF EXISTS update_finances_updated_at ON public.finances;
-
-DROP FUNCTION IF EXISTS public.is_admin() CASCADE;
-DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
-DROP FUNCTION IF EXISTS public.update_updated_at_column() CASCADE;
 
 -- Function to check for admin role
 CREATE OR REPLACE FUNCTION public.is_admin()
@@ -117,7 +102,6 @@ BEGIN
   );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
-COMMENT ON FUNCTION public.is_admin() IS 'Returns true if the current authenticated user has the admin role. Bypasses RLS via SECURITY DEFINER.';
 
 -- Function to automatically create a profile for a new user
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -127,14 +111,14 @@ BEGIN
   VALUES (
     new.id, 
     COALESCE(new.raw_user_meta_data->>'full_name', 'User Baru'), 
-    'admin' -- Default to admin for initial setup/MVP
+    'admin'
   );
   RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
-COMMENT ON FUNCTION public.handle_new_user() IS 'Trigger function to populate a new profile upon user sign-up. Ensures search_path is set for security.';
 
 -- Trigger for new user creation
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
@@ -147,18 +131,26 @@ BEGIN
     RETURN NEW;
 END;
 $$ language 'plpgsql';
-COMMENT ON FUNCTION public.update_updated_at_column() IS 'Generic trigger function to update the updated_at timestamp on row modification.';
 
--- Triggers for 'updated_at' timestamp updates
+-- Triggers for 'updated_at' updates
+DROP TRIGGER IF EXISTS update_posts_updated_at ON public.posts;
 CREATE TRIGGER update_posts_updated_at BEFORE UPDATE ON public.posts FOR EACH ROW EXECUTE PROCEDURE public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
 CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE PROCEDURE public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_demographics_updated_at ON public.demographics;
 CREATE TRIGGER update_demographics_updated_at BEFORE UPDATE ON public.demographics FOR EACH ROW EXECUTE PROCEDURE public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_village_info_updated_at ON public.village_info;
 CREATE TRIGGER update_village_info_updated_at BEFORE UPDATE ON public.village_info FOR EACH ROW EXECUTE PROCEDURE public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_finances_updated_at ON public.finances;
 CREATE TRIGGER update_finances_updated_at BEFORE UPDATE ON public.finances FOR EACH ROW EXECUTE PROCEDURE public.update_updated_at_column();
 
 -- 4. ROW LEVEL SECURITY (RLS)
 
--- Enable RLS for all tables
+-- Enable RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.village_info ENABLE ROW LEVEL SECURITY;
@@ -167,26 +159,43 @@ ALTER TABLE public.demographics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.finances ENABLE ROW LEVEL SECURITY;
 
--- Policies for 'profiles'
--- Non-recursive: Users can see and update their own profiles
-CREATE POLICY "Users can view own profile" ON public.profiles FOR SELECT USING (auth.uid() = id);
-CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
-
--- Admin Management (Recursive-safe because is_admin is SECURITY DEFINER)
-CREATE POLICY "Admins can manage all profiles" ON public.profiles FOR ALL USING (public.is_admin());
-
 -- Policies for public-read tables
+DROP POLICY IF EXISTS "Allow public read access" ON public.categories;
 CREATE POLICY "Allow public read access" ON public.categories FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public read access" ON public.village_info;
 CREATE POLICY "Allow public read access" ON public.village_info FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public read access" ON public.staff_members;
 CREATE POLICY "Allow public read access" ON public.staff_members FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public read access" ON public.demographics;
 CREATE POLICY "Allow public read access" ON public.demographics FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public read access on published posts" ON public.posts;
 CREATE POLICY "Allow public read access on published posts" ON public.posts FOR SELECT USING (status = 'published');
+
+DROP POLICY IF EXISTS "Allow public read access" ON public.finances;
 CREATE POLICY "Allow public read access" ON public.finances FOR SELECT USING (true);
 
--- Policies for admin-write tables
+-- Admin Management Policies
+DROP POLICY IF EXISTS "Admins can manage all profiles" ON public.profiles;
+CREATE POLICY "Admins can manage all profiles" ON public.profiles FOR ALL USING (public.is_admin());
+
+DROP POLICY IF EXISTS "Allow admin to manage categories" ON public.categories;
 CREATE POLICY "Allow admin to manage categories" ON public.categories FOR ALL USING (public.is_admin());
+
+DROP POLICY IF EXISTS "Allow admin to manage village_info" ON public.village_info;
 CREATE POLICY "Allow admin to manage village_info" ON public.village_info FOR ALL USING (public.is_admin());
+
+DROP POLICY IF EXISTS "Allow admin to manage staff_members" ON public.staff_members;
 CREATE POLICY "Allow admin to manage staff_members" ON public.staff_members FOR ALL USING (public.is_admin());
+
+DROP POLICY IF EXISTS "Allow admin to manage demographics" ON public.demographics;
 CREATE POLICY "Allow admin to manage demographics" ON public.demographics FOR ALL USING (public.is_admin());
+
+DROP POLICY IF EXISTS "Allow admin to manage posts" ON public.posts;
 CREATE POLICY "Allow admin to manage posts" ON public.posts FOR ALL USING (public.is_admin());
+
+DROP POLICY IF EXISTS "Allow admin to manage finances" ON public.finances;
 CREATE POLICY "Allow admin to manage finances" ON public.finances FOR ALL USING (public.is_admin());
