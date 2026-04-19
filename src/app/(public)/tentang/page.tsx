@@ -1,7 +1,7 @@
 import { getStaffMembers } from '@/actions/staff';
 import { getVillageInfo } from '@/services/data-service';
 import OrgChartTree from '@/components/modules/village/OrgChartTree';
-import { MapPin, Mail, Phone, Globe, Map as MapIcon, Compass } from 'lucide-react';
+import { MapPin, Mail, Phone, Map as MapIcon, Compass } from 'lucide-react';
 
 export default async function TentangPage() {
   const staff = await getStaffMembers();
