@@ -111,12 +111,12 @@ export async function getHomepageData() {
   const supabase = await createClient();
 
   // 1. Fetch Village Info (always needed)
-  const villageInfoPromise = supabase.from('village_info').select('name').single();
+  const villageInfoPromise = supabase.from('village_info').select('name, logo_url, header_banner_url').single();
   
   // 2. Fetch Latest News (always needed)
   const postsPromise = supabase
     .from('posts')
-    .select('title, slug, created_at, categories(name)')
+    .select('title, slug, image_url, created_at, categories(name)')
     .eq('status', 'published')
     .order('created_at', { ascending: false })
     .limit(3);
@@ -224,6 +224,8 @@ export async function getHomepageData() {
 
   return {
     villageName: villageInfoRes.data?.name || 'Desa Kami',
+    logoUrl: villageInfoRes.data?.logo_url,
+    bannerUrl: villageInfoRes.data?.header_banner_url,
     population: demoStats.population,
     budget: budget,
     hamletCount: demoStats.hamletCount,

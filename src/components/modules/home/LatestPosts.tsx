@@ -1,10 +1,12 @@
 // src/components/modules/home/LatestPosts.tsx
 import Link from 'next/link';
-import { Calendar, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
+import { Calendar, ChevronRight, ImageIcon } from 'lucide-react';
 
 interface Post {
   title: string;
   slug: string;
+  image_url?: string | null;
   created_at: string;
   categories: { name: string } | null;
 }
@@ -44,33 +46,46 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
             <Link 
               key={post.slug} 
               href={`/posts/${post.slug}`}
-              className="glass-premium p-1 p-10 rounded-[3.5rem] hover-lift group relative overflow-hidden flex flex-col justify-between h-full transition-all duration-500"
+              className="glass-premium rounded-[3.5rem] hover-lift group relative overflow-hidden flex flex-col h-full transition-all duration-500 border border-border/50"
             >
-              {/* Card visual highlight */}
-              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-              
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <span className="px-5 py-2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg shadow-primary/20">
+              {/* Image Container */}
+              <div className="relative h-64 w-full overflow-hidden">
+                {post.image_url ? (
+                  <Image 
+                    src={post.image_url} 
+                    alt={post.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                    <ImageIcon size={48} strokeWidth={1} />
+                  </div>
+                )}
+                <div className="absolute top-6 left-6">
+                  <span className="px-5 py-2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg">
                     {post.categories?.name || 'Berita'}
                   </span>
-                  <div className="flex items-center gap-2 text-foreground/60 dark:text-muted-foreground font-bold text-xs uppercase tracking-widest">
-                    <Calendar size={14} className="text-primary" />
-                    {new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
-                  </div>
+                </div>
+              </div>
+              
+              <div className="p-10 space-y-6 flex-1 flex flex-col">
+                <div className="flex items-center gap-2 text-foreground/60 dark:text-muted-foreground font-bold text-xs uppercase tracking-widest">
+                  <Calendar size={14} className="text-primary" />
+                  {new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                 </div>
                 
-                <h3 className="text-3xl font-black text-foreground group-hover:text-primary transition-colors leading-[1.1] tracking-tight">
+                <h3 className="text-2xl font-black text-foreground group-hover:text-primary transition-colors leading-tight tracking-tight">
                   {post.title}
                 </h3>
                 
-                <p className="text-foreground/70 dark:text-muted-foreground line-clamp-3 text-base leading-relaxed font-medium italic group-hover:text-foreground transition-colors">
-                  &quot;Baca selengkapnya mengenai {post.title} untuk mendapatkan informasi lebih rinci dan mendalam...&quot;
+                <p className="text-foreground/70 dark:text-muted-foreground line-clamp-3 text-base leading-relaxed font-medium">
+                  Baca selengkapnya mengenai kontribusi dan dampak dari {post.title} bagi warga desa...
                 </p>
-              </div>
-              
-              <div className="pt-10 flex items-center gap-2 text-primary font-black uppercase text-xs tracking-widest group-hover:gap-4 transition-all">
-                Selengkapnya <ChevronRight size={16} />
+                
+                <div className="mt-auto pt-6 flex items-center gap-2 text-primary font-black uppercase text-xs tracking-widest group-hover:gap-4 transition-all">
+                  Selengkapnya <ChevronRight size={16} />
+                </div>
               </div>
             </Link>
           ))}
