@@ -18,6 +18,7 @@ export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps
               src={bannerUrl} 
               alt={`Banner ${villageName}`}
               fill
+              sizes="100vw"
               className="object-cover"
               priority
               quality={100}
@@ -33,7 +34,6 @@ export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps
           </>
         )}
         
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] dark:opacity-20 brightness-100 contrast-150"></div>
         {!bannerUrl && (
           <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
         )}

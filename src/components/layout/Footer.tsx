@@ -68,6 +68,7 @@ export const Footer = () => {
                     width={48}
                     height={48}
                     className="object-contain"
+                    style={{ height: 'auto' }}
                   />
                 ) : (
                   <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-black text-xl shadow-lg shadow-primary/20">

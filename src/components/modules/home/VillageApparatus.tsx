@@ -40,6 +40,7 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
                     src={member.photo_url} 
                     alt={member.name} 
                     fill
+                    sizes="192px"
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                 ) : (

@@ -74,6 +74,7 @@ export default async function HomePage() {
                     src={data.logoUrl} 
                     alt={`Logo Desa ${data.villageName}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-contain drop-shadow-2xl"
                   />
                 </div>

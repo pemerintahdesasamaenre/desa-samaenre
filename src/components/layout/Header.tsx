@@ -54,6 +54,7 @@ export const Header = () => {
                 width={48} 
                 height={48} 
                 className="object-contain"
+                style={{ height: 'auto' }}
               />
             </div>
             <div className="flex flex-col">
