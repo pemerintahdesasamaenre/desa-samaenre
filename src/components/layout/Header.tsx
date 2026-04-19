@@ -30,6 +30,7 @@ export const Header = () => {
     { name: 'Berita', href: '/posts' },
     { name: 'Statistik', href: '/statistik' },
     { name: 'Tentang', href: '/tentang' },
+    { name: 'Galeri', href: '/gallery' },
     { name: 'Transparansi', href: '/transparansi' },
   ];
 

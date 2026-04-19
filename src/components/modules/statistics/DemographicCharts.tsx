@@ -1,6 +1,5 @@
 'use client';
 
-
 import {
   BarChart,
   Bar,
@@ -19,6 +18,21 @@ interface ChartProps {
   data: any;
 }
 
+const PREMIUM_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-3 rounded-xl shadow-xl backdrop-blur-md">
+        <p className="text-xs font-black text-foreground mb-1">{label || payload[0].name}</p>
+        <p className="text-sm font-black text-primary">
+          {payload[0].value.toLocaleString()} <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Jiwa</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 export const DemographicCharts = ({ data }: ChartProps) => {
   const genderData = [
@@ -26,135 +40,141 @@ export const DemographicCharts = ({ data }: ChartProps) => {
     { name: 'Perempuan', value: data.population.female }
   ];
 
-  const PREMIUM_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
-
   return (
-    <div className="space-y-12 mt-12">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* Gender Pie Chart */}
-        <div className="glass-premium p-10 rounded-[3.5rem] shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[50px] -z-10"></div>
-          <h3 className="text-xl font-black mb-10 tracking-tight text-foreground">Proporsi Jenis Kelamin</h3>
-          <div className="h-[350px] w-full">
+    <div className="space-y-12">
+      {/* Row 1: Gender & Age Group */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10">
+        {/* Gender Distribution */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 border-l-4 border-primary pl-4">
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Proporsi Jenis Kelamin</h3>
+          </div>
+          <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={genderData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={80}
-                  outerRadius={110}
-                  paddingAngle={10}
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={5}
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
-                  labelLine={false}
                 >
-                  {genderData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={index === 0 ? '#3b82f6' : '#ec4899'} />
-                  ))}
+                  <Cell fill="var(--color-primary)" stroke="none" />
+                  <Cell fill="#ec4899" stroke="none" />
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'var(--card)', 
-                    border: '1px solid var(--border)',
-                    borderRadius: '1.5rem',
-                    boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
-                    backdropFilter: 'blur(20px)',
-                    padding: '1.25rem',
-                    fontSize: '14px',
-                    fontWeight: 800
-                  }}
-                  itemStyle={{ color: 'var(--foreground)' }}
-                />
-                <Legend iconType="circle" verticalAlign="bottom" height={36}/>
+                <Tooltip content={<CustomTooltip />} />
+                <Legend iconType="circle" verticalAlign="bottom" height={36} />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Hamlet Bar Chart */}
-        <div className="glass-premium p-10 rounded-[3.5rem] shadow-2xl relative overflow-hidden">
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-full blur-[50px] -z-10"></div>
-          <h3 className="text-xl font-black mb-10 tracking-tight text-foreground">Penduduk per Dusun</h3>
-          <div className="h-[350px] w-full">
+        {/* Age Groups */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 border-l-4 border-indigo-500 pl-4">
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Kelompok Usia</h3>
+          </div>
+          <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.hamlets} margin={{ top: 20, right: 30, left: 10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-border/20" />
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false}
-                  tick={{ fill: 'currentColor', fontSize: 13, fontWeight: 700 }}
-                  className="text-foreground/80 dark:text-foreground/90"
-                />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false}
-                  tick={{ fill: 'currentColor', fontSize: 13, fontWeight: 700 }}
-                  className="text-foreground/80 dark:text-foreground/90"
-                />
-                <Tooltip 
-                   cursor={{ fill: 'currentColor', className: 'text-primary/5' }}
-                   contentStyle={{ 
-                     backgroundColor: 'var(--card)', 
-                     border: '1px solid var(--border)',
-                     borderRadius: '1.5rem',
-                     padding: '1.25rem',
-                     fontWeight: 800
-                   }}
-                />
-                <Bar dataKey="value" fill="#10B981" radius={[10, 10, 0, 0]} barSize={50} />
+              <BarChart data={data.age_groups}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="opacity-5" />
+                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: 'currentColor' }} className="opacity-50" />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: 'currentColor' }} className="opacity-50" />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'currentColor', opacity: 0.05 }} />
+                <Bar dataKey="value" fill="var(--color-secondary)" radius={[6, 6, 0, 0]} barSize={35} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Occupation Horizontal Bar Chart */}
-      <div className="glass-premium p-10 rounded-[3.5rem] shadow-2xl relative overflow-hidden md:col-span-2">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/2 rounded-full blur-[120px] -z-10"></div>
-        <h3 className="text-2xl font-black mb-12 tracking-tight text-foreground">Sepuluh Pekerjaan Tertinggi</h3>
-        <div className="h-[500px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={data.occupations}
-              layout="vertical"
-              margin={{ top: 5, right: 60, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="currentColor" className="text-border/20" />
-              <XAxis 
-                type="number" 
-                axisLine={false} 
-                tickLine={false}
-                tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 700 }}
-                className="text-foreground/60 dark:text-foreground/80"
-              />
-              <YAxis 
-                dataKey="label" 
-                type="category" 
-                width={160} 
-                axisLine={false} 
-                tickLine={false}
-                tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 800 }}
-                className="text-foreground/80 dark:text-foreground/90"
-              />
-              <Tooltip 
-                 cursor={{ fill: 'currentColor', className: 'text-primary/5' }}
-                 contentStyle={{ 
-                  backgroundColor: 'var(--card)', 
-                  border: '1px solid var(--border)',
-                  borderRadius: '1.5rem',
-                  padding: '1.25rem',
-                  fontWeight: 800
-                }}
-              />
-              <Bar dataKey="value" fill="#6366F1" radius={[0, 10, 10, 0]} barSize={35}>
-                {data.occupations.map((_: any, index: number) => (
-                  <Cell key={`cell-${index}`} fill={PREMIUM_COLORS[index % PREMIUM_COLORS.length]} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+      {/* Row 2: Education & Status */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 pt-10 border-t border-slate-100 dark:border-slate-800/50">
+        {/* Education Level */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 border-l-4 border-emerald-500 pl-4">
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Tingkat Pendidikan</h3>
+          </div>
+          <div className="h-[320px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={data.education}
+                  nameKey="label"
+                  dataKey="value"
+                  innerRadius={0}
+                  outerRadius={100}
+                >
+                  {data.education.map((_: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={PREMIUM_COLORS[index % PREMIUM_COLORS.length]} stroke="none" />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+                <Legend layout="horizontal" align="center" verticalAlign="bottom" iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '11px', fontWeight: 700 }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Marital Status */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 border-l-4 border-amber-500 pl-4">
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Status Perkawinan</h3>
+          </div>
+          <div className="h-[320px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.marital_status} layout="vertical" margin={{ left: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="currentColor" className="opacity-5" />
+                <XAxis type="number" hide />
+                <YAxis dataKey="label" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: 'currentColor' }} width={100} className="opacity-70" />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'currentColor', opacity: 0.05 }} />
+                <Bar dataKey="value" fill="#10B981" radius={[0, 6, 6, 0]} barSize={20} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
+      {/* Row 3: Hamlets & Top Occupations */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 pt-10 border-t border-slate-100 dark:border-slate-800/50">
+        {/* Hamlet Distribution */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 border-l-4 border-blue-500 pl-4">
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Wilayah Dusun</h3>
+          </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.hamlets}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="opacity-5" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: 'currentColor' }} className="opacity-50" />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: 'currentColor' }} className="opacity-50" />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'currentColor', opacity: 0.05 }} />
+                <Bar dataKey="value" fill="#F59E0B" radius={[6, 6, 0, 0]} barSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Top 5 Occupations */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 border-l-4 border-rose-500 pl-4">
+            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">5 Besar Pekerjaan</h3>
+          </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.occupations} layout="vertical" margin={{ left: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="currentColor" className="opacity-5" />
+                <XAxis type="number" hide />
+                <YAxis dataKey="label" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: 'currentColor' }} width={120} className="opacity-70" />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'currentColor', opacity: 0.05 }} />
+                <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={20}>
+                  {data.occupations.map((_: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={PREMIUM_COLORS[index % PREMIUM_COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </div>

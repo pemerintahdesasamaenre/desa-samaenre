@@ -4,7 +4,6 @@ import { getPosts } from '@/actions/posts'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://profil-desa.id'
   
-  // Ambil semua berita untuk sitemap
   const posts = await getPosts('published')
   const postEntries = posts.map((post: any) => ({
     url: `${appUrl}/posts/${post.slug}`,
@@ -25,6 +24,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.8,
+    },
+    {
+      url: `${appUrl}/gallery`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
     },
     {
       url: `${appUrl}/statistik`,

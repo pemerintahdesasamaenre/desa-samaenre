@@ -2,7 +2,24 @@ import { createClient } from '@/lib/supabase/server';
 import mockDemographics from '@/data/mock/demographics.json';
 import mockVillageInfo from '@/data/mock/village-info.json';
 
-export async function getDemographics() {
+export interface DemographicData {
+  population: { total: number; households: number; male: number; female: number };
+  hamlets: { name: string; value: number }[];
+  occupations: { label: string; value: number }[];
+  education: { label: string; value: number }[];
+  marital_status: { label: string; value: number }[];
+  age_groups: { label: string; value: number }[];
+}
+
+export interface VillageImage {
+  url: string;
+  title: string;
+  source: 'post' | 'branding';
+  date: string;
+  link?: string;
+}
+
+export async function getDemographics(): Promise<DemographicData> {
   const supabase = await createClient();
   
   try {
@@ -12,20 +29,19 @@ export async function getDemographics() {
 
     if (error || !data || data.length === 0) {
       console.warn('Using fallback mock data for demographics');
-      return mockDemographics;
+      return mockDemographics as unknown as DemographicData;
     }
 
-    // Initialize the structure with defaults
-    const result: any = {
+    const result: DemographicData = {
       population: { total: 0, households: 0, male: 0, female: 0 },
       hamlets: [],
       occupations: [],
       education: [],
       marital_status: [],
-      religion: []
+      age_groups: []
     };
 
-    data.forEach((item: any) => {
+    data.forEach((item) => {
       const slug = item.category?.slug;
       
       if (slug === 'populasi') {
@@ -42,15 +58,18 @@ export async function getDemographics() {
         result.education.push({ label: item.label, value: item.value });
       } else if (slug === 'status-perkawinan') {
         result.marital_status.push({ label: item.label, value: item.value });
-      } else if (slug === 'agama') {
-        result.religion.push({ label: item.label, value: item.value });
+      } else if (slug === 'kelompok-usia') {
+        result.age_groups.push({ label: item.label, value: item.value });
       }
     });
+
+    result.occupations.sort((a, b) => b.value - a.value);
+    result.occupations = result.occupations.slice(0, 5);
     
     return result;
   } catch (e) {
-    console.warn('Supabase not connected, using fallback mock data');
-    return mockDemographics;
+    console.warn('Supabase not connected, using fallback mock data', e);
+    return mockDemographics as unknown as DemographicData;
   }
 }
 
@@ -77,21 +96,11 @@ export async function getCategories(type?: string) {
 
 export async function getVillageInfo() {
   const supabase = await createClient();
-
   try {
-    const { data, error } = await supabase
-      .from('village_info')
-      .select('*')
-      .single();
-
-    if (error || !data) {
-      console.warn('Using fallback mock data for village info');
-      return mockVillageInfo;
-    }
-
+    const { data, error } = await supabase.from('village_info').select('*').single();
+    if (error || !data) return mockVillageInfo;
     return data;
-  } catch (e) {
-    console.warn('Supabase not connected, using fallback mock data');
+  } catch {
     return mockVillageInfo;
   }
 }
@@ -107,133 +116,92 @@ export async function getProfiles() {
   return data;
 }
 
+export async function getAllVillageImages(): Promise<VillageImage[]> {
+  const supabase = await createClient();
+  
+  const [postsRes, infoRes] = await Promise.all([
+    supabase.from('posts').select('title, slug, image_url, created_at').not('image_url', 'is', null).order('created_at', { ascending: false }),
+    supabase.from('village_info').select('logo_url, header_banner_url').single()
+  ]);
+
+  const images: VillageImage[] = [];
+
+  // 1. Images from Posts (With dynamic link)
+  if (postsRes.data) {
+    postsRes.data.forEach(post => {
+      images.push({
+        url: post.image_url,
+        title: post.title,
+        source: 'post',
+        date: post.created_at,
+        link: `/posts/${post.slug}`
+      });
+    });
+  }
+
+  // 2. Images from Branding
+  if (infoRes.data) {
+    if (infoRes.data.logo_url) {
+      images.push({
+        url: infoRes.data.logo_url,
+        title: 'Logo Resmi Desa',
+        source: 'branding',
+        date: new Date().toISOString()
+      });
+    }
+    if (infoRes.data.header_banner_url) {
+      images.push({
+        url: infoRes.data.header_banner_url,
+        title: 'Banner Utama Desa',
+        source: 'branding',
+        date: new Date().toISOString()
+      });
+    }
+  }
+
+  return images.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
 export async function getHomepageData() {
   const supabase = await createClient();
 
-  // 1. Fetch Village Info (always needed)
   const villageInfoPromise = supabase.from('village_info').select('name, logo_url, header_banner_url').single();
-  
-  // 2. Fetch Latest News (always needed)
-  const postsPromise = supabase
-    .from('posts')
-    .select('title, slug, image_url, created_at, categories(name)')
-    .eq('status', 'published')
-    .order('created_at', { ascending: false })
-    .limit(3);
+  const postsPromise = supabase.from('posts').select('title, slug, image_url, created_at, categories(name)').eq('status', 'published').order('created_at', { ascending: false }).limit(3);
+  const staffCountPromise = supabase.from('staff_members').select('id', { count: 'exact' });
+  const staffPromise = supabase.from('staff_members').select('name, position, photo_url').order('order_index', { ascending: true }).limit(4);
 
-  // 3. Fetch Staff Summary
-  const staffCountPromise = supabase
-    .from('staff_members')
-    .select('id', { count: 'exact' });
-
-  const staffPromise = supabase
-    .from('staff_members')
-    .select('name, position, photo_url')
-    .order('order_index', { ascending: true })
-    .limit(4);
-
-  // 4. Fetch Budget (Try current year, then latest available)
   const fetchBudget = async () => {
     const currentYear = new Date().getFullYear();
-    const { data: currentData } = await supabase
-      .from('finances')
-      .select('amount')
-      .eq('type', 'income')
-      .eq('year', currentYear);
-    
-    if (currentData && currentData.length > 0) {
-      return currentData.reduce((sum, item) => sum + item.amount, 0);
-    }
-
-    // Fallback to latest year
-    const { data: latestYearData } = await supabase
-      .from('finances')
-      .select('year')
-      .eq('type', 'income')
-      .order('year', { ascending: false })
-      .limit(1);
-    
-    if (latestYearData && latestYearData.length > 0) {
-      const { data: latestData } = await supabase
-        .from('finances')
-        .select('amount')
-        .eq('type', 'income')
-        .eq('year', latestYearData[0].year);
-      return latestData?.reduce((sum, item) => sum + item.amount, 0) || 0;
-    }
-    return 0;
+    const { data } = await supabase.from('finances').select('amount').eq('type', 'income').eq('year', currentYear);
+    return data?.reduce((sum, item) => sum + item.amount, 0) || 0;
   };
 
-  // 5. Fetch Population and Hamlet Count (using slugs)
   const fetchDemographicStats = async () => {
-    const { data: cats } = await supabase
-      .from('categories')
-      .select('id, slug')
-      .in('slug', ['populasi', 'dusun']);
-    
+    const { data: cats } = await supabase.from('categories').select('id, slug').in('slug', ['populasi', 'dusun']);
     const popCat = cats?.find(c => c.slug === 'populasi');
     const dusunCat = cats?.find(c => c.slug === 'dusun');
-
     let population = 0;
-    let hamletCount = 0;
-
     if (popCat) {
-      const { data: popData } = await supabase
-        .from('demographics')
-        .select('value')
-        .eq('category_id', popCat.id)
-        .ilike('label', '%total%')
-        .limit(1);
-      population = popData?.[0]?.value || 0;
+      const { data } = await supabase.from('demographics').select('value').eq('category_id', popCat.id).ilike('label', '%total%').limit(1);
+      population = data?.[0]?.value || 0;
     }
-
-    if (dusunCat) {
-      const { count } = await supabase
-        .from('demographics')
-        .select('id', { count: 'exact' })
-        .eq('category_id', dusunCat.id);
-      hamletCount = count || 0;
-    } else {
-      // Fallback: If no 'dusun' category, maybe check 'populasi' for any label with 'dusun'
-      const { count } = await supabase
-        .from('demographics')
-        .select('id', { count: 'exact' })
-        .ilike('label', '%dusun%');
-      hamletCount = count || 0;
-    }
-
+    const hamletCount = dusunCat ? (await supabase.from('demographics').select('id', { count: 'exact' }).eq('category_id', dusunCat.id)).count || 0 : 0;
     return { population, hamletCount };
   };
 
-  // --- Parallel Execution ---
-  const [
-    villageInfoRes,
-    postsRes,
-    staffCountRes,
-    staffRes,
-    budget,
-    demoStats
-  ] = await Promise.all([
-    villageInfoPromise,
-    postsPromise,
-    staffCountPromise,
-    staffPromise,
-    fetchBudget(),
-    fetchDemographicStats()
+  const [vInfo, posts, sCount, staff, budget, demo] = await Promise.all([
+    villageInfoPromise, postsPromise, staffCountPromise, staffPromise, fetchBudget(), fetchDemographicStats()
   ]);
 
   return {
-    villageName: villageInfoRes.data?.name || 'Desa Kami',
-    logoUrl: villageInfoRes.data?.logo_url,
-    bannerUrl: villageInfoRes.data?.header_banner_url,
-    population: demoStats.population,
-    budget: budget,
-    hamletCount: demoStats.hamletCount,
-    staffCount: staffCountRes.count || 0,
-    posts: (postsRes.data || []).map((post: any) => ({
-      ...post,
-      categories: Array.isArray(post.categories) ? post.categories[0] : post.categories
-    })),
-    staff: staffRes.data || [],
+    villageName: vInfo.data?.name || 'Desa Kami',
+    logoUrl: vInfo.data?.logo_url,
+    bannerUrl: vInfo.data?.header_banner_url,
+    population: demo.population,
+    budget,
+    hamletCount: demo.hamletCount,
+    staffCount: sCount.count || 0,
+    posts: (posts.data || []).map((p: any) => ({ ...p, categories: Array.isArray(p.categories) ? p.categories[0] : p.categories })),
+    staff: staff.data || [],
   };
 }

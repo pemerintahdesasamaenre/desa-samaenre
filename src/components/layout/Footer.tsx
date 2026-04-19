@@ -51,6 +51,7 @@ export const Footer = () => {
               <li><Link href="/posts" className="hover:text-blue-500 transition-colors">Kabar Desa</Link></li>
               <li><Link href="/statistik" className="hover:text-blue-500 transition-colors">Statistik Desa</Link></li>
               <li><Link href="/tentang" className="hover:text-blue-500 transition-colors">Profil Desa</Link></li>
+              <li><Link href="/gallery" className="hover:text-blue-500 transition-colors">Galeri Desa</Link></li>
             </ul>
           </div>
 

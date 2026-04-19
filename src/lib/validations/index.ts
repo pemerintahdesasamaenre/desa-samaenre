@@ -16,6 +16,13 @@ export const villageInfoSchema = z.object({
   history: z.string().optional(),
   logo_url: z.string().url().optional().or(z.literal('')).nullable(),
   header_banner_url: z.string().url().optional().or(z.literal('')).nullable(),
+  area_size: z.string().optional(),
+  boundaries: z.object({
+    north: z.string().optional(),
+    south: z.string().optional(),
+    east: z.string().optional(),
+    west: z.string().optional(),
+  }).optional(),
   contact_info: z.object({
     email: z.string().email().optional().or(z.literal('')),
     phone: z.string().optional(),
