@@ -4,13 +4,38 @@ import HeroSection from '@/components/modules/home/HeroSection';
 import StatGrid from '@/components/modules/home/StatGrid';
 import LatestPosts from '@/components/modules/home/LatestPosts';
 import VillageApparatus from '@/components/modules/home/VillageApparatus';
+import type { Metadata } from 'next';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await getHomepageData();
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://profil-desa.id';
+
+  return {
+    title: `Portal Resmi Desa ${data.villageName}`,
+    description: `Selamat datang di website resmi Desa ${data.villageName}. Temukan informasi publik, statistik penduduk, transparansi anggaran, dan berita terbaru kami.`,
+    openGraph: {
+      title: `Desa ${data.villageName} | Portal Informasi Terintegrasi`,
+      description: `Menuju desa digital yang mandiri dan inovatif bersama masyarakat Desa ${data.villageName}.`,
+      url: appUrl,
+      siteName: `Desa ${data.villageName}`,
+      images: data.bannerUrl ? [{ url: data.bannerUrl, width: 1200, height: 630 }] : ['/og-image.jpg'],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `Desa ${data.villageName}`,
+      description: `Portal informasi dan pelayanan masyarakat Desa ${data.villageName}.`,
+      images: data.bannerUrl ? [data.bannerUrl] : ['/og-image.jpg'],
+    }
+  };
+}
 
 export default async function HomePage() {
   const data = await getHomepageData();
 
   return (
     <main className="space-y-0 text-foreground">
-      <HeroSection villageName={data.villageName} />
+      <HeroSection villageName={data.villageName} bannerUrl={data.bannerUrl} />
       
       {/* Dynamic Summary Section */}
       <section className="pt-24 pb-40 bg-background relative z-20 overflow-hidden">

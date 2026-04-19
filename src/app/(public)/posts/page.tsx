@@ -1,10 +1,21 @@
+import { getPosts } from '@/actions/posts'
 import Link from 'next/link'
 import { Clock, ChevronRight } from 'lucide-react'
-import { getPosts } from '@/actions/posts'
 import Image from 'next/image'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Kabar Terkini & Warta Desa',
+  description: 'Ikuti berbagai kegiatan, pengumuman, dan berita terbaru seputar pembangunan dan aktivitas warga Desa Samaenre.',
+  openGraph: {
+    title: 'Kabar Terkini Desa Samaenre',
+    description: 'Pusat informasi dan berita resmi Pemerintah Desa Samaenre.',
+    type: 'website',
+  }
+}
 
 export default async function PublicPostsPage() {
-  const posts = await getPosts()
+  const posts = await getPosts('published')
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

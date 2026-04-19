@@ -16,7 +16,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
-  const description = post.content.substring(0, 160).replace(/[#*]/g, '') + '...';
+  // Bersihkan konten dari simbol markdown untuk deskripsi SEO
+  const description = post.content
+    .replace(/[#*`_~\[\]]/g, '') // Hapus simbol markdown
+    .substring(0, 160)
+    .trim() + '...';
   const url = `${process.env.NEXT_PUBLIC_APP_URL}/posts/${post.slug}`;
 
   return {
