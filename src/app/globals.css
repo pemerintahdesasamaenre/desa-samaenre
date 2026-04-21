@@ -112,7 +112,7 @@
 
   .glass-premium {
     background-color: var(--color-card-70);
-    @apply backdrop-blur-2xl border border-border/60 dark:border-white/10 shadow-2xl ring-1 ring-white/10;
+    @apply backdrop-blur-md border border-border/60 dark:border-white/10 shadow-xl ring-1 ring-white/10;
   }
   
   .text-gradient {

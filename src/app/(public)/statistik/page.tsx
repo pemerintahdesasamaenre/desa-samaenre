@@ -53,19 +53,19 @@ export default async function StatistikPage() {
             label="Keluarga (KK)"
             value={data.population.households.toLocaleString()}
             unit="Rumah Tangga"
-            icon={<Home />}
+            icon={<Home size={32} />}
           />
           <StatCard
             label="Laki-laki"
             value={data.population.male.toLocaleString()}
             unit="Jiwa"
-            icon={<Users className="text-blue-500" />}
+            icon={<Users className="text-blue-500" size={32} />}
           />
           <StatCard
             label="Perempuan"
             value={data.population.female.toLocaleString()}
             unit="Jiwa"
-            icon={<Users className="text-pink-500" />}
+            icon={<Users className="text-pink-500" size={32} />}
           />
         </div>
 

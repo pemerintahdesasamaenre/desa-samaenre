@@ -53,8 +53,7 @@ export const Header = () => {
                 alt="Logo Desa" 
                 width={48} 
                 height={48} 
-                className="object-contain"
-                style={{ height: 'auto' }}
+                className="object-contain w-auto h-auto"
                 decoding="async"
               />
             </div>

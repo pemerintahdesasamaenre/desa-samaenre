@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   BarChart,
   Bar,
@@ -23,7 +24,7 @@ const PREMIUM_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="glass-premium p-4 rounded-2xl shadow-2xl backdrop-blur-2xl border border-white/20 dark:border-white/5 min-w-[120px]">
+      <div className="glass-premium p-4 rounded-2xl shadow-2xl border border-white/20 dark:border-white/5 min-w-[120px]">
         <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-1">{label || payload[0].name}</p>
         <div className="flex items-baseline gap-2">
           <span className="text-xl font-black text-primary tabular-nums">
@@ -38,13 +39,23 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export const DemographicCharts = ({ data }: ChartProps) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return <div className="h-[600px] w-full bg-muted/10 animate-pulse rounded-3xl" />;
+  }
+
   const genderData = [
     { name: 'Laki-laki', value: data.population.male },
     { name: 'Perempuan', value: data.population.female }
   ];
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 min-h-[600px]">
       {/* Row 1: Gender & Age Group */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10">
         {/* Gender Distribution */}
@@ -52,7 +63,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
           <div className="flex items-center gap-3 border-l-4 border-primary pl-4">
             <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Proporsi Jenis Kelamin</h3>
           </div>
-          <div className="h-[300px] w-full">
+          <div className="h-[300px] w-full min-h-[300px] relative">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -77,7 +88,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
           <div className="flex items-center gap-3 border-l-4 border-indigo-500 pl-4">
             <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Kelompok Usia</h3>
           </div>
-          <div className="h-[300px] w-full">
+          <div className="h-[300px] w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.age_groups}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="opacity-5" />
@@ -98,7 +109,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
           <div className="flex items-center gap-3 border-l-4 border-emerald-500 pl-4">
             <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Tingkat Pendidikan</h3>
           </div>
-          <div className="h-[320px] w-full">
+          <div className="h-[320px] w-full min-h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -124,7 +135,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
           <div className="flex items-center gap-3 border-l-4 border-amber-500 pl-4">
             <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Status Perkawinan</h3>
           </div>
-          <div className="h-[320px] w-full">
+          <div className="h-[320px] w-full min-h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.marital_status} layout="vertical" margin={{ left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="currentColor" className="opacity-5" />
@@ -145,7 +156,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
           <div className="flex items-center gap-3 border-l-4 border-blue-500 pl-4">
             <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Wilayah Dusun</h3>
           </div>
-          <div className="h-[300px] w-full">
+          <div className="h-[300px] w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.hamlets}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="opacity-5" />
@@ -163,7 +174,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
           <div className="flex items-center gap-3 border-l-4 border-rose-500 pl-4">
             <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">5 Besar Pekerjaan</h3>
           </div>
-          <div className="h-[300px] w-full">
+          <div className="h-[300px] w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.occupations} layout="vertical" margin={{ left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="currentColor" className="opacity-5" />

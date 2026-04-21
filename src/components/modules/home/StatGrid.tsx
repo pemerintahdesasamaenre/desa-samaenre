@@ -18,10 +18,10 @@ export default function StatGrid({ population, budget, hamletCount, staffCount }
     <section id="statistics" className="relative pb-24 px-4 scroll-mt-16">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 -mt-16 relative z-30">
-          <StatCard icon={<Users />} label="Populasi" value={population.toLocaleString()} unit="Jiwa" />
-          <StatCard icon={<Wallet />} label="Anggaran Pendapatan" value={`Rp ${(budget / 1_000_000).toFixed(1)}jt`} unit="Total" />
-          <StatCard icon={<MapPin />} label="Wilayah Dusun" value={hamletCount.toLocaleString()} unit="Wilayah" />
-          <StatCard icon={<Briefcase />} label="Aparatur Desa" value={staffCount.toLocaleString()} unit="Orang" />
+          <StatCard icon={<Users size={32} />} label="Populasi" value={population.toLocaleString()} unit="Jiwa" />
+          <StatCard icon={<Wallet size={32} />} label="Anggaran Pendapatan" value={`Rp ${(budget / 1_000_000).toFixed(1)}jt`} unit="Total" />
+          <StatCard icon={<MapPin size={32} />} label="Wilayah Dusun" value={hamletCount.toLocaleString()} unit="Wilayah" />
+          <StatCard icon={<Briefcase size={32} />} label="Aparatur Desa" value={staffCount.toLocaleString()} unit="Orang" />
         </div>
       </div>
     </section>
