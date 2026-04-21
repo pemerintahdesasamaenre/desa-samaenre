@@ -22,7 +22,7 @@ export default function DeletePostButton({ id, title }: { id: string; title: str
       } else {
         router.refresh()
       }
-    } catch (err) {
+    } catch {
       alert('Terjadi kesalahan sistem')
     } finally {
       setLoading(false)

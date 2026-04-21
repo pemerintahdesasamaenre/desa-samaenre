@@ -7,7 +7,7 @@ export default async function EditDemographicPage({ params }: { params: Promise<
   const categories = await getCategories('demographic');
   const demographics = await getRawDemographics();
   
-  const initialData = demographics.find((d: any) => d.id === id);
+  const initialData = demographics.find((d) => d.id === id);
 
   if (!initialData) {
     notFound();

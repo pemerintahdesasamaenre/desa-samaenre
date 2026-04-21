@@ -12,9 +12,9 @@ vi.mock('next/cache', () => ({
 
 describe('addFinanceEntry', () => {
   it('should return error if unauthorized', async () => {
-    (createClient as any).mockResolvedValue({
+    vi.mocked(createClient).mockResolvedValue({
       auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }) }
-    });
+    } as any);
 
     const result = await addFinanceEntry({ 
       year: 2026, type: 'income', category_name: 'PADesa', amount: 1000000 

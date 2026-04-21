@@ -6,7 +6,7 @@ export interface Category {
   slug: string;
   type: CategoryType;
   description?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at: string;
 }
 
@@ -22,8 +22,11 @@ export interface Demographic {
   category_id: string;
   label: string;
   value: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   updated_at: string;
+  category?: {
+    name: string;
+  };
 }
 
 export interface VillageInfo {
@@ -32,13 +35,14 @@ export interface VillageInfo {
   vision: string | null;
   mission: string[];
   history: string | null;
+  logo_url: string | null;
   contact_info: {
     email?: string;
     phone?: string;
     address?: string;
     maps_url?: string;
   };
-  location: Record<string, any>;
+  location: Record<string, unknown>;
   updated_at: string;
 }
 
@@ -60,4 +64,20 @@ export interface StaffMember {
   parent_id: string | null;
   order_index: number;
   created_at: string;
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  image_url: string | null;
+  status: 'draft' | 'published';
+  category_id: string | null;
+  author_id: string;
+  created_at: string;
+  event_date: string | null;
+  categories?: {
+    name: string;
+  } | null;
 }

@@ -22,7 +22,7 @@ export default function DeleteCategoryButton({ id, name }: { id: string; name: s
       } else {
         router.refresh()
       }
-    } catch (err) {
+    } catch {
       alert('Terjadi kesalahan sistem')
     } finally {
       setLoading(false)

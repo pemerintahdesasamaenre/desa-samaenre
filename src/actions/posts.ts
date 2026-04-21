@@ -101,7 +101,7 @@ export async function getPosts(status?: 'draft' | 'published') {
   if (status) query = query.eq('status', status)
   const { data, error } = await query.order('created_at', { ascending: false })
   if (error) return []
-  return (data || []).map((post: any) => ({
+  return (data || []).map((post) => ({
     ...post,
     categories: Array.isArray(post.categories) ? post.categories[0] : post.categories
   }))

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from 'react';
 import { motion, useInView, useMotionValue, useSpring } from 'framer-motion';
-import { cn } from '@/lib/utils';
 
 interface StatCardProps {
   label: string;
@@ -28,19 +27,28 @@ function NumberTicker({ value }: { value: number }) {
   }, [motionValue, value, isInView]);
 
   useEffect(() => {
-    springValue.on("change", (latest) => {
+    // Set initial text
+    if (ref.current) {
+      ref.current.textContent = Intl.NumberFormat("en-US").format(0);
+    }
+
+    const unsubscribe = springValue.on("change", (latest) => {
       if (ref.current) {
         ref.current.textContent = Intl.NumberFormat("en-US").format(
           Math.round(latest)
         );
       }
     });
+    return () => unsubscribe();
   }, [springValue]);
 
-  return <span ref={ref} className="tabular-nums" />;
+  return <span ref={ref} className="tabular-nums">0</span>;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ label, value, unit, icon }) => {
+export const StatCard: React.FC<StatCardProps> = ({ label, value: rawValue, unit, icon }) => {
+  // Pastikan ada nilai, default ke 0
+  const value = rawValue ?? 0;
+  
   // Cek apakah value adalah angka murni
   const numericValue = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.-]+/g,"")) : value;
   const isNumeric = !isNaN(numericValue as number) && typeof numericValue === 'number';
@@ -66,7 +74,7 @@ export const StatCard: React.FC<StatCardProps> = ({ label, value, unit, icon }) 
         </p>
         <div className="flex items-baseline gap-2">
           <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter">
-            {isNumeric ? <NumberTicker value={numericValue as number} /> : value}
+            {isNumeric ? <NumberTicker value={numericValue as number} /> : (value || "0")}
           </h2>
           {unit && (
             <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{unit}</span>

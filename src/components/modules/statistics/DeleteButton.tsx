@@ -20,7 +20,7 @@ export function DeleteButton({ id, label }: DeleteButtonProps) {
         if (result?.error) {
           alert(`Gagal menghapus: ${result.error}`);
         }
-      } catch (error) {
+      } catch {
         alert('Terjadi kesalahan saat menghapus data.');
       } finally {
         setIsPending(false);

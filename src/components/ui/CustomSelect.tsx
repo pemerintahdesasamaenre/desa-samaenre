@@ -100,8 +100,8 @@ export default function CustomSelect({
         </button>
 
         {isOpen && (
-          <div className="absolute z-50 w-full mt-2 bg-popover border border-border rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="max-h-60 overflow-y-auto p-2 space-y-1">
+          <div className="absolute z-[100] w-full mt-2 bg-popover border border-border rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="max-h-60 overflow-y-auto p-2 space-y-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:display-none">
               {options.length === 0 && (
                 <div className="p-4 text-center text-sm text-muted-foreground">
                   Tidak ada opsi tersedia

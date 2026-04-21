@@ -1,11 +1,12 @@
 import { MetadataRoute } from 'next'
 import { getPosts } from '@/actions/posts'
+import { Post } from '@/types'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://profil-desa.id'
   
-  const posts = await getPosts('published')
-  const postEntries = posts.map((post: any) => ({
+  const posts = await getPosts('published') as Post[]
+  const postEntries = posts.map((post: Post) => ({
     url: `${appUrl}/posts/${post.slug}`,
     lastModified: new Date(post.created_at),
     changeFrequency: 'weekly' as const,

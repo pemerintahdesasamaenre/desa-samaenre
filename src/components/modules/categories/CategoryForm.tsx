@@ -53,7 +53,7 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
         router.push('/admin/categories')
         router.refresh()
       }
-    } catch (err) {
+    } catch {
       setError('Terjadi kesalahan sistem')
     } finally {
       setLoading(false)
@@ -116,7 +116,7 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Tipe Konten</label>
             <select
               value={formData.type}
-              onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as any }))}
+              onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CategoryInput['type'] }))}
               className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
             >
               <option value="post">Berita & Agenda (Post)</option>

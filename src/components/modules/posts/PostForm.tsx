@@ -31,7 +31,7 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
     try {
       const d = new Date(dateStr)
       return d.toISOString().slice(0, 16)
-    } catch (e) {
+    } catch {
       return ''
     }
   }
@@ -78,7 +78,7 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
         router.push('/admin/posts')
         router.refresh()
       }
-    } catch (err) {
+    } catch {
       setError('Terjadi kesalahan sistem')
     } finally {
       setLoading(false)
@@ -155,7 +155,7 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
               { id: 'agenda', name: 'Agenda Kegiatan' }
             ]}
             value={formData.type}
-            onChange={(val) => setFormData(prev => ({ ...prev, type: val as any }))}
+            onChange={(val) => setFormData(prev => ({ ...prev, type: val as 'news' | 'agenda' }))}
             required
           />
 
@@ -167,7 +167,7 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
               { id: 'published', name: 'Terbit (Publik)' }
             ]}
             value={formData.status}
-            onChange={(val) => setFormData(prev => ({ ...prev, status: val as any }))}
+            onChange={(val) => setFormData(prev => ({ ...prev, status: val as 'draft' | 'published' }))}
             required
           />
 

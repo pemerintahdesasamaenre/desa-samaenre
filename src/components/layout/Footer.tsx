@@ -6,10 +6,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, MapPin, Globe, MessageCircle, Share2, Eye, TrendingUp } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { VillageInfo } from '@/types';
 
 export const Footer = () => {
   const pathname = usePathname();
-  const [villageInfo, setVillageInfo] = useState<Record<string, any> | null>(null);
+  const [villageInfo, setVillageInfo] = useState<VillageInfo | null>(null);
   const [totalViews, setTotalViews] = useState<number>(0);
   const [todayViews, setTodayViews] = useState<number>(0);
 

@@ -2,9 +2,8 @@
 
 // src/components/modules/home/LatestPosts.tsx
 import Link from 'next/link';
+import { Calendar, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
-import { Calendar, ChevronRight, ImageIcon } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface Post {
   title: string;
@@ -49,12 +48,22 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
               <Link href={`/posts/${post.slug}`}>
                 <div
                   className={cn(
-                    "cursor-pointer overflow-hidden relative card h-[450px] rounded-[2.5rem] shadow-xl max-w-sm mx-auto flex flex-col justify-between p-6 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20",
-                    "bg-cover bg-center"
+                    "cursor-pointer overflow-hidden relative card h-[450px] rounded-[2.5rem] shadow-xl max-w-sm mx-auto flex flex-col justify-between p-6 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20"
                   )}
-                  style={{ backgroundImage: `url(${post.image_url || '/placeholder-bg.jpg'})` }}
                 >
-                  <div className="absolute w-full h-full top-0 left-0 transition duration-300 group-hover/card:bg-black/40 bg-black/20"></div>
+                  {/* Background Image with Fallback */}
+                  <div className="absolute inset-0 z-0">
+                    <Image
+                      src={(!post.image_url || post.image_url.includes('placeholder-bg.jpg')) 
+                        ? 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80' 
+                        : post.image_url}
+                      alt={post.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover/card:scale-110"
+                    />
+                    <div className="absolute w-full h-full top-0 left-0 transition duration-300 group-hover/card:bg-black/40 bg-black/20"></div>
+                  </div>
+
                   
                   <div className="flex flex-row items-center space-x-4 z-10">
                     <div className="h-10 px-4 bg-primary text-primary-foreground flex items-center justify-center rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">

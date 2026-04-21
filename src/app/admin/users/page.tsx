@@ -1,9 +1,10 @@
 import { inviteAdmin } from '@/actions/auth';
 import { getProfiles } from '@/services/data-service';
 import { UserPlus, Mail, ShieldCheck, User as UserIcon } from 'lucide-react';
+import { Profile } from '@/types';
 
 export default async function AdminUsersPage() {
-  const profiles = await getProfiles();
+  const profiles = await getProfiles() as Profile[];
 
   async function handleInvite(formData: FormData) {
     'use server'
@@ -71,7 +72,7 @@ export default async function AdminUsersPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {profiles.map((profile: any) => (
+                  {profiles.map((profile: Profile) => (
                     <tr key={profile.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">

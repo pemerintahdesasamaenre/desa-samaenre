@@ -2,9 +2,10 @@ import { getRawDemographics } from '@/services/data-service';
 import { Plus, Edit, BarChart } from 'lucide-react';
 import Link from 'next/link';
 import { DeleteButton } from '@/components/modules/statistics/DeleteButton';
+import { Demographic } from '@/types';
 
 export default async function AdminStatisticsPage() {
-  const demographics = await getRawDemographics();
+  const demographics = await getRawDemographics() as Demographic[];
 
   return (
     <div className="space-y-6 md:space-y-8">
@@ -35,7 +36,7 @@ export default async function AdminStatisticsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {demographics.map((item: any) => (
+              {demographics.map((item: Demographic) => (
                 <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                   <td className="px-6 py-4 text-sm">
                     <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -67,7 +68,7 @@ export default async function AdminStatisticsPage() {
 
         {/* Mobile View */}
         <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
-          {demographics.map((item: any) => (
+          {demographics.map((item: Demographic) => (
             <div key={item.id} className="p-5 flex items-center justify-between gap-4">
               <div className="space-y-1">
                 <span className="text-[10px] font-bold text-blue-600 uppercase">{item.category?.name || 'UMUM'}</span>

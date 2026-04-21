@@ -9,8 +9,8 @@ import CustomSelect from '@/components/ui/CustomSelect';
 import { FolderOpen } from 'lucide-react';
 
 interface DemographicFormProps {
-  categories: any[];
-  initialData?: any;
+  categories: { id: string, name: string }[];
+  initialData?: { id: string, category_id: string, label: string, value: number };
   isEditing?: boolean;
 }
 
@@ -32,7 +32,7 @@ export default function DemographicForm({ categories, initialData, isEditing }: 
     };
 
     try {
-      const result = isEditing 
+      const result = isEditing && initialData
         ? await updateDemographic(initialData.id, data)
         : await createDemographic(data);
 
@@ -42,7 +42,7 @@ export default function DemographicForm({ categories, initialData, isEditing }: 
         router.push('/admin/statistics');
         router.refresh();
       }
-    } catch (err) {
+    } catch {
       setError('Gagal menyimpan data. Pastikan koneksi internet stabil.');
     } finally {
       setLoading(false);
@@ -85,7 +85,7 @@ export default function DemographicForm({ categories, initialData, isEditing }: 
             label="Kategori Statistik"
             icon={FolderOpen}
             required
-            onChange={(_) => {
+            onChange={() => {
               // Untuk DemographicForm yang menggunakan FormData, kita perlu trigger input hidden
               // Tapi CustomSelect sudah memiliki input hidden dengan name="category_id"
             }}
