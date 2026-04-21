@@ -114,6 +114,14 @@
     background-color: var(--color-card-70);
     @apply backdrop-blur-md border border-border/60 dark:border-white/10 shadow-xl ring-1 ring-white/10;
   }
+
+  .stat-card-surface {
+    /* High performance surface: no backdrop-blur, only solid-ish background */
+    background-color: color-mix(in srgb, var(--color-card), transparent 20%);
+    @apply border border-border/60 dark:border-white/10 shadow-md ring-1 ring-white/5;
+    will-change: transform;
+    transform: translateZ(0);
+  }
   
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-br from-primary via-accent to-secondary;

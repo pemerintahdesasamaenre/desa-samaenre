@@ -1,27 +1,35 @@
+'use client';
+
 import { getPosts } from '@/actions/posts'
 import Link from 'next/link'
-import { Clock, ChevronRight } from 'lucide-react'
-import Image from 'next/image'
-import type { Metadata } from 'next'
+import { Clock, ChevronRight, Calendar } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: 'Kabar Terkini & Warta Desa',
-  description: 'Ikuti berbagai kegiatan, pengumuman, dan berita terbaru seputar pembangunan dan aktivitas warga Desa Samaenre.',
-  openGraph: {
-    title: 'Kabar Terkini Desa Samaenre',
-    description: 'Pusat informasi dan berita resmi Pemerintah Desa Samaenre.',
-    type: 'website',
+export default function PublicPostsPage() {
+  const [posts, setPosts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const data = await getPosts('published')
+      setPosts(data)
+      setLoading(false)
+    }
+    fetchPosts()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-32 flex justify-center bg-background">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    )
   }
-}
-
-export default async function PublicPostsPage() {
-  const posts = await getPosts('published')
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <main className="flex-1 pt-32 pb-20 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-96 bg-primary/5 -skew-y-3 -translate-y-48"></div>
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <header className="mb-20 space-y-6 text-center">
             <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-sm font-bold uppercase tracking-widest">
@@ -30,7 +38,7 @@ export default async function PublicPostsPage() {
             <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter">
               Kabar <span className="text-primary italic">Terkini</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
               Ikuti berbagai kegiatan, pengumuman, dan berita terbaru seputar pembangunan dan aktivitas warga desa.
             </p>
           </header>
@@ -38,57 +46,50 @@ export default async function PublicPostsPage() {
           {posts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {posts.map((post) => (
-                <Link 
-                  key={post.slug} 
-                  href={`/posts/${post.slug}`}
-                  className="glass rounded-[3rem] overflow-hidden hover-lift group border border-transparent hover:border-primary/20 transition-all duration-500 flex flex-col h-full"
-                >
-                  {/* Thumbnail */}
-                  <div className="aspect-[16/10] bg-muted relative overflow-hidden">
-                    {post.image_url ? (
-                      <Image 
-                        src={post.image_url} 
-                        alt={post.title} 
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent group-hover:scale-110 transition-transform duration-700 flex items-center justify-center text-muted-foreground/20 italic font-black text-2xl rotate-12">
-                        WARTA DESA
+                <div key={post.slug} className="w-full group/card">
+                  <Link href={`/posts/${post.slug}`}>
+                    <div
+                      className={cn(
+                        "cursor-pointer overflow-hidden relative card h-[450px] rounded-[3rem] shadow-xl max-w-sm mx-auto flex flex-col justify-between p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20",
+                        "bg-cover bg-center"
+                      )}
+                      style={{ backgroundImage: `url(${post.image_url || '/placeholder-bg.jpg'})` }}
+                    >
+                      <div className="absolute w-full h-full top-0 left-0 transition duration-300 group-hover/card:bg-black/50 bg-black/30"></div>
+                      
+                      <div className="flex flex-row items-center space-x-4 z-10">
+                        <div className="h-10 px-5 bg-primary text-primary-foreground flex items-center justify-center rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 shadow-lg">
+                          {post.categories?.name || 'Berita'}
+                        </div>
                       </div>
-                    )}
-                    <div className="absolute top-6 left-6 px-4 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
-                      {post.categories?.name || 'Berita'}
-                    </div>
-                  </div>
 
-                  <div className="p-10 flex flex-col flex-1 space-y-4">
-                  <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-[0.2em]">
-                    <Clock size={12} />
-                    {new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                  </div>
-                  <h2 className="text-2xl font-extrabold text-foreground group-hover:text-primary transition-colors leading-tight">
-                    {post.title}
-                  </h2>
-                  <p className="text-muted-foreground line-clamp-3 font-light leading-relaxed flex-1">
-                    {post.excerpt || 'Baca selengkapnya mengenai berita ini untuk mendapatkan rincian lebih lanjut...'}
-                  </p>
-                  <div className="pt-4 flex items-center gap-2 text-primary font-black text-sm group-hover:gap-4 transition-all uppercase tracking-widest">
-                    Baca Selengkapnya
-                    <ChevronRight size={16} />
-                  </div>
+                      <div className="text content z-10 space-y-4">
+                        <div className="flex items-center gap-2 text-white/80 font-bold text-xs uppercase tracking-widest">
+                          <Calendar size={14} className="text-primary" />
+                          {new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </div>
+                        <h2 className="font-black text-2xl md:text-3xl text-gray-50 relative leading-[1.1] tracking-tight">
+                          {post.title}
+                        </h2>
+                        <p className="font-medium text-sm text-gray-200 relative my-4 line-clamp-2 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
+                          {post.excerpt || 'Baca selengkapnya mengenai berita ini untuk mendapatkan rincian lebih lanjut bagi warga desa...'}
+                        </p>
+                        <div className="flex items-center gap-2 text-primary font-black uppercase text-xs tracking-widest pt-2">
+                          Baca Selengkapnya <ChevronRight size={16} />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="glass rounded-[4rem] p-32 text-center space-y-6">
-            <h3 className="text-3xl font-black text-foreground">Belum ada berita.</h3>
-            <p className="text-muted-foreground text-lg">Silakan kembali lagi nanti untuk informasi terbaru.</p>
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-card border border-border/50 rounded-[4rem] p-32 text-center space-y-6 shadow-xl">
+              <h3 className="text-3xl font-black text-foreground uppercase tracking-tighter">Belum ada berita.</h3>
+              <p className="text-muted-foreground text-lg font-medium">Silakan kembali lagi nanti untuk informasi terbaru.</p>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   )

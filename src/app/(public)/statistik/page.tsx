@@ -69,8 +69,8 @@ export default async function StatistikPage() {
           />
         </div>
 
-        {/* Single Layer Chart Background - Optimized for Mobile */}
-        <div className="glass-premium p-4 md:p-16 rounded-[3rem] md:rounded-[4rem] shadow-2xl">
+        {/* Simplified Chart Background - Optimized for Performance */}
+        <div className="bg-card/50 border border-border/60 dark:border-white/10 p-4 md:p-16 rounded-[3rem] md:rounded-[4rem] shadow-xl relative z-10">
            <Suspense fallback={<div className="h-[600px] flex items-center justify-center font-black text-primary animate-pulse tracking-widest uppercase italic">Menyiapkan Grafik Statistik...</div>}>
               <DemographicCharts data={data} />
            </Suspense>

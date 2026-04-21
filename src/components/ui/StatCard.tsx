@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import { motion, useInView, useMotionValue, useSpring } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface StatCardProps {
   label: string;
@@ -10,47 +11,71 @@ interface StatCardProps {
   icon?: React.ReactNode;
 }
 
+// Komponen Ticker Angka ala Magic UI / 3rd Party
+function NumberTicker({ value }: { value: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const motionValue = useMotionValue(0);
+  const springValue = useSpring(motionValue, {
+    damping: 60,
+    stiffness: 100,
+  });
+  const isInView = useInView(ref, { once: true, margin: "0px" });
+
+  useEffect(() => {
+    if (isInView) {
+      motionValue.set(value);
+    }
+  }, [motionValue, value, isInView]);
+
+  useEffect(() => {
+    springValue.on("change", (latest) => {
+      if (ref.current) {
+        ref.current.textContent = Intl.NumberFormat("en-US").format(
+          Math.round(latest)
+        );
+      }
+    });
+  }, [springValue]);
+
+  return <span ref={ref} className="tabular-nums" />;
+}
+
 export const StatCard: React.FC<StatCardProps> = ({ label, value, unit, icon }) => {
+  // Cek apakah value adalah angka murni
+  const numericValue = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.-]+/g,"")) : value;
+  const isNumeric = !isNaN(numericValue as number) && typeof numericValue === 'number';
+
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      whileHover="hover"
-      className="glass-premium p-8 rounded-[3.5rem] group relative overflow-hidden cursor-default shadow-xl"
+      whileHover={{ y: -5 }}
+      className="stat-card-surface p-8 rounded-[3rem] group relative overflow-hidden flex flex-col justify-between h-full shadow-lg border border-white/10"
     >
-      {/* Decorative background glow - ONLY visible/active on hover for max performance */}
-      <motion.div 
-        variants={{
-          hover: { scale: 1.5, opacity: 0.15, x: 20, y: 20 }
-        }}
-        transition={{ type: 'spring', stiffness: 100, damping: 30 }}
-        className="absolute -top-10 -right-10 w-32 h-32 bg-primary rounded-full blur-[50px] pointer-events-none opacity-5 transition-opacity duration-500"
-      />
+      <div className="flex justify-between items-start mb-8">
+        <div className="p-4 bg-primary/10 text-primary rounded-2xl group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-500 shadow-inner">
+          {icon}
+        </div>
+        <div className="h-2 w-2 rounded-full bg-primary/40 group-hover:bg-primary animate-pulse" />
+      </div>
 
-      <div className="flex flex-col gap-6 relative z-10">
-        {icon && (
-          <motion.div 
-            variants={{
-              hover: { scale: 1.1, rotate: 5 }
-            }}
-            className="w-16 h-16 bg-white/10 text-primary rounded-[1.8rem] flex items-center justify-center shadow-lg border border-white/20 transition-colors duration-500 group-hover:bg-primary group-hover:text-primary-foreground"
-          >
-            {icon}
-          </motion.div>
-        )}
-        <div className="space-y-2">
-          <p className="text-foreground/80 dark:text-muted-foreground font-black uppercase tracking-[0.25em] text-[10px] sm:text-xs">
-            {label}
-          </p>
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl sm:text-5xl font-black text-foreground tracking-tighter transition-colors duration-500 group-hover:text-primary">
-              {value}
-            </span>
-            {unit && <span className="text-foreground/80 dark:text-muted-foreground font-black uppercase text-[10px] tracking-widest">{unit}</span>}
-          </div>
+      <div className="space-y-1">
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground group-hover:text-primary transition-colors">
+          {label}
+        </p>
+        <div className="flex items-baseline gap-2">
+          <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter">
+            {isNumeric ? <NumberTicker value={numericValue as number} /> : value}
+          </h2>
+          {unit && (
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{unit}</span>
+          )}
         </div>
       </div>
+
+      {/* Decorative layer - No blur, just subtle gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
     </motion.div>
   );
 };
