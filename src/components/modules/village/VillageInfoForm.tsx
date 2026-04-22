@@ -123,82 +123,84 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden font-sans">
-      <form onSubmit={handleSubmit} className="p-5 md:p-8 space-y-12 text-slate-900 dark:text-slate-100">
+    <div className="bg-card rounded-[3rem] shadow-sm border border-border overflow-hidden">
+      <form onSubmit={handleSubmit} className="p-10 space-y-12">
         {error && (
-          <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 rounded-xl text-sm">
+          <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
             {error}
           </div>
         )}
 
         {/* Section 1: Identity & Contact */}
-        <section className="space-y-6">
-          <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h2 className="text-xl font-black flex items-center gap-2 tracking-tight">
-              <Globe className="text-blue-600" size={24} />
+        <section className="space-y-10">
+          <div className="border-b border-border pb-6">
+            <h2 className="text-xl font-black flex items-center gap-3 tracking-tight text-foreground uppercase">
+              <div className="p-2 bg-primary/10 text-primary rounded-xl">
+                <Globe size={24} />
+              </div>
               Identitas & Kontak Desa
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="space-y-8">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Nama Desa</label>
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Nama Resmi Desa</label>
                 <input 
                   name="name" 
                   defaultValue={initialData.name} 
                   required
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
+                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight" 
                 />
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Email Desa</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Email Desa</label>
                   <input 
                     name="email" 
                     type="email"
                     defaultValue={initialData.contact_info?.email} 
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
+                    className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-medium" 
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Nomor Telepon / WA</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Nomor Telepon / WA</label>
                   <input 
                     type="text"
                     value={phoneNumber}
                     onChange={handlePhoneChange}
-                    placeholder="Contoh: 081234567890"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-mono" 
+                    placeholder="08xxxxxxxxxx"
+                    className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-mono font-bold" 
                   />
                 </div>
               </div>
 
               <div className="space-y-2 group">
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1 flex items-center gap-2">
                   Peta Lokasi Google Maps
-                  <HelpCircle size={14} className="text-slate-400" />
+                  <HelpCircle size={14} className="text-muted-foreground" />
                 </label>
                 <input 
                   value={mapsUrl}
                   onChange={handleMapsInputChange}
-                  placeholder="Paste link atau kode dari Google Maps"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all" 
+                  placeholder="Paste link atau kode iframe dari Google Maps"
+                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-sm" 
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Alamat Lengkap Kantor Desa</label>
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Alamat Lengkap Kantor Desa</label>
                 <textarea 
                   name="address" 
-                  rows={3}
+                  rows={4}
                   defaultValue={initialData.contact_info?.address} 
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none" 
+                  className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed" 
                 />
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <ImageUpload label="Logo Resmi Desa" folder="branding" value={logoUrl} onChange={setLogoUrl} />
               <ImageUpload label="Banner Halaman Utama" folder="branding" value={bannerUrl} onChange={setBannerUrl} />
             </div>
@@ -206,64 +208,66 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
         </section>
 
         {/* Section 2: Geography & Boundaries */}
-        <section className="space-y-6">
-          <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h2 className="text-xl font-black flex items-center gap-2 tracking-tight">
-              <MapIcon className="text-emerald-600" size={24} />
+        <section className="space-y-10">
+          <div className="border-b border-border pb-6">
+            <h2 className="text-xl font-black flex items-center gap-3 tracking-tight text-foreground uppercase">
+              <div className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl">
+                <MapIcon size={24} />
+              </div>
               Geografis & Batas Wilayah
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Luas Wilayah (km² / Ha)</label>
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Luas Wilayah (km² / Ha)</label>
               <input 
                 name="area_size" 
                 defaultValue={initialData.area_size} 
-                placeholder="Contoh: 12.5 km² atau 1.250 Ha"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                placeholder="Contoh: 12.5 km²"
+                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight" 
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 flex items-center gap-2">
                   <Compass size={12} /> Utara
                 </label>
                 <input 
                   name="boundary_north" 
                   defaultValue={initialData.boundaries?.north} 
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                  className="w-full h-12 px-5 rounded-full border border-border bg-background text-foreground text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 flex items-center gap-2">
                   <Compass size={12} /> Selatan
                 </label>
                 <input 
                   name="boundary_south" 
                   defaultValue={initialData.boundaries?.south} 
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                  className="w-full h-12 px-5 rounded-full border border-border bg-background text-foreground text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 flex items-center gap-2">
                   <Compass size={12} /> Timur
                 </label>
                 <input 
                   name="boundary_east" 
                   defaultValue={initialData.boundaries?.east} 
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                  className="w-full h-12 px-5 rounded-full border border-border bg-background text-foreground text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 flex items-center gap-2">
                   <Compass size={12} /> Barat
                 </label>
                 <input 
                   name="boundary_west" 
                   defaultValue={initialData.boundaries?.west} 
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                  className="w-full h-12 px-5 rounded-full border border-border bg-background text-foreground text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold" 
                 />
               </div>
             </div>
@@ -271,32 +275,34 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
         </section>
 
         {/* Section 3: Vision, Mission & History */}
-        <section className="space-y-6">
-          <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h2 className="text-xl font-black flex items-center gap-2 tracking-tight">
-              <Info className="text-blue-600" size={24} />
+        <section className="space-y-10">
+          <div className="border-b border-border pb-6">
+            <h2 className="text-xl font-black flex items-center gap-3 tracking-tight text-foreground uppercase">
+              <div className="p-2 bg-primary/10 text-primary rounded-xl">
+                <Info size={24} />
+              </div>
               Visi, Misi & Sejarah
             </h2>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-10">
             <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Visi Desa</label>
-              <textarea name="vision" rows={2} defaultValue={initialData.vision} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none" />
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Visi Desa</label>
+              <textarea name="vision" rows={2} defaultValue={initialData.vision} className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-bold text-lg tracking-tight" />
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Misi Desa</label>
-                <button type="button" onClick={addMission} className="text-xs bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-xl flex items-center gap-1.5 transition-all font-bold shadow-lg shadow-blue-500/20">
-                  <Plus size={14} /> TAMBAH MISI
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Misi Desa</label>
+                <button type="button" onClick={addMission} className="text-[10px] bg-primary text-primary-foreground px-6 py-2.5 rounded-full flex items-center gap-2 transition-all font-black uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95">
+                  <Plus size={14} /> Tambah Misi
                 </button>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {missions.map((mission, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input value={mission} onChange={(e) => updateMission(index, e.target.value)} placeholder={`Misi ke-${index + 1}`} className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-medium" />
-                    <button type="button" onClick={() => removeMission(index)} className="p-3 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors">
+                  <div key={index} className="flex gap-3">
+                    <input value={mission} onChange={(e) => updateMission(index, e.target.value)} placeholder={`Tulis misi ke-${index + 1}`} className="flex-1 h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-medium" />
+                    <button type="button" onClick={() => removeMission(index)} className="p-4 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl transition-all border border-transparent hover:border-destructive/20">
                       <Trash2 size={20} />
                     </button>
                   </div>
@@ -305,16 +311,16 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Sejarah Lengkap Desa</label>
-              <textarea name="history" rows={8} defaultValue={initialData.history} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none font-medium leading-relaxed" />
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Sejarah Lengkap Desa</label>
+              <textarea name="history" rows={10} defaultValue={initialData.history} className="w-full p-8 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed" />
             </div>
           </div>
         </section>
 
-        <div className="pt-8 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-          <button type="submit" disabled={loading} className="w-full sm:w-auto bg-blue-600 text-white px-12 py-4 rounded-2xl font-black flex items-center justify-center gap-3 hover:bg-blue-700 hover:scale-105 disabled:opacity-50 disabled:scale-100 transition-all shadow-2xl shadow-blue-500/40 tracking-tighter">
+        <div className="pt-10 border-t border-border flex justify-end">
+          <button type="submit" disabled={loading} className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center justify-center gap-4 hover:opacity-90 disabled:opacity-50 transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm uppercase tracking-widest">
             {loading ? <Loader2 className="animate-spin" size={24} /> : <Save size={24} />}
-            SIMPAN SELURUH PERUBAHAN
+            Simpan Seluruh Perubahan
           </button>
         </div>
       </form>

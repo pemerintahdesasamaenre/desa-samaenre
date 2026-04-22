@@ -63,32 +63,32 @@ export default function ConfirmDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-background/80 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="bg-card w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-border overflow-hidden animate-in zoom-in-95 duration-200">
         
-        <div className={`p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center ${variant === 'danger' ? 'bg-red-50/50 dark:bg-red-900/10' : 'bg-slate-50/50 dark:bg-slate-800/50'}`}>
+        <div className={`p-6 border-b border-border flex justify-between items-center ${variant === 'danger' ? 'bg-red-500/10' : 'bg-muted/50'}`}>
           <div className="flex items-center gap-4">
             <div className={`p-2.5 rounded-xl ${iconStyles[variant]}`}>
               {variant === 'danger' ? <ShieldAlert size={24} /> : <AlertTriangle size={24} />}
             </div>
-            <h3 className="text-lg font-black tracking-tight text-slate-900 dark:text-white uppercase">{title}</h3>
+            <h3 className="text-lg font-black tracking-tight text-foreground uppercase">{title}</h3>
           </div>
-          <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+          <button onClick={onClose} className="p-2 text-muted-foreground hover:text-foreground transition-colors">
             <X size={20} />
           </button>
         </div>
 
         <div className="p-8 space-y-6">
-          <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+          <p className="text-muted-foreground leading-relaxed font-medium">
             {description}
           </p>
 
           <div className="space-y-4">
             {requirePhrase && (
               <div className="space-y-2">
-                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                <div className="p-4 bg-muted/50 rounded-2xl border border-border">
                   <p className="text-[10px] font-black text-primary/80 mb-1 uppercase tracking-[0.2em] text-center">{phraseLabel}</p>
-                  <p className="text-sm font-black text-slate-900 dark:text-white select-none text-center italic">
+                  <p className="text-sm font-black text-foreground select-none text-center italic">
                     &quot;{requirePhrase}&quot;
                   </p>
                 </div>
@@ -98,16 +98,16 @@ export default function ConfirmDialog({
                   value={inputText}
                   onChange={(e) => setConfirmText(e.target.value)}
                   placeholder="Ketik di sini..."
-                  className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary outline-none transition-all font-bold tracking-tight text-center"
+                  className="w-full px-6 py-4 rounded-2xl border-2 border-border bg-background text-foreground focus:border-primary outline-none transition-all font-bold tracking-tight text-center"
                 />
               </div>
             )}
 
             {requirePhrase2 && (
               <div className="space-y-2">
-                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                <div className="p-4 bg-muted/50 rounded-2xl border border-border">
                   <p className="text-[10px] font-black text-primary/80 mb-1 uppercase tracking-[0.2em] text-center">{phraseLabel2}</p>
-                  <p className="text-sm font-black text-slate-900 dark:text-white select-none text-center italic">
+                  <p className="text-sm font-black text-foreground select-none text-center italic">
                     &quot;{requirePhrase2}&quot;
                   </p>
                 </div>
@@ -116,7 +116,7 @@ export default function ConfirmDialog({
                   value={inputText2}
                   onChange={(e) => setConfirmText2(e.target.value)}
                   placeholder="Ketik di sini..."
-                  className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary outline-none transition-all font-bold tracking-tight text-center"
+                  className="w-full px-6 py-4 rounded-2xl border-2 border-border bg-background text-foreground focus:border-primary outline-none transition-all font-bold tracking-tight text-center"
                 />
               </div>
             )}
@@ -134,7 +134,7 @@ export default function ConfirmDialog({
             <button
               onClick={onClose}
               disabled={loading}
-              className="w-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold py-3.5 rounded-2xl hover:bg-slate-200 transition-all text-sm"
+              className="w-full bg-muted text-muted-foreground font-bold py-3.5 rounded-2xl hover:bg-muted/80 transition-all text-sm"
             >
               {cancelLabel.toUpperCase()}
             </button>

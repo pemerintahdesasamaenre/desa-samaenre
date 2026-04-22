@@ -18,18 +18,18 @@ export default async function PostsPage() {
   const posts = (await getPosts()) as unknown as PostWithCategory[]
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <div className="space-y-10 pb-20 px-4 md:px-0">
       {/* Header Responsif */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-card p-8 rounded-[2.5rem] border border-border shadow-sm">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Berita & Agenda</h1>
-          <p className="text-muted-foreground mt-1 text-sm md:text-base">
-            Kelola publikasi informasi untuk warga desa.
+          <h1 className="text-4xl font-black tracking-tight text-foreground tracking-tighter">Berita & Agenda</h1>
+          <p className="text-muted-foreground mt-2 font-medium italic">
+            Kelola publikasi informasi dan agenda kegiatan untuk warga desa.
           </p>
         </div>
         <Link
           href="/admin/posts/new"
-          className="flex items-center justify-center gap-2 px-5 py-3 bg-primary text-primary-foreground rounded-xl font-bold transition-all shadow-lg shadow-primary/25 w-full sm:w-auto text-sm md:text-base hover:opacity-90"
+          className="flex items-center justify-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-full font-black transition-all shadow-xl shadow-primary/25 w-full lg:w-auto uppercase text-xs tracking-widest hover:opacity-90 active:scale-95"
         >
           <Plus size={20} />
           Buat Postingan
@@ -37,17 +37,17 @@ export default async function PostsPage() {
       </div>
 
       {/* Grid Card untuk Mobile & Table untuk Desktop */}
-      <div className="bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-sm">
+      <div className="bg-card border border-border rounded-[3rem] overflow-hidden shadow-sm">
         {/* Desktop View */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-muted/50 border-b border-border">
-                <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Konten</th>
-                <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Kategori</th>
-                <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Pelihat</th>
-                <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Status</th>
-                <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] text-right">Aksi</th>
+              <tr className="bg-muted/30 border-b border-border">
+                <th className="px-8 py-6 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Konten</th>
+                <th className="px-8 py-6 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Kategori</th>
+                <th className="px-8 py-6 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Pelihat</th>
+                <th className="px-8 py-6 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Status</th>
+                <th className="px-8 py-6 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -55,23 +55,23 @@ export default async function PostsPage() {
                 <tr key={post.id} className="hover:bg-primary/5 transition-colors group">
                   <td className="px-8 py-6">
                     <div className="flex flex-col">
-                      <span className="font-bold text-foreground group-hover:text-primary transition-colors text-lg">
+                      <span className="font-black text-foreground group-hover:text-primary transition-colors text-lg tracking-tight leading-tight">
                         {post.title}
                       </span>
-                      <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1 font-medium">
-                        <Calendar size={12} className="text-primary" />
+                      <span className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-1.5 font-bold uppercase tracking-widest">
+                        <Calendar size={12} className="text-primary/60" />
                         {new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                       </span>
                     </div>
                   </td>
                   <td className="px-8 py-6">
-                    <span className="px-3 py-1 bg-muted rounded-lg text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                    <span className="px-3 py-1 bg-muted rounded-lg text-[10px] font-black uppercase tracking-widest text-muted-foreground border border-border/50">
                       {post.categories?.name || 'Umum'}
                     </span>
                   </td>
                   <td className="px-8 py-6">
-                    <div className="flex items-center gap-2 text-foreground font-bold">
-                       <Eye size={16} className="text-primary" />
+                    <div className="flex items-center gap-2 text-foreground font-black text-lg tracking-tighter">
+                       <Eye size={18} className="text-primary" />
                        <span className="tabular-nums">{post.views.toLocaleString()}</span>
                     </div>
                   </td>
@@ -83,7 +83,7 @@ export default async function PostsPage() {
                         {post.type.toUpperCase()}
                       </span>
                       <span className={`text-[10px] font-black px-3 py-1 rounded-full border ${
-                        post.status === 'published' ? 'text-primary border-primary/20 bg-primary/5' : 'text-slate-500 border-slate-500/20 bg-slate-500/5'
+                        post.status === 'published' ? 'text-primary border-primary/20 bg-primary/10' : 'text-muted-foreground border-border bg-muted/30'
                       }`}>
                         {post.status.toUpperCase()}
                       </span>
@@ -91,8 +91,8 @@ export default async function PostsPage() {
                   </td>
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Link href={`/posts/${post.slug}`} target="_blank" className="p-2.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all"><Eye size={20} /></Link>
-                      <Link href={`/admin/posts/edit/${post.id}`} className="p-2.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all"><Edit2 size={20} /></Link>
+                      <Link href={`/posts/${post.slug}`} target="_blank" className="p-3 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-2xl transition-all border border-transparent hover:border-primary/20"><Eye size={20} /></Link>
+                      <Link href={`/admin/posts/edit/${post.id}`} className="p-3 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-2xl transition-all border border-transparent hover:border-primary/20"><Edit2 size={20} /></Link>
                       <DeletePostButton id={post.id} title={post.title} />
                     </div>
                   </td>
@@ -105,12 +105,12 @@ export default async function PostsPage() {
         {/* Mobile View (Card List) */}
         <div className="md:hidden divide-y divide-border">
           {posts.map((post) => (
-            <div key={post.id} className="p-6 space-y-5">
+            <div key={post.id} className="p-6 space-y-6 hover:bg-muted/30 transition-colors">
               <div className="flex justify-between items-start gap-4">
-                <div className="space-y-2">
-                  <h3 className="font-bold text-foreground leading-snug text-lg">{post.title}</h3>
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    <span className="text-[10px] font-black px-2 py-0.5 bg-muted rounded text-muted-foreground uppercase tracking-widest">
+                <div className="space-y-3">
+                  <h3 className="font-black text-foreground leading-tight text-xl tracking-tight">{post.title}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-[10px] font-black px-2 py-0.5 bg-muted rounded text-muted-foreground uppercase tracking-widest border border-border">
                       {post.categories?.name || 'Umum'}
                     </span>
                     <span className={`text-[10px] font-black px-2 py-0.5 rounded border ${
@@ -120,27 +120,27 @@ export default async function PostsPage() {
                     </span>
                   </div>
                 </div>
-                <div className={`text-[10px] font-black px-2 py-1 rounded-full shrink-0 border ${
-                  post.status === 'published' ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted text-muted-foreground border-border'
+                <div className={`text-[10px] font-black px-3 py-1 rounded-full shrink-0 border ${
+                  post.status === 'published' ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20' : 'bg-muted text-muted-foreground border-border'
                 }`}>
                   {post.status.toUpperCase()}
                 </div>
               </div>
               
-              <div className="flex items-center justify-between pt-4 border-t border-border/50">
+              <div className="flex items-center justify-between pt-5 border-t border-border">
                 <div className="flex gap-4 items-center">
-                  <span className="text-[10px] text-muted-foreground font-bold flex items-center gap-1">
-                    <Calendar size={12} />
+                  <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-1.5">
+                    <Calendar size={14} className="text-primary/60" />
                     {new Date(post.created_at).toLocaleDateString('id-ID')}
                   </span>
-                  <span className="text-[10px] text-primary font-black flex items-center gap-1">
-                    <Eye size={12} />
+                  <span className="text-base text-foreground font-black flex items-center gap-1.5 tracking-tighter">
+                    <Eye size={18} className="text-primary" />
                     {post.views.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Link href={`/posts/${post.slug}`} className="p-2 text-muted-foreground hover:text-primary"><Eye size={20} /></Link>
-                  <Link href={`/admin/posts/edit/${post.id}`} className="p-2 text-muted-foreground hover:text-primary"><Edit2 size={20} /></Link>
+                <div className="flex items-center gap-2">
+                  <Link href={`/posts/${post.slug}`} className="p-3 text-muted-foreground hover:text-primary border border-border rounded-2xl"><Eye size={20} /></Link>
+                  <Link href={`/admin/posts/edit/${post.id}`} className="p-3 text-muted-foreground hover:text-primary border border-border rounded-2xl"><Edit2 size={20} /></Link>
                   <DeletePostButton id={post.id} title={post.title} />
                 </div>
               </div>
@@ -149,9 +149,11 @@ export default async function PostsPage() {
         </div>
 
         {posts.length === 0 && (
-          <div className="p-20 text-center text-muted-foreground">
-            <FileText size={64} className="mx-auto mb-4 opacity-10" />
-            <p className="font-bold uppercase tracking-widest text-xs">Belum ada postingan.</p>
+          <div className="p-24 text-center">
+            <div className="w-20 h-20 bg-muted rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <FileText size={40} className="text-muted-foreground" />
+            </div>
+            <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs">Belum ada postingan tersedia.</p>
           </div>
         )}
       </div>

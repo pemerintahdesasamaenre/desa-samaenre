@@ -61,94 +61,96 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="max-w-2xl mx-auto pb-20 px-4 sm:px-0">
+      <div className="mb-6">
         <Link 
           href="/admin/categories" 
-          className="text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-colors"
+          className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors font-bold uppercase text-[10px] tracking-widest"
         >
           <ArrowLeft size={18} />
           Kembali ke Daftar
         </Link>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-slate-900 p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
-        <div className="border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+      <div className="bg-card rounded-[3rem] border border-border shadow-sm overflow-hidden">
+        <div className="p-10 border-b border-border bg-muted/30">
+          <h2 className="text-3xl font-black text-foreground tracking-tighter">
             {isEditing ? 'Edit Kategori' : 'Tambah Kategori Baru'}
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
+          <p className="text-muted-foreground mt-2 font-medium">
             Kategori membantu mengelompokkan konten berita, demografi, atau galeri.
           </p>
         </div>
 
-        {error && (
-          <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl text-sm border border-red-100 dark:border-red-900/30">
-            {error}
-          </div>
-        )}
+        <form onSubmit={handleSubmit} className="p-10 space-y-8">
+          {error && (
+            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
+              {error}
+            </div>
+          )}
 
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Nama Kategori</label>
-            <input
-              type="text"
-              required
-              value={formData.name}
-              onChange={handleNameChange}
-              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-              placeholder="Contoh: Berita Utama, Data Penduduk, dll"
-            />
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Nama Kategori</label>
+              <input
+                type="text"
+                required
+                value={formData.name}
+                onChange={handleNameChange}
+                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight"
+                placeholder="Contoh: Berita Utama, Data Penduduk, dll"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Slug (URL)</label>
+              <input
+                type="text"
+                required
+                value={formData.slug}
+                onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-mono text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Tipe Konten</label>
+              <select
+                value={formData.type}
+                onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CategoryInput['type'] }))}
+                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold"
+              >
+                <option value="post">Berita & Agenda (Post)</option>
+                <option value="demographic">Data Statistik (Demographic)</option>
+                <option value="finance">Keuangan (Finance)</option>
+                <option value="gallery">Galeri Foto (Gallery)</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Deskripsi (Opsional)</label>
+              <textarea
+                rows={4}
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium"
+                placeholder="Penjelasan singkat mengenai kategori ini..."
+              />
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Slug (URL)</label>
-            <input
-              type="text"
-              required
-              value={formData.slug}
-              onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Tipe Konten</label>
-            <select
-              value={formData.type}
-              onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CategoryInput['type'] }))}
-              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+          <div className="pt-8 border-t border-border flex justify-end">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
             >
-              <option value="post">Berita & Agenda (Post)</option>
-              <option value="demographic">Data Statistik (Demographic)</option>
-              <option value="finance">Keuangan (Finance)</option>
-              <option value="gallery">Galeri Foto (Gallery)</option>
-            </select>
+              {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
+              {isEditing ? 'Simpan Perubahan' : 'Tambah Kategori'}
+            </button>
           </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Deskripsi (Opsional)</label>
-            <textarea
-              rows={3}
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
-              placeholder="Penjelasan singkat mengenai kategori ini..."
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-end pt-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-8 py-3 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2"
-          >
-            {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-            {isEditing ? 'Simpan Perubahan' : 'Tambah Kategori'}
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   )
 }

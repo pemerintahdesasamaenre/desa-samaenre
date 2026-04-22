@@ -86,136 +86,138 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="max-w-4xl mx-auto pb-20 px-4 sm:px-0">
+      <div className="mb-6">
         <Link 
           href="/admin/posts" 
-          className="text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-colors"
+          className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors font-bold uppercase text-[10px] tracking-widest"
         >
           <ArrowLeft size={18} />
           Kembali ke Daftar
         </Link>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
-        <div className="border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+      <div className="bg-card rounded-[3rem] border border-border shadow-sm overflow-hidden">
+        <div className="p-10 border-b border-border bg-muted/30">
+          <h2 className="text-3xl font-black text-foreground tracking-tighter">
             {isEditing ? 'Edit Postingan' : 'Buat Postingan Baru'}
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
+          <p className="text-muted-foreground mt-2 font-medium">
             {isEditing ? 'Perbarui informasi yang sudah dipublikasikan.' : 'Isi detail di bawah untuk membagikan informasi desa.'}
           </p>
         </div>
 
-        {error && (
-          <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl text-sm border border-red-100 dark:border-red-900/30">
-            {error}
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="md:col-span-2 space-y-2">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Judul</label>
-            <input
-              type="text"
-              required
-              value={formData.title}
-              onChange={handleTitleChange}
-              className="w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-              placeholder="Masukkan judul berita/agenda"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Slug (URL)</label>
-            <input
-              type="text"
-              required
-              value={formData.slug}
-              onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-              className="w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-            />
-          </div>
-
-          <CustomSelect
-            label="Kategori"
-            placeholder="Pilih Kategori..."
-            icon={FolderOpen}
-            options={categories}
-            value={formData.category_id || ''}
-            onChange={(val) => setFormData(prev => ({ ...prev, category_id: val }))}
-            required
-          />
-
-          <CustomSelect
-            label="Tipe Konten"
-            icon={Tag}
-            options={[
-              { id: 'news', name: 'Berita Desa' },
-              { id: 'agenda', name: 'Agenda Kegiatan' }
-            ]}
-            value={formData.type}
-            onChange={(val) => setFormData(prev => ({ ...prev, type: val as 'news' | 'agenda' }))}
-            required
-          />
-
-          <CustomSelect
-            label="Status Publikasi"
-            icon={Settings2}
-            options={[
-              { id: 'draft', name: 'Draft (Simpan Internal)' },
-              { id: 'published', name: 'Terbit (Publik)' }
-            ]}
-            value={formData.status}
-            onChange={(val) => setFormData(prev => ({ ...prev, status: val as 'draft' | 'published' }))}
-            required
-          />
-
-          {formData.type === 'agenda' && (
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Tanggal Kegiatan</label>
-              <input
-                type="datetime-local"
-                value={formData.event_date}
-                onChange={(e) => setFormData(prev => ({ ...prev, event_date: e.target.value }))}
-                className="w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-              />
+        <form onSubmit={handleSubmit} className="p-10 space-y-10">
+          {error && (
+            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
+              {error}
             </div>
           )}
 
-          <div className="md:col-span-2">
-            <ImageUpload 
-              label="Gambar Sampul"
-              folder="posts"
-              value={formData.image_url || ''}
-              onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
-            />
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="md:col-span-2 space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Judul Konten</label>
+              <input
+                type="text"
+                required
+                value={formData.title}
+                onChange={handleTitleChange}
+                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight"
+                placeholder="Masukkan judul berita/agenda"
+              />
+            </div>
 
-          <div className="md:col-span-2 space-y-2">
-            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Konten</label>
-            <textarea
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Slug (URL)</label>
+              <input
+                type="text"
+                required
+                value={formData.slug}
+                onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-mono text-sm"
+              />
+            </div>
+
+            <CustomSelect
+              label="Kategori"
+              placeholder="Pilih Kategori..."
+              icon={FolderOpen}
+              options={categories}
+              value={formData.category_id || ''}
+              onChange={(val) => setFormData(prev => ({ ...prev, category_id: val }))}
               required
-              rows={12}
-              value={formData.content}
-              onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-              className="w-full p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
-              placeholder="Tulis isi berita atau detail agenda di sini..."
             />
-          </div>
-        </div>
 
-        <div className="flex justify-end gap-3 pt-6 border-t border-slate-100 dark:border-slate-800">
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full sm:w-auto px-10 py-3 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2"
-          >
-            {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-            {isEditing ? 'Simpan Perubahan' : 'Publikasikan Postingan'}
-          </button>
-        </div>
-      </form>
+            <CustomSelect
+              label="Tipe Konten"
+              icon={Tag}
+              options={[
+                { id: 'news', name: 'Berita Desa' },
+                { id: 'agenda', name: 'Agenda Kegiatan' }
+              ]}
+              value={formData.type}
+              onChange={(val) => setFormData(prev => ({ ...prev, type: val as 'news' | 'agenda' }))}
+              required
+            />
+
+            <CustomSelect
+              label="Status Publikasi"
+              icon={Settings2}
+              options={[
+                { id: 'draft', name: 'Draft (Simpan Internal)' },
+                { id: 'published', name: 'Terbit (Publik)' }
+              ]}
+              value={formData.status}
+              onChange={(val) => setFormData(prev => ({ ...prev, status: val as 'draft' | 'published' }))}
+              required
+            />
+
+            {formData.type === 'agenda' && (
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Tanggal Kegiatan</label>
+                <input
+                  type="datetime-local"
+                  value={formData.event_date}
+                  onChange={(e) => setFormData(prev => ({ ...prev, event_date: e.target.value }))}
+                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold"
+                />
+              </div>
+            )}
+
+            <div className="md:col-span-2">
+              <ImageUpload 
+                label="Gambar Sampul"
+                folder="posts"
+                value={formData.image_url || ''}
+                onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+              />
+            </div>
+
+            <div className="md:col-span-2 space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Konten Lengkap</label>
+              <textarea
+                required
+                rows={12}
+                value={formData.content}
+                onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                className="w-full p-8 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed"
+                placeholder="Tulis isi berita atau detail agenda di sini..."
+              />
+            </div>
+          </div>
+
+          <div className="pt-10 border-t border-border flex justify-end">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
+            >
+              {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
+              {isEditing ? 'Simpan Perubahan' : 'Publikasikan Konten'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }

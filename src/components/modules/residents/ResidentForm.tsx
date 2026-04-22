@@ -112,7 +112,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
       <div className="mb-6 flex items-center justify-between">
         <Link 
           href="/admin/residents" 
-          className="text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-colors font-medium"
+          className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors font-bold uppercase text-[10px] tracking-widest"
         >
           <ArrowLeft size={18} />
           Kembali ke Daftar
@@ -122,7 +122,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
-            className="flex items-center gap-2 text-red-500 hover:text-red-700 font-bold text-sm bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-xl transition-all border border-red-100 dark:border-red-900/30 shadow-sm"
+            className="flex items-center gap-2 text-destructive hover:bg-destructive/10 font-black text-[10px] uppercase tracking-widest bg-destructive/5 px-6 py-3 rounded-full transition-all border border-destructive/20 shadow-sm"
           >
             <Trash2 size={16} />
             Hapus Record
@@ -130,31 +130,33 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         )}
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="p-8 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+      <div className="bg-card rounded-[3rem] border border-border shadow-sm overflow-hidden">
+        <div className="p-10 border-b border-border bg-muted/30">
+          <h2 className="text-3xl font-black text-foreground tracking-tighter">
             {isEditing ? 'Edit Data Penduduk' : 'Tambah Penduduk Baru'}
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm md:text-base">
+          <p className="text-muted-foreground mt-2 font-medium">
             Setiap perubahan data kependudukan resmi akan dicatat secara otomatis dalam sistem audit log.
           </p>
         </div>
 
-        <form ref={formRef} onSubmit={handleOpenSaveConfirm} className="p-8 space-y-8">
+        <form ref={formRef} onSubmit={handleOpenSaveConfirm} className="p-10 space-y-10">
           {typeof error === 'string' && (
-            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 rounded-2xl text-sm font-medium">
+            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
               {error}
             </div>
           )}
 
           {/* Section 1: Identitas Utama */}
-          <div className="space-y-6">
-            <h3 className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
-              <Contact size={18} />
+          <div className="space-y-8">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Contact size={18} />
+              </div>
               Identitas Utama
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <Label>NIK (16 Digit)</Label>
                 <div className="relative">
@@ -170,12 +172,11 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
                   <button 
                     type="button"
                     onClick={() => setShowNik(!showNik)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
                   >
                     {showNik ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                {error?.nik && <p className="text-xs text-red-500 mt-1">{error.nik[0]}</p>}
               </div>
 
               <div className="space-y-2">
@@ -193,12 +194,11 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
                   <button 
                     type="button"
                     onClick={() => setShowKk(!showKk)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
                   >
                     {showKk ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                {error?.kk && <p className="text-xs text-red-500 mt-1">{error.kk[0]}</p>}
               </div>
 
               <div className="space-y-2 md:col-span-2">
@@ -210,18 +210,19 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
                   required
                   className="uppercase font-black tracking-tight"
                 />
-                {error?.name && <p className="text-xs text-red-500 mt-1">{error.name[0]}</p>}
               </div>
             </div>
           </div>
 
-          <div className="space-y-6 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <h3 className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
-              <Calendar size={18} />
+          <div className="space-y-8 pt-6 border-t border-border">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Calendar size={18} />
+              </div>
               Kelahiran & Gender
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="space-y-2">
                 <Label>Tempat Lahir</Label>
                 <Input 
@@ -255,13 +256,15 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             </div>
           </div>
 
-          <div className="space-y-6 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <h3 className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
-              <MapPin size={18} />
+          <div className="space-y-8 pt-6 border-t border-border">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <MapPin size={18} />
+              </div>
               Alamat Domisili
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="space-y-2">
                 <Label>Dusun / Lingkungan</Label>
                 <Input 
@@ -294,13 +297,15 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             </div>
           </div>
 
-          <div className="space-y-6 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <h3 className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
-              <Briefcase size={18} />
+          <div className="space-y-8 pt-6 border-t border-border">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Briefcase size={18} />
+              </div>
               Sosial & Ekonomi
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <Label>Pendidikan Terakhir</Label>
                 <Input 
@@ -347,13 +352,15 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             </div>
           </div>
 
-          <div className="space-y-6 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <h3 className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
-              <Users size={18} />
+          <div className="space-y-8 pt-6 border-t border-border">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Users size={18} />
+              </div>
               Data Orang Tua
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <Label>Nama Ayah Kandung</Label>
                 <Input 
@@ -376,14 +383,14 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             </div>
           </div>
 
-          <div className="pt-8 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+          <div className="pt-10 border-t border-border flex justify-end">
             <button 
               type="submit" 
               disabled={loading}
-              className="bg-primary text-primary-foreground px-10 py-4 rounded-full font-black flex items-center gap-3 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl shadow-primary/25 active:scale-95"
+              className="bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-              {isEditing ? 'SIMPAN PERUBAHAN' : 'TAMBAH PENDUDUK'}
+              {isEditing ? 'Simpan Perubahan' : 'Tambah Penduduk'}
             </button>
           </div>
         </form>

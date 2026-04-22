@@ -81,21 +81,21 @@ export default function CustomSelect({
           onClick={() => setIsOpen(!isOpen)}
           className={`w-full h-12 flex items-center justify-between px-6 rounded-full border transition-all text-left shadow-sm ${
             isOpen 
-              ? 'border-primary ring-4 ring-primary/10 bg-slate-900' 
-              : 'border-slate-800 bg-slate-900 hover:border-slate-700'
+              ? 'border-primary ring-4 ring-primary/10 bg-background' 
+              : 'border-border bg-background hover:border-primary/50'
           } ${error ? 'border-destructive' : ''}`}
         >
           <div className="flex items-center gap-3">
-            <div className={`p-1.5 rounded-full ${selectedOption ? 'bg-primary/10 text-primary' : 'bg-slate-800 text-slate-500'}`}>
+            <div className={`p-1.5 rounded-full ${selectedOption ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
               <Icon size={14} />
             </div>
-            <span className={`text-sm ${selectedOption ? 'text-white font-bold' : 'text-slate-500 font-medium'}`}>
+            <span className={`text-sm ${selectedOption ? 'text-foreground font-bold' : 'text-muted-foreground font-medium'}`}>
               {selectedOption ? selectedOption.name : placeholder}
             </span>
           </div>
           <ChevronDown 
             size={16} 
-            className={`text-slate-500 transition-transform duration-500 ${isOpen ? 'rotate-180' : ''}`} 
+            className={`text-muted-foreground transition-transform duration-500 ${isOpen ? 'rotate-180' : ''}`} 
           />
         </button>
 

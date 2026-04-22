@@ -33,7 +33,7 @@ export default function DeletePostButton({ id, title }: { id: string; title: str
     <button
       onClick={handleDelete}
       disabled={loading}
-      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+      className="p-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl transition-all border border-transparent hover:border-destructive/20"
       title="Hapus"
     >
       {loading ? <Loader2 className="animate-spin" size={18} /> : <Trash2 size={18} />}

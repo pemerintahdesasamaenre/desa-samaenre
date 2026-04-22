@@ -18,54 +18,54 @@ export default async function AdminFinancesPage() {
   };
 
   return (
-    <div className="space-y-6 md:space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-10 pb-20 px-4 md:px-0">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-card p-8 rounded-[2.5rem] border border-border shadow-sm">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Transparansi Keuangan</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm md:text-base">Kelola data APBDDes dan anggaran desa.</p>
+          <h1 className="text-4xl font-black tracking-tight text-foreground tracking-tighter">Transparansi Keuangan</h1>
+          <p className="text-muted-foreground mt-2 font-medium italic">Kelola data APBDDes dan transparansi anggaran desa.</p>
         </div>
         <Link 
           href="/admin/finances/new" 
-          className="flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all shadow-lg shadow-blue-900/20 w-full sm:w-auto font-bold"
+          className="flex items-center justify-center gap-3 px-8 py-4 bg-primary hover:opacity-90 text-primary-foreground rounded-full transition-all shadow-xl shadow-primary/20 font-black uppercase text-xs tracking-widest active:scale-95"
         >
           <Plus size={20} />
           Tambah Data
         </Link>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+      <div className="bg-card rounded-[3rem] border border-border overflow-hidden shadow-sm">
         {/* Desktop View */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
-                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Tahun</th>
-                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Tipe</th>
-                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Kategori</th>
-                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Jumlah</th>
-                <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs text-right">Aksi</th>
+              <tr className="bg-muted/30 border-b border-border">
+                <th className="px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Tahun</th>
+                <th className="px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Tipe</th>
+                <th className="px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Kategori Anggaran</th>
+                <th className="px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Jumlah</th>
+                <th className="px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-border">
               {finances.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                  <td className="px-6 py-4 font-medium">{item.year}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                      item.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 
-                      item.type === 'expense' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'
+                <tr key={item.id} className="hover:bg-primary/5 transition-colors group">
+                  <td className="px-10 py-5 font-black text-foreground/70">{item.year}</td>
+                  <td className="px-10 py-5">
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                      item.type === 'income' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 
+                      item.type === 'expense' ? 'bg-destructive/10 text-destructive border border-destructive/20' : 'bg-primary/10 text-primary border border-primary/20'
                     }`}>
                       {item.type === 'income' ? 'Pendapatan' : item.type === 'expense' ? 'Pengeluaran' : 'Pembiayaan'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">{item.category_name}</td>
-                  <td className="px-6 py-4 font-bold text-slate-700 dark:text-slate-300">
+                  <td className="px-10 py-5 font-bold text-foreground">{item.category_name}</td>
+                  <td className="px-10 py-5 font-black text-foreground tracking-tighter text-lg">
                     {formatCurrency(item.amount)}
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-10 py-5 text-right">
                     <form action={handleDelete} className="inline-block">
                       <input type="hidden" name="id" value={item.id} />
-                      <button type="submit" className="p-2 text-slate-400 hover:text-red-600 transition-colors">
+                      <button type="submit" className="p-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl transition-all border border-transparent hover:border-destructive/20">
                         <Trash2 size={18} />
                       </button>
                     </form>
@@ -77,30 +77,30 @@ export default async function AdminFinancesPage() {
         </div>
 
         {/* Mobile View */}
-        <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
+        <div className="md:hidden divide-y divide-border">
           {finances.map((item) => (
-            <div key={item.id} className="p-5 space-y-3">
+            <div key={item.id} className="p-6 space-y-4 hover:bg-muted/30 transition-colors">
               <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-400">{item.year}</span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                      item.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 
-                      item.type === 'expense' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-black text-muted-foreground">{item.year}</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest ${
+                      item.type === 'income' ? 'bg-emerald-500/10 text-emerald-500' : 
+                      item.type === 'expense' ? 'bg-destructive/10 text-destructive' : 'bg-primary/10 text-primary'
                     }`}>
-                      {item.type === 'income' ? 'In' : item.type === 'expense' ? 'Out' : 'Fin'}
+                      {item.type === 'income' ? 'IN' : item.type === 'expense' ? 'OUT' : 'FIN'}
                     </span>
                   </div>
-                  <h3 className="font-bold text-slate-900 dark:text-white leading-tight">{item.category_name}</h3>
+                  <h3 className="font-black text-foreground leading-tight text-lg">{item.category_name}</h3>
                 </div>
                 <form action={handleDelete}>
                   <input type="hidden" name="id" value={item.id} />
-                  <button type="submit" className="p-2 text-slate-400 hover:text-red-600">
+                  <button type="submit" className="p-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl transition-all border border-border">
                     <Trash2 size={18} />
                   </button>
                 </form>
               </div>
-              <div className="text-lg font-black text-slate-800 dark:text-slate-200">
+              <div className="text-2xl font-black text-primary tracking-tighter">
                 {formatCurrency(item.amount)}
               </div>
             </div>
@@ -108,9 +108,11 @@ export default async function AdminFinancesPage() {
         </div>
 
         {finances.length === 0 && (
-          <div className="p-12 text-center text-slate-500">
-            <Wallet size={48} className="mx-auto mb-4 opacity-20" />
-            Belum ada data keuangan.
+          <div className="p-24 text-center">
+            <div className="w-20 h-20 bg-muted rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <Wallet size={40} className="text-muted-foreground" />
+            </div>
+            <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs">Belum ada data keuangan tersedia.</p>
           </div>
         )}
       </div>
