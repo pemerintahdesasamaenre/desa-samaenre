@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { AlertTriangle, X, Loader2, ShieldAlert } from 'lucide-react';
 
 interface ConfirmDialogProps {
@@ -37,12 +37,16 @@ export default function ConfirmDialog({
   const [inputText, setConfirmText] = useState('');
   const [inputText2, setConfirmText2] = useState('');
 
-  useEffect(() => {
-    if (!isOpen) {
-      setConfirmText('');
-      setConfirmText2('');
-    }
-  }, [isOpen]);
+  const handleClose = () => {
+    setConfirmText('');
+    setConfirmText2('');
+    onClose();
+  };
+
+  const handleConfirm = () => {
+    onConfirm();
+    // Reset state after confirm if needed, but usually modal closes
+  };
 
   if (!isOpen) return null;
 
@@ -73,7 +77,7 @@ export default function ConfirmDialog({
             </div>
             <h3 className="text-lg font-black tracking-tight text-foreground uppercase">{title}</h3>
           </div>
-          <button onClick={onClose} className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+          <button onClick={handleClose} className="p-2 text-muted-foreground hover:text-foreground transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -124,7 +128,7 @@ export default function ConfirmDialog({
 
           <div className="flex flex-col gap-3 pt-2">
             <button
-              onClick={onConfirm}
+              onClick={handleConfirm}
               disabled={!isConfirmed || loading}
               className={`w-full font-black py-4 rounded-2xl transition-all shadow-xl flex items-center justify-center gap-3 ${variantStyles[variant]} disabled:opacity-30 disabled:grayscale`}
             >
@@ -132,7 +136,7 @@ export default function ConfirmDialog({
               {confirmLabel.toUpperCase()}
             </button>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               disabled={loading}
               className="w-full bg-muted text-muted-foreground font-bold py-3.5 rounded-2xl hover:bg-muted/80 transition-all text-sm"
             >

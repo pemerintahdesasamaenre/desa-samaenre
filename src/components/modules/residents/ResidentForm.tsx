@@ -3,15 +3,16 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { upsertResident, deleteResident } from '@/actions/residents';
-import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Briefcase, GraduationCap, Users, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Briefcase, Users, Eye, EyeOff, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import CustomSelect from '@/components/ui/CustomSelect';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Resident } from '@/types';
 
 interface ResidentFormProps {
-  initialData?: any;
+  initialData?: Resident;
   isEditing?: boolean;
 }
 
@@ -25,7 +26,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
   const formRef = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
   
   // State untuk visibilitas input
   const [showNik, setShowNik] = useState(false);
@@ -71,16 +72,16 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
     };
 
     try {
-      const result = await upsertResident(data, isEditing ? initialData.id : undefined);
+      const result = await upsertResident(data, isEditing ? initialData?.id : undefined);
 
       if (result.error) {
-        setError(result.error);
+        setError(result.error as string);
       } else {
         router.push('/admin/residents');
         router.refresh();
       }
-    } catch (e: any) {
-      setError(e.message || 'Gagal menyimpan data penduduk.');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Gagal menyimpan data penduduk.');
     } finally {
       setLoading(false);
     }

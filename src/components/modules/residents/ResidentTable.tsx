@@ -72,7 +72,10 @@ export default function ResidentTable() {
   }, [page, limit, debouncedSearch, dusun]);
 
   useEffect(() => {
-    fetchData();
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [fetchData]);
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { addFinanceEntry } from '@/actions/finances';
 import type { FinanceInput } from '@/lib/validations';
-import { Save, Loader2, ArrowLeft, Wallet, TrendingUp } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';

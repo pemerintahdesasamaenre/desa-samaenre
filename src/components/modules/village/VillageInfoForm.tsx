@@ -125,8 +125,12 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
       }
     };
 
+import { VillageInfo } from '@/types';
+
+// ... (sisanya tetap sama)
+
     try {
-      const result = await updateVillageInfo(initialData.id, data as any);
+      const result = await updateVillageInfo(initialData.id, data as Partial<VillageInfo>);
       if (result.error) {
         const errorMessages = typeof result.error === 'string' 
           ? result.error 

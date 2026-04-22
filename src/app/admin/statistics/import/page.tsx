@@ -1,13 +1,11 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import { ArrowLeft, FileSpreadsheet, Upload, Loader2, BarChart, ShieldCheck, Trash2, Activity } from 'lucide-react';
 import Link from 'next/link';
 // import { processDemographicsExcel } from '@/actions/analytics';
 
 export default function StatisticsImportPage() {
-  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);

@@ -4,6 +4,7 @@ import OrgChartTree from '@/components/modules/village/OrgChartTree';
 import { MapPin, Mail, Phone, Map as MapIcon, Compass, Network } from 'lucide-react';
 import { Timeline } from '@/components/ui/Timeline';
 import ExpandableHistory from '@/components/modules/village/ExpandableHistory';
+import { FormerLeader } from '@/types';
 
 export default async function TentangPage() {
   const staff = await getStaffMembers();
@@ -14,7 +15,7 @@ export default async function TentangPage() {
     ? [...villageInfo.former_leaders].reverse() 
     : [];
 
-  const timelineData = formerLeaders.map((leader: any, idx: number) => ({
+  const timelineData = formerLeaders.map((leader: FormerLeader, idx: number) => ({
     title: leader.period,
     content: (
       <div key={`leader-${idx}`} className="space-y-4">

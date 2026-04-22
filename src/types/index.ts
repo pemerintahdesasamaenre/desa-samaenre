@@ -29,6 +29,11 @@ export interface Demographic {
   };
 }
 
+export interface FormerLeader {
+  name: string;
+  period: string;
+}
+
 export interface VillageInfo {
   id: number;
   name: string;
@@ -43,6 +48,14 @@ export interface VillageInfo {
     maps_url?: string;
   };
   location: Record<string, unknown>;
+  area_size?: string;
+  boundaries?: {
+    north?: string;
+    south?: string;
+    east?: string;
+    west?: string;
+  };
+  former_leaders?: FormerLeader[];
   updated_at: string;
 }
 
@@ -64,6 +77,27 @@ export interface StaffMember {
   parent_id: string | null;
   order_index: number;
   created_at: string;
+}
+
+export interface Resident {
+  id: string;
+  nik?: string;
+  kk?: string;
+  name?: string;
+  data_year: number;
+  birth_place: string | null;
+  birth_date: string | null;
+  gender: 'L' | 'P';
+  education: string | null;
+  occupation: string | null;
+  marital_status: string | null;
+  father_name: string | null;
+  mother_name: string | null;
+  dusun: string | null;
+  rt: string | null;
+  rw: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Post {
