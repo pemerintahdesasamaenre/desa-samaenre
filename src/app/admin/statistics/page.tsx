@@ -1,7 +1,6 @@
 import { getRawDemographics } from '@/services/data-service';
-import { BarChart, Users, GraduationCap, Briefcase, MapPin, Heart, Baby, Layers, FileSpreadsheet } from 'lucide-react';
+import { BarChart, Users, GraduationCap, Briefcase, MapPin, Heart, Baby, Layers } from 'lucide-react';
 import Link from 'next/link';
-import ResetDataButton from '@/components/modules/statistics/ResetDataButton';
 import { Demographic } from '@/types';
 
 export default async function AdminStatisticsPage() {
@@ -34,9 +33,6 @@ export default async function AdminStatisticsPage() {
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">Data Demografi</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm md:text-base">Kelola data statistik dan demografi penduduk desa.</p>
-          <div className="mt-2">
-            <ResetDataButton />
-          </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Link 
@@ -45,13 +41,6 @@ export default async function AdminStatisticsPage() {
           >
             <Users size={18} />
             Data Master Penduduk
-          </Link>
-          <Link 
-            href="/admin/statistics/import" 
-            className="flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3 rounded-xl transition-all hover:bg-slate-50 dark:hover:bg-slate-700 font-bold w-full sm:w-auto"
-          >
-            <FileSpreadsheet size={18} />
-            Import Excel
           </Link>
         </div>
       </div>

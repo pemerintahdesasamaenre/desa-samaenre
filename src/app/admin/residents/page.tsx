@@ -1,5 +1,6 @@
 import ResidentTable from '@/components/modules/residents/ResidentTable';
 import { Users } from 'lucide-react';
+import ResetDataButton from '@/components/modules/statistics/ResetDataButton';
 
 export default function AdminResidentsPage() {
   return (
@@ -15,6 +16,9 @@ export default function AdminResidentsPage() {
           <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base">
             Kelola data individual penduduk desa, termasuk pencarian detail dan filter wilayah.
           </p>
+          <div className="mt-2">
+            <ResetDataButton />
+          </div>
         </div>
       </div>
 
