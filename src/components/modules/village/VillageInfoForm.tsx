@@ -7,6 +7,7 @@ import { Save, Loader2, Plus, Trash2, Globe, Info, HelpCircle, Map as MapIcon, C
 import ImageUpload from '@/components/ui/ImageUpload';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { type VillageInfoInput } from '@/lib/validations';
 
 interface FormerLeader {
   name: string;
@@ -102,7 +103,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
     setError(null);
 
     const formData = new FormData(event.currentTarget);
-    const data = {
+    const data: VillageInfoInput = {
       name: formData.get('name') as string,
       vision: formData.get('vision') as string,
       mission: missions.filter(m => m.trim() !== ''),
@@ -125,12 +126,8 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
       }
     };
 
-import { VillageInfo } from '@/types';
-
-// ... (sisanya tetap sama)
-
     try {
-      const result = await updateVillageInfo(initialData.id, data as Partial<VillageInfo>);
+      const result = await updateVillageInfo(initialData.id, data);
       if (result.error) {
         const errorMessages = typeof result.error === 'string' 
           ? result.error 
