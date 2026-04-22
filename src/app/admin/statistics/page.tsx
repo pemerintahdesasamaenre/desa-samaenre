@@ -40,6 +40,13 @@ export default async function AdminStatisticsPage() {
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Link 
+            href="/admin/residents" 
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl transition-all shadow-lg shadow-blue-900/20 font-bold w-full sm:w-auto"
+          >
+            <Users size={18} />
+            Data Master Penduduk
+          </Link>
+          <Link 
             href="/admin/statistics/import" 
             className="flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3 rounded-xl transition-all hover:bg-slate-50 dark:hover:bg-slate-700 font-bold w-full sm:w-auto"
           >

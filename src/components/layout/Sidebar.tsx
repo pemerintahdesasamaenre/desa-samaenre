@@ -22,6 +22,7 @@ import { logout } from '@/actions/auth';
 const menuItems = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Statistik', href: '/admin/statistics', icon: BarChart3 },
+  { name: 'Data Penduduk', href: '/admin/residents', icon: Users },
   { name: 'Konten Desa', href: '/admin/content', icon: FileText },
   { name: 'Berita & Agenda', href: '/admin/posts', icon: FileText },
   { name: 'Kategori Konten', href: '/admin/categories', icon: FolderOpen },

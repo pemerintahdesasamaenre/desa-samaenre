@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server';
-import { hashNIK, encrypt } from '@/lib/crypto';
+import { hashNIK, encrypt, decrypt } from '@/lib/crypto';
 import { revalidatePath } from 'next/cache';
 
 export interface ResidentImportData {
@@ -22,6 +22,10 @@ export interface ResidentImportData {
   data_year: number;
 }
 
+export interface ResidentDisplayData extends ResidentImportData {
+  id: string;
+}
+
 /**
  * Catat aktivitas ke tabel audit_logs
  */
@@ -35,6 +39,98 @@ async function logActivity(action: string, details: Record<string, unknown>) {
     entity_type: 'residents',
     details
   });
+}
+
+export async function getResidents(params: { 
+  page: number, 
+  limit: number, 
+  search?: string, 
+  dusun?: string 
+}) {
+  const { page, limit, search, dusun } = params;
+  const supabase = await createClient();
+  
+  try {
+    let query = supabase.from('residents').select('*');
+    
+    if (dusun && dusun !== 'SEMUA') {
+      query = query.eq('dusun', dusun);
+    }
+
+    // Jika ada pencarian, kita harus memproses di memori karena data terenkripsi
+    // Untuk efisiensi, kita ambil data sesuai filter dusun (jika ada)
+    const { data, error } = await query.order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    if (!data) return { data: [], total: 0 };
+
+    // Dekripsi data
+    let decryptedData: ResidentDisplayData[] = data.map(item => ({
+      id: item.id,
+      nik: decrypt(item.nik_enc),
+      kk: decrypt(item.kk_enc),
+      name: decrypt(item.name_enc),
+      birth_place: item.birth_place,
+      birth_date: item.birth_date,
+      gender: item.gender,
+      education: item.education,
+      occupation: item.occupation,
+      marital_status: item.marital_status,
+      father_name: item.father_name,
+      mother_name: item.mother_name,
+      dusun: item.dusun,
+      rt: item.rt,
+      rw: item.rw,
+      data_year: item.data_year
+    }));
+
+    // Filter berdasarkan search term
+    if (search) {
+      const s = search.toLowerCase();
+      decryptedData = decryptedData.filter(item => 
+        item.nik.toLowerCase().includes(s) || 
+        item.kk.toLowerCase().includes(s) || 
+        item.name.toLowerCase().includes(s)
+      );
+    }
+
+    const total = decryptedData.length;
+    const paginatedData = decryptedData.slice((page - 1) * limit, page * limit);
+
+    return { data: paginatedData, total };
+  } catch (e: unknown) {
+    console.error(e);
+    return { data: [], total: 0, error: 'Gagal memuat data penduduk.' };
+  }
+}
+
+export async function getDusuns() {
+  const supabase = await createClient();
+  try {
+    const { data, error } = await supabase.from('residents').select('dusun');
+    if (error) throw error;
+    
+    const uniqueDusuns = Array.from(new Set(data.map(d => d.dusun))).filter(Boolean).sort();
+    return uniqueDusuns;
+  } catch {
+    return [];
+  }
+}
+
+export async function deleteResident(id: string) {
+  const supabase = await createClient();
+  try {
+    const { error } = await supabase.from('residents').delete().eq('id', id);
+    if (error) throw error;
+    
+    await logActivity('DELETE_RESIDENT', { resident_id: id });
+    
+    revalidatePath('/admin/residents');
+    revalidatePath('/admin/statistics');
+    return { success: true };
+  } catch (e: unknown) {
+    return { error: e instanceof Error ? e.message : 'Gagal menghapus data.' };
+  }
 }
 
 export async function importResidents(data: ResidentImportData[]) {
