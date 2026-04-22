@@ -34,16 +34,14 @@ export default async function StatistikPage() {
             </p>
           </div>
           
-          {/* Total Population Highlight */}
-          <div className="bg-primary p-10 rounded-[3rem] text-primary-foreground shadow-2xl shadow-primary/20 flex flex-col items-center lg:items-start min-w-[280px] relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
-               <TrendingUp size={120} />
-            </div>
-            <span className="text-sm font-black uppercase tracking-[0.2em] opacity-80 relative z-10">Total Penduduk</span>
-            <div className="flex items-baseline gap-2 relative z-10">
-               <span className="text-6xl font-black tracking-tighter">{data.population.total.toLocaleString()}</span>
-               <span className="text-lg font-bold opacity-60 uppercase">Jiwa</span>
-            </div>
+          {/* Total Population Highlight - Using StatCard for Consistency and Animation */}
+          <div className="min-w-[320px]">
+            <StatCard
+              label="Total Penduduk"
+              value={data.population.total}
+              unit="Jiwa"
+              icon={<TrendingUp size={32} />}
+            />
           </div>
         </div>
 
@@ -51,19 +49,19 @@ export default async function StatistikPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16" id="statistics">
           <StatCard
             label="Keluarga (KK)"
-            value={data.population.households.toLocaleString()}
+            value={data.population.households}
             unit="Rumah Tangga"
             icon={<Home size={32} />}
           />
           <StatCard
             label="Laki-laki"
-            value={data.population.male.toLocaleString()}
+            value={data.population.male}
             unit="Jiwa"
             icon={<Users className="text-blue-500" size={32} />}
           />
           <StatCard
             label="Perempuan"
-            value={data.population.female.toLocaleString()}
+            value={data.population.female}
             unit="Jiwa"
             icon={<Users className="text-pink-500" size={32} />}
           />

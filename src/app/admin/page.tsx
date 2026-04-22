@@ -15,9 +15,9 @@ export default async function AdminDashboard() {
 
       {/* Quick Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard label="Total Penduduk" value={demographics.population.total.toLocaleString()} unit="Jiwa" />
-        <StatCard label="Laki-laki" value={demographics.population.male.toLocaleString()} unit="Jiwa" />
-        <StatCard label="Perempuan" value={demographics.population.female.toLocaleString()} unit="Jiwa" />
+        <StatCard label="Total Penduduk" value={demographics.population.total} unit="Jiwa" />
+        <StatCard label="Laki-laki" value={demographics.population.male} unit="Jiwa" />
+        <StatCard label="Perempuan" value={demographics.population.female} unit="Jiwa" />
         <StatCard label="Dusun Terdaftar" value={demographics.hamlets.length} unit="Wilayah" />
       </div>
 
