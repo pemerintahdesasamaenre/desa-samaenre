@@ -68,3 +68,23 @@ export const staffMemberSchema = z.object({
 });
 
 export type StaffMemberInput = z.infer<typeof staffMemberSchema>;
+
+export const residentSchema = z.object({
+  nik: z.string().length(16, "NIK harus 16 digit"),
+  kk: z.string().length(16, "Nomor KK harus 16 digit"),
+  name: z.string().min(1, "Nama wajib diisi"),
+  birth_place: z.string().optional().or(z.literal('')),
+  birth_date: z.string().nullable(),
+  gender: z.enum(['L', 'P']),
+  education: z.string().min(1, "Pendidikan wajib diisi"),
+  occupation: z.string().min(1, "Pekerjaan wajib diisi"),
+  marital_status: z.string().min(1, "Status perkawinan wajib diisi"),
+  father_name: z.string().optional().or(z.literal('')),
+  mother_name: z.string().optional().or(z.literal('')),
+  dusun: z.string().optional().or(z.literal('')),
+  rt: z.string().optional().or(z.literal('')),
+  rw: z.string().optional().or(z.literal('')),
+  data_year: z.number().int().min(2000).max(2100),
+});
+
+export type ResidentInput = z.infer<typeof residentSchema>;

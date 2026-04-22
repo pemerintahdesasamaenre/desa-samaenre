@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Search, MapPin, ChevronLeft, ChevronRight, Trash2, Edit, Loader2, UserPlus, FileSpreadsheet, Eye, EyeOff } from 'lucide-react';
 import { getResidents, getDusuns, deleteResident, logSensitiveView, type ResidentDisplayData } from '@/actions/residents';
 import Link from 'next/link';
+import CustomSelect from '@/components/ui/CustomSelect';
 
 export default function ResidentTable() {
   const [data, setData] = useState<ResidentDisplayData[]>([]);
@@ -17,6 +18,12 @@ export default function ResidentTable() {
   const [dusuns, setDusuns] = useState<string[]>([]);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [visibleIds, setVisibleIds] = useState<string[]>([]);
+
+  // Format dusuns for CustomSelect
+  const dusunOptions = [
+    { id: 'SEMUA', name: 'Semua Dusun' },
+    ...dusuns.map(d => ({ id: d, name: d }))
+  ];
 
   // Helper to mask sensitive data
   const maskString = (str: string) => {
@@ -103,35 +110,31 @@ export default function ResidentTable() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-1.5 shadow-sm">
-            <MapPin size={16} className="text-slate-400" />
-            <select
+          <div className="w-full sm:w-64">
+            <CustomSelect 
+              options={dusunOptions}
               value={dusun}
-              onChange={(e) => { setDusun(e.target.value); setPage(1); }}
-              className="bg-transparent border-none text-sm font-bold text-slate-700 dark:text-slate-200 focus:ring-0 outline-none py-2"
-            >
-              <option value="SEMUA">Semua Dusun</option>
-              {dusuns.map((d) => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </select>
+              onChange={(val) => { setDusun(val); setPage(1); }}
+              icon={MapPin}
+              placeholder="Filter Dusun"
+            />
           </div>
 
           <Link
             href="/admin/statistics/import"
-            className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3 rounded-2xl transition-all hover:bg-slate-50 dark:hover:bg-slate-700 font-bold shadow-sm"
+            className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3.5 rounded-2xl transition-all hover:bg-slate-50 dark:hover:bg-slate-700 font-bold shadow-sm"
           >
             <FileSpreadsheet size={18} />
             <span className="hidden sm:inline">Import</span>
           </Link>
 
-          <button
-            onClick={() => alert('Fitur Tambah Manual segera hadir!')}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-2xl transition-all shadow-lg shadow-blue-900/20 font-bold"
+          <Link
+            href="/admin/residents/new"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3.5 rounded-2xl transition-all shadow-lg shadow-blue-900/20 font-bold"
           >
             <UserPlus size={18} />
             <span className="hidden sm:inline">Tambah Penduduk</span>
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -228,17 +231,17 @@ export default function ResidentTable() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => alert('Fitur Edit segera hadir!')}
+                        <Link
+                          href={`/admin/residents/edit/${item.id}`}
                           className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all"
                           title="Edit"
                         >
                           <Edit size={18} />
-                        </button>
+                        </Link>
                         <button
                           onClick={() => handleDelete(item.id, item.name)}
                           disabled={isDeleting === item.id}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all"
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-blue-900/20 rounded-xl transition-all"
                           title="Hapus"
                         >
                           {isDeleting === item.id ? <Loader2 className="animate-spin" size={18} /> : <Trash2 size={18} />}

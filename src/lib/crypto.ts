@@ -4,7 +4,18 @@ import crypto from 'crypto';
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
 // FAIL-SAFE: Jangan biarkan aplikasi jalan di produksi tanpa kunci yang benar
-if (!ENCRYPTION_KEY && process.env.NODE_ENV === 'production') {
+// Namun izinkan saat proses build agar tidak gagal deployment
+if (!ENCRYPTION_KEY && process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE !== 'phase-production-build') {
+  // Jika benar-benar sedang jalan di server (bukan build), baru lempar error
+  if (typeof window === 'undefined' && !process.env.VERCEL) {
+     // Di Vercel build phase seringkali NODE_ENV=production
+     // Jadi kita hanya throw jika tidak ada ENCRYPTION_KEY dan ini bukan saat build
+  }
+}
+
+// Cara yang lebih aman untuk build:
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI;
+if (!ENCRYPTION_KEY && process.env.NODE_ENV === 'production' && !isBuildPhase) {
   throw new Error('KEAMANAN KRITIS: ENCRYPTION_KEY tidak ditemukan di environment produksi!');
 }
 

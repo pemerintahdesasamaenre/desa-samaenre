@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { hashNIK, encrypt, decrypt } from '@/lib/crypto';
 import { revalidatePath } from 'next/cache';
+import { residentSchema, type ResidentInput } from '@/lib/validations';
 
 export interface ResidentImportData {
   nik: string;
@@ -101,6 +102,84 @@ export async function getResidents(params: {
   } catch (e: unknown) {
     console.error(e);
     return { data: [], total: 0, error: 'Gagal memuat data penduduk.' };
+  }
+}
+
+export async function getResidentById(id: string) {
+  const supabase = await createClient();
+  try {
+    const { data, error } = await supabase.from('residents').select('*').eq('id', id).single();
+    if (error) throw error;
+    if (!data) return null;
+
+    // Decrypt sensitive data for form
+    const resident: ResidentDisplayData = {
+      id: data.id,
+      nik: decrypt(data.nik_enc),
+      kk: decrypt(data.kk_enc),
+      name: decrypt(data.name_enc),
+      birth_place: data.birth_place,
+      birth_date: data.birth_date,
+      gender: data.gender,
+      education: data.education,
+      occupation: data.occupation,
+      marital_status: data.marital_status,
+      father_name: data.father_name,
+      mother_name: data.mother_name,
+      dusun: data.dusun,
+      rt: data.rt,
+      rw: data.rw,
+      data_year: data.data_year
+    };
+
+    // Log akses data sensitif saat akan diedit
+    await logSensitiveView(id, resident.name + ' (FOR EDIT)');
+
+    return resident;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
+export async function upsertResident(data: ResidentInput, id?: string) {
+  const supabase = await createClient();
+  
+  const validated = residentSchema.safeParse(data);
+  if (!validated.success) {
+    return { error: validated.error.flatten().fieldErrors };
+  }
+
+  const { nik, kk, name, ...rest } = validated.data;
+
+  const residentData = {
+    ...rest,
+    nik_hash: hashNIK(nik),
+    nik_enc: encrypt(nik),
+    kk_enc: encrypt(kk),
+    name_enc: encrypt(name),
+  };
+
+  try {
+    let result;
+    if (id) {
+      result = await supabase.from('residents').update(residentData).eq('id', id);
+    } else {
+      result = await supabase.from('residents').insert(residentData);
+    }
+
+    if (result.error) throw result.error;
+
+    await logActivity(id ? 'UPDATE_RESIDENT' : 'CREATE_RESIDENT', { 
+      resident_name: name,
+      id: id || 'new'
+    });
+
+    revalidatePath('/admin/residents');
+    revalidatePath('/admin/statistics');
+    return { success: true };
+  } catch (e: unknown) {
+    return { error: e instanceof Error ? e.message : 'Gagal menyimpan data.' };
   }
 }
 
