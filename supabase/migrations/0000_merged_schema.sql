@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS public.finances (
 CREATE TABLE IF NOT EXISTS public.residents (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     nik_hash TEXT NOT NULL, 
+    kk_hash TEXT, -- Deterministic Hash for counting families
     nik_enc TEXT, -- AES Encrypted
     kk_enc TEXT,  -- AES Encrypted
     name_enc TEXT, -- AES Encrypted

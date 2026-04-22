@@ -157,6 +157,7 @@ export async function upsertResident(data: ResidentInput, id?: string) {
   const residentData = {
     ...rest,
     nik_hash: hashNIK(nik),
+    kk_hash: hashNIK(kk),
     nik_enc: encrypt(nik),
     kk_enc: encrypt(kk),
     name_enc: encrypt(name),
@@ -231,6 +232,7 @@ export async function importResidents(data: ResidentImportData[]) {
   try {
     const formattedData = data.map(item => ({
       nik_hash: hashNIK(item.nik),
+      kk_hash: hashNIK(item.kk),
       nik_enc: encrypt(item.nik),
       kk_enc: encrypt(item.kk),
       name_enc: encrypt(item.name),
