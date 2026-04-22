@@ -7,11 +7,22 @@ export default async function EditDemographicPage({ params }: { params: Promise<
   const categories = await getCategories('demographic');
   const demographics = await getRawDemographics();
   
-  const initialData = demographics.find((d) => d.id === id);
+  const rawData = demographics.find((d) => d.id === id);
 
-  if (!initialData) {
+  if (!rawData) {
     notFound();
   }
+
+  // Cari category id berdasarkan slug yang digenerate di getRawDemographics
+  const categorySlug = rawData.category.name.toLowerCase().replace(' ', '_');
+  const matchedCategory = categories.find((c) => c.slug === categorySlug);
+
+  const initialData = {
+    id: rawData.id,
+    category_id: matchedCategory?.id || categories[0]?.id || '',
+    label: rawData.label,
+    value: rawData.value,
+  };
 
   return (
     <DemographicForm 
