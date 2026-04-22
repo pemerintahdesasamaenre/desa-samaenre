@@ -105,6 +105,9 @@ export default function StatisticsImportPage() {
         const headers = rawRows[headerRowIndex].map(h => String(h || '').trim().toUpperCase());
         const dataRows = rawRows.slice(headerRowIndex + 1);
         
+        // Logika Forward Fill untuk KK
+        let lastValidKK = '';
+        
         const sheetProcessedData = dataRows.map((row) => {
           const getIdx = (targets: string[], exact = false) => {
             return headers.findIndex(h => {
@@ -122,10 +125,18 @@ export default function StatisticsImportPage() {
           const nikRaw = nikIdx !== -1 ? String(row[nikIdx] || '').trim() : '';
           
           const kkIdx = getIdx(['NO KARTU KELUARGA', 'NOMOR KK', 'NO KK'], false);
-          const kkRaw = kkIdx !== -1 ? String(row[kkIdx] || '').trim() : '';
+          let kkRaw = kkIdx !== -1 ? String(row[kkIdx] || '').trim() : '';
 
           const nik = nikRaw.replace(/[^0-9]/g, '');
-          const kk = kkRaw.replace(/[^0-9]/g, '');
+          let kk = kkRaw.replace(/[^0-9]/g, '');
+
+          // LOGIKA KK CERDAS (Forward Fill):
+          // Jika baris ini KK-nya kosong, gunakan KK dari baris di atasnya (Kepala Keluarga)
+          if (kk.length >= 15) {
+            lastValidKK = kk;
+          } else {
+            kk = lastValidKK;
+          }
 
           // TTL Parsing
           const ttlIdx = getIdx(['TEMPAT TANGGAL LAHIR', 'TTL'], false);
@@ -144,17 +155,13 @@ export default function StatisticsImportPage() {
             }
           }
 
-          // GENDER LOGIC (LEBIH KETAT)
+          // GENDER LOGIC
           let gender: 'L' | 'P' = 'L';
           const lakiIdx = getIdx(['LAKI-LAKI', 'LAKI LAKI', 'L'], true);
           const pereIdx = getIdx(['PEREMPUAN', 'P'], true);
-          
           const valLaki = lakiIdx !== -1 ? String(row[lakiIdx] || '').trim() : '';
           const valPere = pereIdx !== -1 ? String(row[pereIdx] || '').trim() : '';
-
-          if (valPere.length > 0 && valLaki.length === 0) {
-            gender = 'P';
-          }
+          if (valPere.length > 0 && valLaki.length === 0) gender = 'P';
 
           // ORTU LOGIC
           const statusIdx = getIdx(['STATUS'], true);
@@ -249,7 +256,7 @@ export default function StatisticsImportPage() {
               </div>
               Import Master Data
             </h1>
-            <p className="text-muted-foreground font-medium italic">Sistem memproses data perdusun dengan logika filter jenis kelamin yang ketat.</p>
+            <p className="text-muted-foreground font-medium italic">Sistem otomatis memetakan nomor KK bagi anggota keluarga.</p>
           </div>
           
           <div className="bg-background p-5 rounded-[2rem] border border-border shadow-sm text-center min-w-[140px]">
@@ -274,7 +281,7 @@ export default function StatisticsImportPage() {
                 <FileSpreadsheet size={48} className="text-primary/40 group-hover:text-primary transition-colors" />
               </div>
               <p className="text-xl font-black text-foreground tracking-tight hover:text-primary transition-colors">Unggah File Desa (.xlsx)</p>
-              <p className="text-muted-foreground mt-2 font-medium">Logika jenis kelamin kini menggunakan pemetaan kolom persis (Exact Match).</p>
+              <p className="text-muted-foreground mt-2 font-medium">Nomor KK yang kosong otomatis mengikuti baris di atasnya.</p>
             </div>
           ) : (
             <div className="space-y-10">
@@ -336,7 +343,7 @@ export default function StatisticsImportPage() {
             className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center justify-center gap-4 hover:opacity-90 disabled:opacity-30 disabled:grayscale transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
           >
             {loading ? <Loader2 className="animate-spin" size={24} /> : <Upload size={24} />}
-            {loading ? 'Mengirim Data...' : 'Mulai Import Ulang'}
+            {loading ? 'Mengirim Data...' : 'Mulai Import Akhir'}
           </button>
         </div>
       </div>
