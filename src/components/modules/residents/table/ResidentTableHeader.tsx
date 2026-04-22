@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import { Search, MapPin, FileSpreadsheet, UserPlus } from 'lucide-react';
 import CustomSelect from '@/components/ui/CustomSelect';

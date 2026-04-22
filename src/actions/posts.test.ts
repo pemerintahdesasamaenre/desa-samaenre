@@ -25,48 +25,49 @@ describe('createPost', () => {
   });
 
   it('should return error if not authenticated', async () => {
-    vi.mocked(createClient).mockReturnValue({
-      auth: { getUser: vi.fn(() => Promise.resolve({ data: { user: null }, error: null })) }
-    } as unknown as ReturnType<typeof createClient>);
+    vi.mocked(createClient).mockResolvedValue({
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }) }
+    } as any);
 
     const result = await createPost(mockPostData);
     expect(result.error).toBe('Unauthorized');
   });
 
   it('should return validation error if data is invalid', async () => {
-    vi.mocked(createClient).mockReturnValue({
-      auth: { getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-123' } }, error: null })) }
-    } as unknown as ReturnType<typeof createClient>);
+    vi.mocked(createClient).mockResolvedValue({
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-123' } }, error: null }) }
+    } as any);
 
     const result = await createPost({ ...mockPostData, title: 'sh' }); // too short
     expect(result.error).toHaveProperty('title');
   });
 
   it('should create post successfully', async () => {
-    const mockInsert = vi.fn(() => Promise.resolve({ error: null }));
-    vi.mocked(createClient).mockReturnValue({
-      auth: { getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-123' } }, error: null })) },
-      from: vi.fn(() => ({
+    const mockInsert = vi.fn().mockResolvedValue({ error: null });
+    vi.mocked(createClient).mockResolvedValue({
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-123' } }, error: null }) },
+      from: vi.fn().mockReturnValue({
         insert: mockInsert
-      }))
-    } as unknown as ReturnType<typeof createClient>);
+      })
+    } as any);
 
     const result = await createPost(mockPostData);
     
     expect(result.success).toBe(true);
     expect(mockInsert).toHaveBeenCalledWith({
       ...mockPostData,
-      author_id: 'user-123'
+      author_id: 'user-123',
+      event_date: null
     });
   });
 
   it('should return error if database insert fails', async () => {
-    vi.mocked(createClient).mockReturnValue({
-      auth: { getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-123' } }, error: null })) },
-      from: vi.fn(() => ({
-        insert: vi.fn(() => Promise.resolve({ error: { message: 'Database error' } }))
-      }))
-    } as unknown as ReturnType<typeof createClient>);
+    vi.mocked(createClient).mockResolvedValue({
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-123' } }, error: null }) },
+      from: vi.fn().mockReturnValue({
+        insert: vi.fn().mockResolvedValue({ error: { message: 'Database error' } })
+      })
+    } as any);
 
     const result = await createPost(mockPostData);
     expect(result.error).toBe('Database error');

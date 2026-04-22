@@ -81,9 +81,9 @@ export interface StaffMember {
 
 export interface Resident {
   id: string;
-  nik?: string;
-  kk?: string;
-  name?: string;
+  nik: string;
+  kk: string;
+  name: string;
   data_year: number;
   birth_place: string | null;
   birth_date: string | null;
@@ -107,6 +107,8 @@ export interface Post {
   content: string;
   image_url: string | null;
   status: 'draft' | 'published';
+  type: 'news' | 'agenda';
+  views: number;
   category_id: string | null;
   author_id: string;
   created_at: string;

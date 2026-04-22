@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
-import { Edit, Trash2, Loader2, Eye, EyeOff, ChevronDown, ChevronUp, MapPin, User, Briefcase, GraduationCap, Heart, Calendar } from 'lucide-react';
+import { Edit, Trash2, Loader2, Eye, EyeOff, ChevronDown, ChevronUp, User } from 'lucide-react';
 import { ResidentDisplayData } from '@/actions/residents';
 
 interface ResidentTableRowProps {

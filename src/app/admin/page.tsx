@@ -23,35 +23,28 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      {/* Main Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <StatCard 
           label="Total Penduduk" 
           value={data.population} 
-          icon={Users} 
-          trend="+12 jiwa bulan ini"
-          color="emerald"
+          icon={<Users size={24} />} 
+          unit="Jiwa"
         />
         <StatCard 
           label="Anggaran Desa" 
-          value={new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumSignificantDigits: 3 }).format(data.budget)} 
-          icon={Wallet} 
-          trend="Realisasi 65%"
-          color="blue"
+          value={data.budget} 
+          icon={<Wallet size={24} />} 
+          prefix="Rp"
         />
         <StatCard 
           label="Berita & Agenda" 
           value={data.posts.length} 
-          icon={FileText} 
-          trend="3 baru minggu ini"
-          color="amber"
+          icon={<FileText size={24} />} 
         />
         <StatCard 
           label="Aparatur Desa" 
           value={data.staffCount} 
-          icon={Activity} 
-          trend="Aktif bertugas"
-          color="purple"
+          icon={<Activity size={24} />} 
         />
       </div>
 

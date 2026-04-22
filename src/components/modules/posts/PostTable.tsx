@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { PostTableRow } from '@/components/modules/posts/table/PostTableRow';
 import { Post } from '@/types';
 

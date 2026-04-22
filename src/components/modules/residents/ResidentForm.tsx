@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Resident } from '@/types';
 
 interface ResidentFormProps {
-  initialData?: Resident;
+  initialData?: Partial<Resident> & { id?: string };
   isEditing?: boolean;
 }
 

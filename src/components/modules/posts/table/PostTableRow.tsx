@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
-import { Edit2, ChevronDown, ChevronUp, Clock, Tag, ExternalLink } from 'lucide-react';
+import { Edit2, ChevronDown, ChevronUp, Clock, ExternalLink } from 'lucide-react';
 import DeletePostButton from '@/components/modules/posts/DeletePostButton';
 
 interface PostTableRowProps {

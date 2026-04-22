@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getPosts } from '@/actions/posts';
 import Link from 'next/link';
 import { Plus, Loader2 } from 'lucide-react';

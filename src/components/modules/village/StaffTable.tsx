@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Edit2, ChevronDown, ChevronUp, Layers, Hash, Trash2 } from 'lucide-react';
+import { Edit2, ChevronDown, ChevronUp, Layers, Hash } from 'lucide-react';
 import DeleteStaffButton from '@/components/modules/village/DeleteStaffButton';
 import { StaffMember } from '@/types';
 
