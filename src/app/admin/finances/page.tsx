@@ -1,17 +1,10 @@
 import Link from 'next/link';
-import { Plus, Trash2, Wallet } from 'lucide-react';
-import { getFinances, deleteFinanceEntry } from '@/actions/finances';
-import { revalidatePath } from 'next/cache';
+import { Plus, Wallet } from 'lucide-react';
+import { getFinances } from '@/actions/finances';
+import DeleteFinanceButton from '@/components/modules/finance/DeleteFinanceButton';
 
 export default async function AdminFinancesPage() {
   const finances = await getFinances();
-
-  async function handleDelete(formData: FormData) {
-    'use server'
-    const id = formData.get('id') as string;
-    await deleteFinanceEntry(id);
-    revalidatePath('/admin/finances');
-  }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount);
@@ -63,12 +56,7 @@ export default async function AdminFinancesPage() {
                     {formatCurrency(item.amount)}
                   </td>
                   <td className="px-10 py-5 text-right">
-                    <form action={handleDelete} className="inline-block">
-                      <input type="hidden" name="id" value={item.id} />
-                      <button type="submit" className="p-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl transition-all border border-transparent hover:border-destructive/20">
-                        <Trash2 size={18} />
-                      </button>
-                    </form>
+                    <DeleteFinanceButton id={item.id} category={item.category_name} />
                   </td>
                 </tr>
               ))}
@@ -93,12 +81,7 @@ export default async function AdminFinancesPage() {
                   </div>
                   <h3 className="font-black text-foreground leading-tight text-lg">{item.category_name}</h3>
                 </div>
-                <form action={handleDelete}>
-                  <input type="hidden" name="id" value={item.id} />
-                  <button type="submit" className="p-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl transition-all border border-border">
-                    <Trash2 size={18} />
-                  </button>
-                </form>
+                <DeleteFinanceButton id={item.id} category={item.category_name} />
               </div>
               <div className="text-2xl font-black text-primary tracking-tighter">
                 {formatCurrency(item.amount)}

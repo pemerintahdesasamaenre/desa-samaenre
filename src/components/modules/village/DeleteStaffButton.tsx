@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { deletePost } from '@/actions/posts'
+import { deleteStaffMember } from '@/actions/staff'
 import { Trash2, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 
-export default function DeletePostButton({ id, title }: { id: string; title: string }) {
+export default function DeleteStaffButton({ id, name }: { id: string; name: string }) {
   const [loading, setLoading] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const router = useRouter()
@@ -14,7 +14,7 @@ export default function DeletePostButton({ id, title }: { id: string; title: str
   const handleDelete = async () => {
     setLoading(true)
     try {
-      const result = await deletePost(id)
+      const result = await deleteStaffMember(id)
       if (result.error) {
         alert('Gagal menghapus: ' + result.error)
       } else {
@@ -43,10 +43,10 @@ export default function DeletePostButton({ id, title }: { id: string; title: str
         isOpen={showConfirm}
         onClose={() => setShowConfirm(false)}
         onConfirm={handleDelete}
-        title="Hapus Postingan?"
-        description={`Apakah Anda yakin ingin menghapus "${title}"? Tindakan ini tidak dapat dibatalkan.`}
+        title="Hapus Data Aparatur?"
+        description={`Apakah Anda yakin ingin menghapus "${name}" dari struktur organisasi desa?`}
         variant="danger"
-        confirmLabel="Ya, Hapus Postingan"
+        confirmLabel="Ya, Hapus Aparatur"
         loading={loading}
       />
     </>

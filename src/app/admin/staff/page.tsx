@@ -1,17 +1,10 @@
 import Link from 'next/link';
-import { Plus, Trash2, Users, Edit2 } from 'lucide-react';
-import { getStaffMembers, deleteStaffMember } from '@/actions/staff';
-import { revalidatePath } from 'next/cache';
+import { Plus, Users, Edit2 } from 'lucide-react';
+import { getStaffMembers } from '@/actions/staff';
+import DeleteStaffButton from '@/components/modules/village/DeleteStaffButton';
 
 export default async function AdminStaffPage() {
   const staff = await getStaffMembers();
-
-  async function handleDelete(formData: FormData) {
-    'use server'
-    const id = formData.get('id') as string;
-    await deleteStaffMember(id);
-    revalidatePath('/admin/staff');
-  }
 
   // Helper to show hierarchy name
   const getParentName = (parentId: string | null) => {
@@ -67,12 +60,7 @@ export default async function AdminStaffPage() {
                       >
                         <Edit2 size={18} />
                       </Link>
-                      <form action={handleDelete} className="inline-block">
-                        <input type="hidden" name="id" value={item.id} />
-                        <button type="submit" className="p-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl transition-all border border-transparent hover:border-destructive/20">
-                          <Trash2 size={18} />
-                        </button>
-                      </form>
+                      <DeleteStaffButton id={item.id} name={item.name} />
                     </div>
                   </td>
                 </tr>
@@ -97,12 +85,7 @@ export default async function AdminStaffPage() {
                   >
                     <Edit2 size={18} />
                   </Link>
-                  <form action={handleDelete}>
-                    <input type="hidden" name="id" value={item.id} />
-                    <button type="submit" className="p-3 text-muted-foreground hover:text-red-600 border border-border rounded-2xl">
-                      <Trash2 size={18} />
-                    </button>
-                  </form>
+                  <DeleteStaffButton id={item.id} name={item.name} />
                 </div>
               </div>
               <div className="flex items-center justify-between pt-3 border-t border-border text-[10px] text-muted-foreground font-black uppercase tracking-widest">
