@@ -89,8 +89,8 @@ export default function StatisticsImportPage() {
         for (let i = 0; i < Math.min(rawRows.length, 15); i++) {
           const row = rawRows[i];
           if (row.some(cell => {
-            const c = String(cell).toUpperCase();
-            return c.includes('NIK') || c.includes('NAMA') || c.includes('KELUARGA');
+            const c = String(cell).toUpperCase().trim();
+            return c === 'NIK' || c === 'NAMA' || c.includes('KARTU KELUARGA');
           })) {
             headerRowIndex = i;
             break;
@@ -106,40 +106,58 @@ export default function StatisticsImportPage() {
         const dataRows = rawRows.slice(headerRowIndex + 1);
         
         const sheetProcessedData = dataRows.map((row) => {
-          const getCell = (names: string[]) => {
-            const idx = headers.findIndex(h => names.some(n => h.includes(n)));
-            return idx !== -1 ? String(row[idx] || '').trim() : '';
+          const getIdx = (targets: string[], exact = false) => {
+            return headers.findIndex(h => {
+              if (exact) return targets.includes(h);
+              return targets.some(t => h.includes(t));
+            });
           };
 
-          const name = getCell(['NAMA', 'NAMA LENGKAP']);
-          const nikRaw = getCell(['NIK', 'NOMOR INDUK']);
-          const kkRaw = getCell(['NO KARTU KELUARGA', 'NO KK', 'NO. KK', 'NOMOR KK']);
+          const nameIdx = getIdx(['NAMA'], true);
+          const name = nameIdx !== -1 ? String(row[nameIdx] || '').trim() : '';
           
           if (!name || name === 'NAMA' || name.startsWith('DATA')) return null;
 
-          // Bersihkan NIK/KK dari karakter aneh
+          const nikIdx = getIdx(['NIK'], true);
+          const nikRaw = nikIdx !== -1 ? String(row[nikIdx] || '').trim() : '';
+          
+          const kkIdx = getIdx(['NO KARTU KELUARGA', 'NOMOR KK', 'NO KK'], false);
+          const kkRaw = kkIdx !== -1 ? String(row[kkIdx] || '').trim() : '';
+
           const nik = nikRaw.replace(/[^0-9]/g, '');
           const kk = kkRaw.replace(/[^0-9]/g, '');
 
-          const ttl = getCell(['TEMPAT TANGGAL LAHIR', 'TTL']);
+          // TTL Parsing
+          const ttlIdx = getIdx(['TEMPAT TANGGAL LAHIR', 'TTL'], false);
           let birthPlace = '';
           let birthDate = null;
-          if (ttl.includes(',')) {
-             const parts = ttl.split(',');
-             birthPlace = parts[0].trim();
-             const dateStr = parts[1].trim();
-             const dParts = dateStr.split(/[-/]/);
-             if (dParts.length === 3) {
-               birthDate = `${dParts[2]}-${dParts[1]}-${dParts[0]}`;
-             }
+          if (ttlIdx !== -1) {
+            const ttl = String(row[ttlIdx] || '');
+            if (ttl.includes(',')) {
+               const parts = ttl.split(',');
+               birthPlace = parts[0].trim();
+               const dateStr = parts[1].trim();
+               const dParts = dateStr.split(/[-/]/);
+               if (dParts.length === 3) {
+                 birthDate = `${dParts[2]}-${dParts[1]}-${dParts[0]}`;
+               }
+            }
           }
 
+          // GENDER LOGIC (LEBIH KETAT)
           let gender: 'L' | 'P' = 'L';
-          const isLaki = getCell(['LAKI-LAKI', 'LAKI LAKI', 'L']).length > 0;
-          const isPere = getCell(['PEREMPUAN', 'P']).length > 0;
-          if (isPere && !isLaki) gender = 'P';
+          const lakiIdx = getIdx(['LAKI-LAKI', 'LAKI LAKI', 'L'], true);
+          const pereIdx = getIdx(['PEREMPUAN', 'P'], true);
+          
+          const valLaki = lakiIdx !== -1 ? String(row[lakiIdx] || '').trim() : '';
+          const valPere = pereIdx !== -1 ? String(row[pereIdx] || '').trim() : '';
 
-          const statusIdx = headers.findIndex(h => h.includes('STATUS'));
+          if (valPere.length > 0 && valLaki.length === 0) {
+            gender = 'P';
+          }
+
+          // ORTU LOGIC
+          const statusIdx = getIdx(['STATUS'], true);
           const ayah = statusIdx !== -1 ? String(row[statusIdx + 1] || '').trim() : '';
           const ibu = statusIdx !== -1 ? String(row[statusIdx + 2] || '').trim() : '';
 
@@ -150,14 +168,14 @@ export default function StatisticsImportPage() {
             birth_place: birthPlace,
             birth_date: birthDate,
             gender,
-            education: getCell(['PENDIDIKAN']),
-            occupation: getCell(['PEKERJAAN']),
-            marital_status: getCell(['STATUS']),
+            education: String(row[getIdx(['PENDIDIKAN'], true)] || '').trim(),
+            occupation: String(row[getIdx(['PEKERJAAN'], true)] || '').trim(),
+            marital_status: String(row[statusIdx] || '').trim(),
             father_name: ayah,
             mother_name: ibu,
             dusun: sheetName.replace('DATA PENDUDUK DUSUN ', '').trim(),
-            rt: getCell(['RT']),
-            rw: getCell(['RW']),
+            rt: '',
+            rw: '',
             data_year: currentYear
           };
         }).filter((d): d is ResidentImportData => d !== null);
@@ -167,78 +185,41 @@ export default function StatisticsImportPage() {
       }
 
       if (allFormattedData.length === 0) {
-        setLogs(prev => [...prev, 'ERROR: Format tidak dikenali.']);
+        setLogs(prev => [...prev, 'ERROR: Data tidak terbaca.']);
         setLoading(false);
         return;
       }
 
-      // 1. DEDUPLIKASI LOKAL (Cegah error "affect row a second time")
-      // Jika ada NIK ganda di Excel, kita ambil yang paling bawah/terakhir
+      // DEDUPLIKASI & TANGGAL CLEANUP
       const uniqueDataMap = new Map<string, ResidentImportData>();
       allFormattedData.forEach(item => {
         const key = `${item.nik}-${item.data_year}`;
         uniqueDataMap.set(key, item);
       });
       const uniqueFormattedData = Array.from(uniqueDataMap.values());
-      
-      const duplicateCount = allFormattedData.length - uniqueFormattedData.length;
-      if (duplicateCount > 0) {
-        setLogs(prev => [...prev, `Info: Mengabaikan ${duplicateCount} baris NIK ganda di file Excel.`]);
-      }
 
-      // 2. VALIDASI & STANDARDISASI TANGGAL (Cegah error "invalid input syntax")
       const finalCleanData = uniqueFormattedData.map(item => {
         if (!item.birth_date) return item;
-        
-        // Bersihkan string tanggal dari karakter aneh dan split
         const parts = item.birth_date.split('-').map(p => p.replace(/[^0-9]/g, ''));
         if (parts.length !== 3) return { ...item, birth_date: null };
-
         const y = parseInt(parts[0], 10);
         const m = parseInt(parts[1], 10);
         const d = parseInt(parts[2], 10);
-
         const date = new Date(y, m - 1, d);
-        
-        // Cek validitas kalender
         const isValid = date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
-        
-        if (!isValid) {
-          return { ...item, birth_date: null };
-        }
-
-        // Standardisasi ke YYYY-MM-DD (Penting: harus tepat 2 digit untuk bulan & hari)
-        const cleanDate = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        return { ...item, birth_date: cleanDate };
+        if (!isValid) return { ...item, birth_date: null };
+        return { ...item, birth_date: `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}` };
       });
 
-      // PROSES BATCHING (PER 100 DATA)
       const BATCH_SIZE = 100;
       let totalSuccess = 0;
-      setLogs(prev => [...prev, `Membagi ${finalCleanData.length} data bersih menjadi ${Math.ceil(finalCleanData.length / BATCH_SIZE)} gelombang...`]);
-
       for (let i = 0; i < finalCleanData.length; i += BATCH_SIZE) {
         const batch = finalCleanData.slice(i, i + BATCH_SIZE);
-        const currentBatchNum = Math.floor(i / BATCH_SIZE) + 1;
-        
         const result = await importResidents(batch);
-        
-        if (result.success) {
-          totalSuccess += result.count || 0;
-          setLogs(prev => [...prev, `Gelombang ${currentBatchNum}: Berhasil menyimpan ${result.count} data.`]);
-        } else {
-          setLogs(prev => [...prev, `Gelombang ${currentBatchNum} GAGAL: ${result.error}`]);
-        }
+        if (result.success) totalSuccess += result.count || 0;
       }
 
-      setLogs(prev => [
-        ...prev, 
-        `-----------------------------`,
-        `IMPORT SELESAI!`,
-        `Total Sukses: ${totalSuccess} data.`,
-        `Dusun: ${sheets.join(', ')}`
-      ]);
-
+      setLogs(prev => [...prev, `IMPORT SELESAI! Total Sukses: ${totalSuccess} data.`]);
       setLoading(false);
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : 'Unknown error';
@@ -268,7 +249,7 @@ export default function StatisticsImportPage() {
               </div>
               Import Master Data
             </h1>
-            <p className="text-muted-foreground font-medium italic">Sistem memproses data perdusun dengan teknik Batch Import.</p>
+            <p className="text-muted-foreground font-medium italic">Sistem memproses data perdusun dengan logika filter jenis kelamin yang ketat.</p>
           </div>
           
           <div className="bg-background p-5 rounded-[2rem] border border-border shadow-sm text-center min-w-[140px]">
@@ -293,7 +274,7 @@ export default function StatisticsImportPage() {
                 <FileSpreadsheet size={48} className="text-primary/40 group-hover:text-primary transition-colors" />
               </div>
               <p className="text-xl font-black text-foreground tracking-tight hover:text-primary transition-colors">Unggah File Desa (.xlsx)</p>
-              <p className="text-muted-foreground mt-2 font-medium">Data perdusun akan otomatis dipecah menjadi batch kecil.</p>
+              <p className="text-muted-foreground mt-2 font-medium">Logika jenis kelamin kini menggunakan pemetaan kolom persis (Exact Match).</p>
             </div>
           ) : (
             <div className="space-y-10">
@@ -355,7 +336,7 @@ export default function StatisticsImportPage() {
             className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center justify-center gap-4 hover:opacity-90 disabled:opacity-30 disabled:grayscale transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
           >
             {loading ? <Loader2 className="animate-spin" size={24} /> : <Upload size={24} />}
-            {loading ? 'Mengirim Data...' : 'Mulai Batch Import'}
+            {loading ? 'Mengirim Data...' : 'Mulai Import Ulang'}
           </button>
         </div>
       </div>
