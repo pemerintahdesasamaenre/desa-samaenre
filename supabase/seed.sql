@@ -46,43 +46,6 @@ ON CONFLICT (id) DO UPDATE SET
   order_index = EXCLUDED.order_index,
   parent_id = EXCLUDED.parent_id;
 
--- 4. UPSERT DEMOGRAPHICS
-INSERT INTO public.demographics (category_id, label, value) VALUES
--- Populasi
-('c3d4e5f6-a7b8-9012-3456-7890abcdef01', 'Total Penduduk', 4520),
-('c3d4e5f6-a7b8-9012-3456-7890abcdef01', 'Kepala Keluarga', 1240),
-('c3d4e5f6-a7b8-9012-3456-7890abcdef01', 'Laki-laki', 2280),
-('c3d4e5f6-a7b8-9012-3456-7890abcdef01', 'Perempuan', 2240),
--- Dusun
-('f6a7b8c9-d0e1-2345-6789-0123456789ab', 'Dusun I', 1200),
-('f6a7b8c9-d0e1-2345-6789-0123456789ab', 'Dusun II', 1150),
-('f6a7b8c9-d0e1-2345-6789-0123456789ab', 'Dusun III', 1080),
-('f6a7b8c9-d0e1-2345-6789-0123456789ab', 'Dusun IV', 1090),
--- Pendidikan
-('d4e5f6a7-b8c9-0123-4567-890abcdef012', 'SD / Sederajat', 850),
-('d4e5f6a7-b8c9-0123-4567-890abcdef012', 'SMP / Sederajat', 1200),
-('d4e5f6a7-b8c9-0123-4567-890abcdef012', 'SMA / Sederajat', 1500),
-('d4e5f6a7-b8c9-0123-4567-890abcdef012', 'Diploma / Sarjana', 420),
--- Pekerjaan
-('e5f6a7b8-c9d0-1234-5678-90abcdef0123', 'Petani / Pekebun', 1800),
-('e5f6a7b8-c9d0-1234-5678-90abcdef0123', 'Wiraswasta', 520),
-('e5f6a7b8-c9d0-1234-5678-90abcdef0123', 'Buruh Harian Lepas', 410),
-('e5f6a7b8-c9d0-1234-5678-90abcdef0123', 'Karyawan Swasta', 380),
-('e5f6a7b8-c9d0-1234-5678-90abcdef0123', 'PNS / TNI / POLRI', 120),
--- Kelompok Usia
-('01234567-89ab-cdef-0123-456789abcdef', 'Balita (0-5)', 320),
-('01234567-89ab-cdef-0123-456789abcdef', 'Anak (6-12)', 450),
-('01234567-89ab-cdef-0123-456789abcdef', 'Remaja (13-18)', 680),
-('01234567-89ab-cdef-0123-456789abcdef', 'Dewasa (19-59)', 2500),
-('01234567-89ab-cdef-0123-456789abcdef', 'Lansia (60+)', 570),
--- Status Perkawinan
-('12345678-90ab-cdef-1234-567890abcdef', 'Belum Kawin', 1500),
-('12345678-90ab-cdef-1234-567890abcdef', 'Kawin', 2800),
-('12345678-90ab-cdef-1234-567890abcdef', 'Cerai Hidup', 120),
-('12345678-90ab-cdef-1234-567890abcdef', 'Cerai Mati', 100)
-ON CONFLICT (category_id, label) DO UPDATE SET
-  value = EXCLUDED.value;
-
 -- 5. UPSERT POSTS
 INSERT INTO public.posts (id, title, slug, content, category_id, type, status) VALUES
 ('f1eebc99-9c0b-4ef8-bb6d-6bb9bd380a16', 'Kerja Bakti Membersihkan Sungai', 'kerja-bakti-sungai', 'Warga Desa Samaenre akan mengadakan kerja bakti pembersihan sungai pada hari Minggu...', 'a1b2c3d4-e5f6-7890-1234-567890abcdef', 'news', 'published'),

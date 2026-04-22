@@ -54,17 +54,6 @@ CREATE TABLE IF NOT EXISTS public.staff_members (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
 
--- Demographics (Legacy - For manual entries only)
-CREATE TABLE IF NOT EXISTS public.demographics (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  category_id UUID REFERENCES public.categories(id) ON DELETE CASCADE,
-  label TEXT NOT NULL,
-  value INTEGER NOT NULL DEFAULT 0,
-  metadata JSONB DEFAULT '{}'::jsonb,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
-  CONSTRAINT demographics_category_id_label_key UNIQUE (category_id, label)
-);
-
 -- Posts
 CREATE TABLE IF NOT EXISTS public.posts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -316,7 +305,6 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.village_info ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.staff_members ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.demographics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.finances ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.residents ENABLE ROW LEVEL SECURITY;
@@ -329,7 +317,6 @@ ALTER TABLE public.daily_analytics ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow public read access" ON public.categories FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON public.village_info FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON public.staff_members FOR SELECT USING (true);
-CREATE POLICY "Allow public read access" ON public.demographics FOR SELECT USING (true);
 CREATE POLICY "Allow public read access on published posts" ON public.posts FOR SELECT USING (status = 'published');
 CREATE POLICY "Allow public read access" ON public.finances FOR SELECT USING (true);
 

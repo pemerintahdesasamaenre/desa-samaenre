@@ -1,7 +1,6 @@
 import { getRawDemographics } from '@/services/data-service';
-import { Plus, Edit, BarChart, Users, GraduationCap, Briefcase, MapPin, Heart, Baby, Layers, FileSpreadsheet } from 'lucide-react';
+import { BarChart, Users, GraduationCap, Briefcase, MapPin, Heart, Baby, Layers, FileSpreadsheet } from 'lucide-react';
 import Link from 'next/link';
-import { DeleteButton } from '@/components/modules/statistics/DeleteButton';
 import ResetDataButton from '@/components/modules/statistics/ResetDataButton';
 import { Demographic } from '@/types';
 
@@ -42,17 +41,10 @@ export default async function AdminStatisticsPage() {
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Link 
             href="/admin/statistics/import" 
-            className="flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3 rounded-xl transition-all hover:bg-slate-50 dark:hover:bg-slate-700 font-bold"
+            className="flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3 rounded-xl transition-all hover:bg-slate-50 dark:hover:bg-slate-700 font-bold w-full sm:w-auto"
           >
             <FileSpreadsheet size={18} />
             Import Excel
-          </Link>
-          <Link 
-            href="/admin/statistics/new" 
-            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl transition-all shadow-lg shadow-blue-900/20 font-bold"
-          >
-            <Plus size={18} />
-            Tambah Data
           </Link>
         </div>
       </div>
@@ -80,7 +72,6 @@ export default async function AdminStatisticsPage() {
                     <tr className="border-b border-slate-100 dark:border-slate-800">
                       <th className="px-6 py-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Label</th>
                       <th className="px-6 py-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">Jumlah</th>
-                      <th className="px-6 py-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
@@ -91,18 +82,6 @@ export default async function AdminStatisticsPage() {
                         </td>
                         <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 text-right font-mono">
                           {item.value.toLocaleString()}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end gap-1">
-                            <Link 
-                              href={`/admin/statistics/edit/${item.id}`}
-                              className="p-2 text-slate-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                              title="Edit"
-                            >
-                              <Edit size={16} />
-                            </Link>
-                            <DeleteButton id={item.id} label={item.label} />
-                          </div>
                         </td>
                       </tr>
                     ))}
