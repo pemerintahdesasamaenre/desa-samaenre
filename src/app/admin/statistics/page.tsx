@@ -1,100 +1,118 @@
 import { getRawDemographics } from '@/services/data-service';
-import { Plus, Edit, BarChart } from 'lucide-react';
+import { Plus, Edit, BarChart, Users, GraduationCap, Briefcase, MapPin, Heart, Baby, Layers, FileSpreadsheet } from 'lucide-react';
 import Link from 'next/link';
 import { DeleteButton } from '@/components/modules/statistics/DeleteButton';
+import ResetDataButton from '@/components/modules/statistics/ResetDataButton';
 import { Demographic } from '@/types';
 
 export default async function AdminStatisticsPage() {
   const demographics = await getRawDemographics() as Demographic[];
 
+  // Group demographics by category
+  const groupedDemographics = demographics.reduce((acc, item) => {
+    const categoryName = item.category?.name || 'Lainnya';
+    if (!acc[categoryName]) {
+      acc[categoryName] = [];
+    }
+    acc[categoryName].push(item);
+    return acc;
+  }, {} as Record<string, Demographic[]>);
+
+  const getCategoryIcon = (name: string) => {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('populasi')) return <Users size={20} className="text-blue-500" />;
+    if (lowerName.includes('pendidikan')) return <GraduationCap size={20} className="text-purple-500" />;
+    if (lowerName.includes('pekerjaan')) return <Briefcase size={20} className="text-amber-500" />;
+    if (lowerName.includes('dusun')) return <MapPin size={20} className="text-emerald-500" />;
+    if (lowerName.includes('perkawinan')) return <Heart size={20} className="text-rose-500" />;
+    if (lowerName.includes('usia')) return <Baby size={20} className="text-indigo-500" />;
+    return <Layers size={20} className="text-slate-500" />;
+  };
+
   return (
-    <div className="space-y-6 md:space-y-8">
+    <div className="space-y-6 md:space-y-8 pb-12 px-4 md:px-0">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">Data Demografi</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm md:text-base">Kelola data statistik dan demografi penduduk desa.</p>
+          <div className="mt-2">
+            <ResetDataButton />
+          </div>
         </div>
-        <Link 
-          href="/admin/statistics/new" 
-          className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl transition-all shadow-lg shadow-blue-900/20 w-full sm:w-auto font-bold"
-        >
-          <Plus size={18} />
-          Tambah Data
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <Link 
+            href="/admin/statistics/import" 
+            className="flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3 rounded-xl transition-all hover:bg-slate-50 dark:hover:bg-slate-700 font-bold"
+          >
+            <FileSpreadsheet size={18} />
+            Import Excel
+          </Link>
+          <Link 
+            href="/admin/statistics/new" 
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl transition-all shadow-lg shadow-blue-900/20 font-bold"
+          >
+            <Plus size={18} />
+            Tambah Data
+          </Link>
+        </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        {/* Desktop View */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
-                <th className="px-6 py-4 text-sm font-semibold text-slate-700 dark:text-slate-300">Kategori</th>
-                <th className="px-6 py-4 text-sm font-semibold text-slate-700 dark:text-slate-300">Label</th>
-                <th className="px-6 py-4 text-sm font-semibold text-slate-700 dark:text-slate-300">Jumlah</th>
-                <th className="px-6 py-4 text-sm font-semibold text-slate-700 dark:text-slate-300 text-right">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {demographics.map((item: Demographic) => (
-                <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                  <td className="px-6 py-4 text-sm">
-                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                      {item.category?.name || 'N/A'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm font-medium text-slate-900 dark:text-white">
-                    {item.label}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                    {item.value.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Link 
-                        href={`/admin/statistics/edit/${item.id}`}
-                        className="p-2 text-slate-400 hover:text-blue-600 transition-colors"
-                      >
-                        <Edit size={18} />
-                      </Link>
-                      <DeleteButton id={item.id} label={item.label} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {Object.keys(groupedDemographics).length === 0 ? (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-12 text-center text-slate-500">
+          <BarChart size={48} className="mx-auto mb-4 opacity-20" />
+          Belum ada data demografi.
         </div>
-
-        {/* Mobile View */}
-        <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
-          {demographics.map((item: Demographic) => (
-            <div key={item.id} className="p-5 flex items-center justify-between gap-4">
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold text-blue-600 uppercase">{item.category?.name || 'UMUM'}</span>
-                <h3 className="font-bold text-slate-900 dark:text-white">{item.label}</h3>
-                <p className="text-sm text-slate-500 font-medium">{item.value.toLocaleString()} Jiwa/Data</p>
+      ) : (
+        <div className="grid grid-cols-1 gap-6">
+          {Object.entries(groupedDemographics).map(([category, items]) => (
+            <div key={category} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+              <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+                {getCategoryIcon(category)}
+                <h2 className="font-bold text-slate-800 dark:text-slate-200">{category}</h2>
+                <span className="ml-auto text-xs font-medium text-slate-500 bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded-full">
+                  {items.length} Data
+                </span>
               </div>
-              <div className="flex items-center gap-1">
-                <Link 
-                  href={`/admin/statistics/edit/${item.id}`}
-                  className="p-2 text-slate-400 hover:text-blue-600 transition-colors"
-                >
-                  <Edit size={18} />
-                </Link>
-                <DeleteButton id={item.id} label={item.label} />
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-100 dark:border-slate-800">
+                      <th className="px-6 py-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Label</th>
+                      <th className="px-6 py-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">Jumlah</th>
+                      <th className="px-6 py-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                    {items.map((item: Demographic) => (
+                      <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                        <td className="px-6 py-4 text-sm font-medium text-slate-900 dark:text-white">
+                          {item.label}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 text-right font-mono">
+                          {item.value.toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <Link 
+                              href={`/admin/statistics/edit/${item.id}`}
+                              className="p-2 text-slate-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                              title="Edit"
+                            >
+                              <Edit size={16} />
+                            </Link>
+                            <DeleteButton id={item.id} label={item.label} />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           ))}
         </div>
-
-        {demographics.length === 0 && (
-          <div className="p-12 text-center text-slate-500">
-            <BarChart size={48} className="mx-auto mb-4 opacity-20" />
-            Belum ada data demografi.
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }

@@ -12,83 +12,74 @@ export interface DemographicData {
 }
 
 export interface VillageImage {
-  url: string;
-  title: string;
-  source: 'post' | 'branding';
-  date: string;
-  link?: string;
+  url: string; title: string; source: 'post' | 'branding'; date: string; link?: string;
 }
 
 export async function getDemographics(): Promise<DemographicData> {
   const supabase = await createClient();
   
   try {
-    const { data, error } = await supabase
-      .from('demographics')
-      .select('*, category:categories(*)');
+    const { data: yearRes } = await supabase.from('mv_demographic_stats').select('data_year').order('data_year', { ascending: false }).limit(1);
+    const latestYear = yearRes?.[0]?.data_year || 2025;
 
-    if (error || !data || data.length === 0) {
-      console.warn('Using fallback mock data for demographics');
-      return mockDemographics as unknown as DemographicData;
-    }
+    const { data, error } = await supabase.from('mv_demographic_stats').select('*').eq('data_year', latestYear).order('sort_order', { ascending: true });
+
+    if (error || !data || data.length === 0) return mockDemographics as unknown as DemographicData;
 
     const result: DemographicData = {
       population: { total: 0, households: 0, male: 0, female: 0 },
-      hamlets: [],
-      occupations: [],
-      education: [],
-      marital_status: [],
-      age_groups: []
+      hamlets: [], occupations: [], education: [], marital_status: [], age_groups: []
     };
 
     data.forEach((item) => {
-      const slug = item.category?.slug;
-      
-      if (slug === 'populasi') {
-        const label = item.label.toLowerCase();
-        if (label.includes('total')) result.population.total = item.value;
-        else if (label.includes('keluarga')) result.population.households = item.value;
-        else if (label.includes('laki')) result.population.male = item.value;
-        else if (label.includes('perempuan')) result.population.female = item.value;
-      } else if (slug === 'dusun') {
-        result.hamlets.push({ name: item.label, value: item.value });
-      } else if (slug === 'pekerjaan') {
-        result.occupations.push({ label: item.label, value: item.value });
-      } else if (slug === 'pendidikan') {
-        result.education.push({ label: item.label, value: item.value });
-      } else if (slug === 'status-perkawinan') {
-        result.marital_status.push({ label: item.label, value: item.value });
-      } else if (slug === 'kelompok-usia') {
-        result.age_groups.push({ label: item.label, value: item.value });
-      }
+      const cat = item.category_slug;
+      if (cat === 'population') {
+        const lbl = item.label.toLowerCase();
+        if (lbl.includes('total')) result.population.total = item.value;
+        else if (lbl.includes('laki')) result.population.male = item.value;
+        else if (lbl.includes('perempuan')) result.population.female = item.value;
+        else if (lbl.includes('keluarga')) result.population.households = item.value;
+      } 
+      else if (cat === 'hamlets') result.hamlets.push({ name: item.label, value: item.value });
+      else if (cat === 'occupations') result.occupations.push({ label: item.label, value: item.value });
+      else if (cat === 'education') result.education.push({ label: item.label, value: item.value });
+      else if (cat === 'marital_status') result.marital_status.push({ label: item.label, value: item.value });
+      else if (cat === 'age_groups') result.age_groups.push({ label: item.label, value: item.value });
     });
 
+    // Pekerjaan: Ambil Top 5 dan Sortir
     result.occupations.sort((a, b) => b.value - a.value);
     result.occupations = result.occupations.slice(0, 5);
     
     return result;
-  } catch (e) {
-    console.warn('Supabase not connected, using fallback mock data', e);
+  } catch {
     return mockDemographics as unknown as DemographicData;
   }
 }
 
-export async function getRawDemographics() {
+export async function getRawDemographics(year?: number) {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('demographics')
-    .select('*, category:categories(*)');
-  
+  let targetYear = year;
+  if (!targetYear) {
+    const { data: yearRes } = await supabase.from('mv_demographic_stats').select('data_year').order('data_year', { ascending: false }).limit(1);
+    targetYear = yearRes?.[0]?.data_year || 2025;
+  }
+
+  const { data, error } = await supabase.from('mv_demographic_stats').select('*').eq('data_year', targetYear).order('category_slug', { ascending: true });
   if (error) throw error;
-  return data;
+
+  return data.map(item => ({
+    id: `${item.category_slug}-${item.label}`,
+    label: item.label,
+    value: item.value,
+    category: { name: item.category_slug.replace('_', ' ').toUpperCase() }
+  }));
 }
 
 export async function getCategories(type?: string) {
   const supabase = await createClient();
   let query = supabase.from('categories').select('*');
-  if (type) {
-    query = query.eq('type', type);
-  }
+  if (type) query = query.eq('type', type);
   const { data, error } = await query;
   if (error) throw error;
   return data;
@@ -100,71 +91,37 @@ export async function getVillageInfo() {
     const { data, error } = await supabase.from('village_info').select('*').single();
     if (error || !data) return mockVillageInfo;
     return data;
-  } catch {
-    return mockVillageInfo;
-  }
+  } catch { return mockVillageInfo; }
 }
 
 export async function getProfiles() {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .order('updated_at', { ascending: false });
-  
+  const { data, error } = await supabase.from('profiles').select('*').order('updated_at', { ascending: false });
   if (error) throw error;
   return data;
 }
 
 export async function getAllVillageImages(): Promise<VillageImage[]> {
   const supabase = await createClient();
-  
   const [postsRes, infoRes] = await Promise.all([
     supabase.from('posts').select('title, slug, image_url, created_at').not('image_url', 'is', null).order('created_at', { ascending: false }),
     supabase.from('village_info').select('logo_url, header_banner_url').single()
   ]);
-
   const images: VillageImage[] = [];
-
-  // 1. Images from Posts (With dynamic link)
   if (postsRes.data) {
     postsRes.data.forEach(post => {
-      images.push({
-        url: post.image_url,
-        title: post.title,
-        source: 'post',
-        date: post.created_at,
-        link: `/posts/${post.slug}`
-      });
+      images.push({ url: post.image_url!, title: post.title, source: 'post', date: post.created_at, link: `/posts/${post.slug}` });
     });
   }
-
-  // 2. Images from Branding
   if (infoRes.data) {
-    if (infoRes.data.logo_url) {
-      images.push({
-        url: infoRes.data.logo_url,
-        title: 'Logo Resmi Desa',
-        source: 'branding',
-        date: new Date().toISOString()
-      });
-    }
-    if (infoRes.data.header_banner_url) {
-      images.push({
-        url: infoRes.data.header_banner_url,
-        title: 'Banner Utama Desa',
-        source: 'branding',
-        date: new Date().toISOString()
-      });
-    }
+    if (infoRes.data.logo_url) images.push({ url: infoRes.data.logo_url, title: 'Logo Resmi Desa', source: 'branding', date: new Date().toISOString() });
+    if (infoRes.data.header_banner_url) images.push({ url: infoRes.data.header_banner_url, title: 'Banner Utama Desa', source: 'branding', date: new Date().toISOString() });
   }
-
   return images.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 export async function getHomepageData() {
   const supabase = await createClient();
-
   const villageInfoPromise = supabase.from('village_info').select('name, logo_url, header_banner_url').single();
   const postsPromise = supabase.from('posts').select('title, slug, image_url, created_at, categories(name)').eq('status', 'published').order('created_at', { ascending: false }).limit(3);
   const staffCountPromise = supabase.from('staff_members').select('id', { count: 'exact' });
@@ -173,19 +130,15 @@ export async function getHomepageData() {
   const fetchBudget = async () => {
     const currentYear = new Date().getFullYear();
     const { data } = await supabase.from('finances').select('amount').eq('type', 'income').eq('year', currentYear);
-    return data?.reduce((sum, item) => sum + item.amount, 0) || 0;
+    return data?.reduce((sum: number, item: { amount: number }) => sum + item.amount, 0) || 0;
   };
 
   const fetchDemographicStats = async () => {
-    const { data: cats } = await supabase.from('categories').select('id, slug').in('slug', ['populasi', 'dusun']);
-    const popCat = cats?.find(c => c.slug === 'populasi');
-    const dusunCat = cats?.find(c => c.slug === 'dusun');
-    let population = 0;
-    if (popCat) {
-      const { data } = await supabase.from('demographics').select('value').eq('category_id', popCat.id).ilike('label', '%total%').limit(1);
-      population = data?.[0]?.value || 0;
-    }
-    const hamletCount = dusunCat ? (await supabase.from('demographics').select('id', { count: 'exact' }).eq('category_id', dusunCat.id)).count || 0 : 0;
+    const { data: yearRes } = await supabase.from('mv_demographic_stats').select('data_year').order('data_year', { ascending: false }).limit(1);
+    const latestYear = yearRes?.[0]?.data_year || 2025;
+    const { data } = await supabase.from('mv_demographic_stats').select('category_slug, label, value').eq('data_year', latestYear);
+    const population = data?.find(d => d.category_slug === 'population' && d.label.toLowerCase().includes('total'))?.value || 0;
+    const hamletCount = data?.filter(d => d.category_slug === 'hamlets').length || 0;
     return { population, hamletCount };
   };
 
