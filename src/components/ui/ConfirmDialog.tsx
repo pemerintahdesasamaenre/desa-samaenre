@@ -87,7 +87,7 @@ export default function ConfirmDialog({
             {requirePhrase && (
               <div className="space-y-2">
                 <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
-                  <p className="text-[10px] font-black text-slate-500 mb-1 uppercase tracking-widest text-center">{phraseLabel}</p>
+                  <p className="text-[10px] font-black text-primary/80 mb-1 uppercase tracking-[0.2em] text-center">{phraseLabel}</p>
                   <p className="text-sm font-black text-slate-900 dark:text-white select-none text-center italic">
                     &quot;{requirePhrase}&quot;
                   </p>
@@ -106,7 +106,7 @@ export default function ConfirmDialog({
             {requirePhrase2 && (
               <div className="space-y-2">
                 <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
-                  <p className="text-[10px] font-black text-slate-500 mb-1 uppercase tracking-widest text-center">{phraseLabel2}</p>
+                  <p className="text-[10px] font-black text-primary/80 mb-1 uppercase tracking-[0.2em] text-center">{phraseLabel2}</p>
                   <p className="text-sm font-black text-slate-900 dark:text-white select-none text-center italic">
                     &quot;{requirePhrase2}&quot;
                   </p>

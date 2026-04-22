@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { upsertResident, deleteResident } from '@/actions/residents';
-import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Heart, Briefcase, GraduationCap, Users, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Briefcase, GraduationCap, Users, Eye, EyeOff, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import CustomSelect from '@/components/ui/CustomSelect';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
