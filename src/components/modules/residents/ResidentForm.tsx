@@ -2,10 +2,11 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { upsertResident } from '@/actions/residents';
-import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Heart, Briefcase, GraduationCap, Users, Eye, EyeOff, AlertOctagon, X } from 'lucide-react';
+import { upsertResident, deleteResident } from '@/actions/residents';
+import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Heart, Briefcase, GraduationCap, Users, Eye, EyeOff, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import CustomSelect from '@/components/ui/CustomSelect';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 interface ResidentFormProps {
   initialData?: any;
@@ -21,49 +22,49 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<any>(null);
   
   // State untuk visibilitas input
   const [showNik, setShowNik] = useState(false);
   const [showKk, setShowKk] = useState(false);
   
-  // State untuk modal konfirmasi "mempersulit"
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [confirmText, setConfirmText] = useState('');
-  const TARGET_CONFIRM = "SAYA BERTANGGUNG JAWAB ATAS PERUBAHAN DATA INI";
+  // State untuk modal konfirmasi
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const handleOpenConfirm = (e: React.FormEvent) => {
+  const TARGET_SAVE_PHRASE = "SAYA BERTANGGUNG JAWAB ATAS PERUBAHAN DATA INI";
+
+  const handleOpenSaveConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formRef.current?.checkValidity()) {
       formRef.current?.reportValidity();
       return;
     }
-    setShowConfirm(true);
+    setShowSaveConfirm(true);
   };
 
-  async function handleFinalSubmit() {
-    if (confirmText !== TARGET_CONFIRM) return;
-    
+  async function handleSave() {
     setLoading(true);
     setError(null);
-    setShowConfirm(false);
+    setShowSaveConfirm(false);
 
     const formData = new FormData(formRef.current!);
     const data = {
       nik: formData.get('nik') as string,
       kk: formData.get('kk') as string,
       name: formData.get('name') as string,
-      birth_place: formData.get('birth_place') as string,
+      birth_place: formData.get('birth_place') as string || '',
       birth_date: formData.get('birth_date') as string || null,
       gender: formData.get('gender') as 'L' | 'P',
       education: formData.get('education') as string,
       occupation: formData.get('occupation') as string,
       marital_status: formData.get('marital_status') as string,
-      father_name: formData.get('father_name') as string,
-      mother_name: formData.get('mother_name') as string,
-      dusun: formData.get('dusun') as string,
-      rt: formData.get('rt') as string,
-      rw: formData.get('rw') as string,
+      father_name: formData.get('father_name') as string || '',
+      mother_name: formData.get('mother_name') as string || '',
+      dusun: formData.get('dusun') as string || '',
+      rt: formData.get('rt') as string || '',
+      rw: formData.get('rw') as string || '',
       data_year: parseInt(formData.get('data_year') as string, 10) || new Date().getFullYear(),
     };
 
@@ -83,16 +84,47 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
     }
   }
 
+  async function handleDelete() {
+    if (!initialData?.id) return;
+    
+    setIsDeleting(true);
+    setShowDeleteConfirm(false);
+    
+    try {
+      const result = await deleteResident(initialData.id);
+      if (result.success) {
+        router.push('/admin/residents');
+        router.refresh();
+      } else {
+        alert('Gagal menghapus: ' + result.error);
+      }
+    } catch {
+      alert('Terjadi kesalahan sistem saat menghapus.');
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
   return (
     <div className="max-w-4xl mx-auto pb-20">
-      <div className="mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <Link 
           href="/admin/residents" 
           className="text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-colors font-medium"
         >
           <ArrowLeft size={18} />
-          Kembali ke Daftar Penduduk
+          Kembali
         </Link>
+
+        {isEditing && (
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex items-center gap-2 text-red-500 hover:text-red-700 font-bold text-sm bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-xl transition-all border border-red-100 dark:border-red-900/30"
+          >
+            <Trash2 size={16} />
+            Hapus Record
+          </button>
+        )}
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
@@ -105,7 +137,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
           </p>
         </div>
 
-        <form ref={formRef} onSubmit={handleOpenConfirm} className="p-8 space-y-8">
+        <form ref={formRef} onSubmit={handleOpenSaveConfirm} className="p-8 space-y-8">
           {typeof error === 'string' && (
             <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 rounded-2xl text-sm font-medium">
               {error}
@@ -365,69 +397,28 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         </form>
       </div>
 
-      {/* MODAL KONFIRMASI YANG MEMPERSULIT */}
-      {showConfirm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-900 w-full max-w-xl rounded-[2.5rem] shadow-2xl border border-red-200 dark:border-red-900/30 overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-8 border-b border-red-50 dark:border-red-900/20 flex justify-between items-center bg-red-50/50 dark:bg-red-900/10">
-              <div className="flex items-center gap-4 text-red-600">
-                <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-2xl">
-                  <AlertOctagon size={32} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-black tracking-tight">KONFIRMASI INTEGRITAS DATA</h3>
-                  <p className="text-xs font-bold text-red-500/70 uppercase tracking-widest">High-Level Security Protocol</p>
-                </div>
-              </div>
-              <button onClick={() => setShowConfirm(false)} className="p-2 text-slate-400 hover:text-slate-600 transition-colors">
-                <X size={24} />
-              </button>
-            </div>
+      {/* REUSABLE DIALOGS */}
+      <ConfirmDialog 
+        isOpen={showSaveConfirm}
+        onClose={() => setShowSaveConfirm(false)}
+        onConfirm={handleSave}
+        title="Konfirmasi Integritas Data"
+        description="Anda sedang mencoba mengubah data kependudukan resmi. Kesalahan penginputan data dapat berakibat pada validitas statistik desa."
+        requirePhrase={TARGET_SAVE_PHRASE}
+        confirmLabel="Saya Yakin & Simpan"
+        loading={loading}
+      />
 
-            <div className="p-10 space-y-8">
-              <div className="space-y-4">
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                  Anda sedang mencoba mengubah/menambahkan data kependudukan resmi. Kesalahan penginputan data dapat berakibat pada validitas statistik desa.
-                </p>
-                <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-100 dark:border-slate-800">
-                  <p className="text-sm font-bold text-slate-500 mb-4 uppercase tracking-tighter">Salin kalimat di bawah untuk melanjutkan:</p>
-                  <p className="text-lg font-black text-slate-900 dark:text-white select-all cursor-copy break-words italic">
-                    &quot;{TARGET_CONFIRM}&quot;
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  value={confirmText}
-                  onChange={(e) => setConfirmText(e.target.value)}
-                  placeholder="Ketik kalimat konfirmasi di sini..."
-                  className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all font-bold tracking-tight text-center"
-                />
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <button
-                  onClick={handleFinalSubmit}
-                  disabled={confirmText !== TARGET_CONFIRM || loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-30 disabled:grayscale text-white font-black py-5 rounded-3xl transition-all shadow-2xl shadow-blue-500/40 flex items-center justify-center gap-3 text-lg"
-                >
-                  {loading ? <Loader2 className="animate-spin" /> : <Save size={24} />}
-                  SAYA YAKIN DAN SIMPAN SEKARANG
-                </button>
-                <button
-                  onClick={() => setShowConfirm(false)}
-                  className="w-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold py-4 rounded-2xl hover:bg-slate-200 transition-all text-sm"
-                >
-                  BATALKAN PERUBAHAN
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog 
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleDelete}
+        title="Hapus Record Penduduk"
+        description={`Apakah Anda benar-benar yakin ingin menghapus data penduduk atas nama "${initialData?.name}"? Record ini akan hilang selamanya dari database desa.`}
+        variant="danger"
+        confirmLabel="Hapus Permanen"
+        loading={isDeleting}
+      />
     </div>
   );
 }
-

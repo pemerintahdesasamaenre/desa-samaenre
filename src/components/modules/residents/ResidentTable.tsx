@@ -5,6 +5,7 @@ import { Search, MapPin, ChevronLeft, ChevronRight, Trash2, Edit, Loader2, UserP
 import { getResidents, getDusuns, deleteResident, logSensitiveView, type ResidentDisplayData } from '@/actions/residents';
 import Link from 'next/link';
 import CustomSelect from '@/components/ui/CustomSelect';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 export default function ResidentTable() {
   const [data, setData] = useState<ResidentDisplayData[]>([]);
@@ -18,6 +19,9 @@ export default function ResidentTable() {
   const [dusuns, setDusuns] = useState<string[]>([]);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [visibleIds, setVisibleIds] = useState<string[]>([]);
+  
+  // State untuk konfirmasi hapus
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string, name: string } | null>(null);
 
   // Format dusuns for CustomSelect
   const dusunOptions = [
@@ -79,17 +83,18 @@ export default function ResidentTable() {
     loadDusuns();
   }, []);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (confirm(`Apakah Anda yakin ingin menghapus data "${name}"?`)) {
-      setIsDeleting(id);
-      const result = await deleteResident(id);
-      if (result.success) {
-        fetchData();
-      } else {
-        alert('Gagal menghapus: ' + result.error);
-      }
-      setIsDeleting(null);
+  const handleDelete = async () => {
+    if (!deleteConfirm) return;
+    
+    setIsDeleting(deleteConfirm.id);
+    const result = await deleteResident(deleteConfirm.id);
+    if (result.success) {
+      setDeleteConfirm(null);
+      fetchData();
+    } else {
+      alert('Gagal menghapus: ' + result.error);
     }
+    setIsDeleting(null);
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -239,7 +244,7 @@ export default function ResidentTable() {
                           <Edit size={18} />
                         </Link>
                         <button
-                          onClick={() => handleDelete(item.id, item.name)}
+                          onClick={() => setDeleteConfirm({ id: item.id, name: item.name })}
                           disabled={isDeleting === item.id}
                           className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-blue-900/20 rounded-xl transition-all"
                           title="Hapus"
@@ -306,6 +311,17 @@ export default function ResidentTable() {
           </div>
         )}
       </div>
+
+      <ConfirmDialog 
+        isOpen={!!deleteConfirm}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={handleDelete}
+        title="Hapus Data Penduduk"
+        description={`Apakah Anda benar-benar yakin ingin menghapus data penduduk atas nama "${deleteConfirm?.name}"? Tindakan ini akan menghilangkan record secara permanen dari database.`}
+        variant="danger"
+        confirmLabel="Hapus Permanen"
+        loading={!!isDeleting}
+      />
     </div>
   );
 }
