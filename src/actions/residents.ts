@@ -133,6 +133,15 @@ export async function deleteResident(id: string) {
   }
 }
 
+export async function logSensitiveView(residentId: string, residentName: string) {
+  await logActivity('VIEW_SENSITIVE_DATA', { 
+    resident_id: residentId, 
+    resident_name: residentName,
+    timestamp: new Date().toISOString()
+  });
+  return { success: true };
+}
+
 export async function importResidents(data: ResidentImportData[]) {
   if (data.length === 0) return { error: 'Tidak ada data.' };
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Search, MapPin, ChevronLeft, ChevronRight, Trash2, Edit, Loader2, UserPlus, FileSpreadsheet, Eye, EyeOff } from 'lucide-react';
-import { getResidents, getDusuns, deleteResident, type ResidentDisplayData } from '@/actions/residents';
+import { getResidents, getDusuns, deleteResident, logSensitiveView, type ResidentDisplayData } from '@/actions/residents';
 import Link from 'next/link';
 
 export default function ResidentTable() {
@@ -25,7 +25,14 @@ export default function ResidentTable() {
     return `${str.slice(0, 6)}**********`;
   };
 
-  const toggleVisibility = (id: string) => {
+  const toggleVisibility = async (id: string, name: string) => {
+    const isBecomingVisible = !visibleIds.includes(id);
+    
+    if (isBecomingVisible) {
+      // Log akses data sensitif ke database audit
+      await logSensitiveView(id, name);
+    }
+
     setVisibleIds(prev => 
       prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
@@ -203,7 +210,7 @@ export default function ResidentTable() {
                           </div>
                         </div>
                         <button
-                          onClick={() => toggleVisibility(item.id)}
+                          onClick={() => toggleVisibility(item.id, item.name)}
                           className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
                           title={visibleIds.includes(item.id) ? 'Sembunyikan' : 'Tampilkan'}
                         >
