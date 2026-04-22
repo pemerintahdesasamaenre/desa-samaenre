@@ -7,6 +7,8 @@ import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Heart, Brief
 import Link from 'next/link';
 import CustomSelect from '@/components/ui/CustomSelect';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface ResidentFormProps {
   initialData?: any;
@@ -77,8 +79,8 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         router.push('/admin/residents');
         router.refresh();
       }
-    } catch {
-      setError('Gagal menyimpan data penduduk.');
+    } catch (e: any) {
+      setError(e.message || 'Gagal menyimpan data penduduk.');
     } finally {
       setLoading(false);
     }
@@ -154,16 +156,16 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">NIK (16 Digit)</label>
+                <Label>NIK (16 Digit)</Label>
                 <div className="relative">
-                  <input 
+                  <Input 
                     name="nik" 
                     type={showNik ? "text" : "password"}
                     defaultValue={initialData?.nik}
                     placeholder="16 digit NIK"
                     required
                     maxLength={16}
-                    className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 font-mono tracking-[0.2em]" 
+                    className="font-mono tracking-[0.2em]"
                   />
                   <button 
                     type="button"
@@ -177,16 +179,16 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">No. Kartu Keluarga (16 Digit)</label>
+                <Label>No. Kartu Keluarga (16 Digit)</Label>
                 <div className="relative">
-                  <input 
+                  <Input 
                     name="kk" 
                     type={showKk ? "text" : "password"}
                     defaultValue={initialData?.kk}
                     placeholder="16 digit Nomor KK"
                     required
                     maxLength={16}
-                    className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 font-mono tracking-[0.2em]" 
+                    className="font-mono tracking-[0.2em]"
                   />
                   <button 
                     type="button"
@@ -200,20 +202,19 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">Nama Lengkap Sesuai KTP</label>
-                <input 
+                <Label>Nama Lengkap Sesuai KTP</Label>
+                <Input 
                   name="name" 
                   defaultValue={initialData?.name}
                   placeholder="NAMA LENGKAP"
                   required
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 uppercase font-black tracking-tight" 
+                  className="uppercase font-black tracking-tight"
                 />
                 {error?.name && <p className="text-xs text-red-500 mt-1">{error.name[0]}</p>}
               </div>
             </div>
           </div>
 
-          {/* Section 2: Kelahiran & Gender */}
           <div className="space-y-6 pt-4 border-t border-slate-100 dark:border-slate-800">
             <h3 className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
               <Calendar size={18} />
@@ -222,23 +223,22 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">Tempat Lahir</label>
-                <input 
+                <Label>Tempat Lahir</Label>
+                <Input 
                   name="birth_place" 
                   defaultValue={initialData?.birth_place}
                   placeholder="KABUPATEN / KOTA"
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 uppercase" 
+                  className="uppercase"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">Tanggal Lahir</label>
-                <input 
+                <Label>Tanggal Lahir</Label>
+                <Input 
                   name="birth_date" 
                   type="date"
                   defaultValue={initialData?.birth_date}
                   required
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400" 
                 />
               </div>
 
@@ -255,7 +255,6 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             </div>
           </div>
 
-          {/* Section 3: Alamat Domisili */}
           <div className="space-y-6 pt-4 border-t border-slate-100 dark:border-slate-800">
             <h3 className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
               <MapPin size={18} />
@@ -264,38 +263,37 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">Dusun / Lingkungan</label>
-                <input 
+                <Label>Dusun / Lingkungan</Label>
+                <Input 
                   name="dusun" 
                   defaultValue={initialData?.dusun}
                   placeholder="NAMA DUSUN"
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 uppercase" 
+                  className="uppercase"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">RT</label>
-                <input 
+                <Label>RT</Label>
+                <Input 
                   name="rt" 
                   defaultValue={initialData?.rt}
                   placeholder="000"
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 font-mono" 
+                  className="font-mono"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">RW</label>
-                <input 
+                <Label>RW</Label>
+                <Input 
                   name="rw" 
                   defaultValue={initialData?.rw}
                   placeholder="000"
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 font-mono" 
+                  className="font-mono"
                 />
               </div>
             </div>
           </div>
 
-          {/* Section 4: Sosial & Ekonomi */}
           <div className="space-y-6 pt-4 border-t border-slate-100 dark:border-slate-800">
             <h3 className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
               <Briefcase size={18} />
@@ -304,58 +302,51 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1 flex items-center gap-2">
-                  <GraduationCap size={16} /> Pendidikan Terakhir
-                </label>
-                <input 
+                <Label>Pendidikan Terakhir</Label>
+                <Input 
                   name="education" 
                   defaultValue={initialData?.education}
                   placeholder="CONTOH: SMA / SEDERAJAT"
                   required
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 uppercase" 
+                  className="uppercase"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1 flex items-center gap-2">
-                  <Briefcase size={16} /> Pekerjaan Utama
-                </label>
-                <input 
+                <Label>Pekerjaan Utama</Label>
+                <Input 
                   name="occupation" 
                   defaultValue={initialData?.occupation}
                   placeholder="CONTOH: PETANI / PEKEBUN"
                   required
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 uppercase" 
+                  className="uppercase"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1 flex items-center gap-2">
-                  <Heart size={16} /> Status Perkawinan
-                </label>
-                <input 
+                <Label>Status Perkawinan</Label>
+                <Input 
                   name="marital_status" 
                   defaultValue={initialData?.marital_status}
                   placeholder="CONTOH: KAWIN"
                   required
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 uppercase" 
+                  className="uppercase"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">Tahun Pendataan</label>
-                <input 
+                <Label>Tahun Pendataan</Label>
+                <Input 
                   name="data_year" 
                   type="number"
                   defaultValue={initialData?.data_year || new Date().getFullYear()}
                   required
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 font-mono" 
+                  className="font-mono"
                 />
               </div>
             </div>
           </div>
 
-          {/* Section 5: Orang Tua */}
           <div className="space-y-6 pt-4 border-t border-slate-100 dark:border-slate-800">
             <h3 className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
               <Users size={18} />
@@ -364,22 +355,22 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">Nama Ayah Kandung</label>
-                <input 
+                <Label>Nama Ayah Kandung</Label>
+                <Input 
                   name="father_name" 
                   defaultValue={initialData?.father_name}
                   placeholder="NAMA AYAH"
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 uppercase" 
+                  className="uppercase"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1">Nama Ibu Kandung</label>
-                <input 
+                <Label>Nama Ibu Kandung</Label>
+                <Input 
                   name="mother_name" 
                   defaultValue={initialData?.mother_name}
                   placeholder="NAMA IBU"
-                  className="flex h-12 w-full border border-border bg-muted/30 text-foreground shadow-sm rounded-full px-6 py-2 text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary transition duration-400 uppercase" 
+                  className="uppercase"
                 />
               </div>
             </div>
@@ -398,7 +389,6 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         </form>
       </div>
 
-      {/* REUSABLE DIALOGS */}
       <ConfirmDialog 
         isOpen={showSaveConfirm}
         onClose={() => setShowSaveConfirm(false)}

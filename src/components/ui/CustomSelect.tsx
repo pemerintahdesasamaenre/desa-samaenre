@@ -67,9 +67,9 @@ export default function CustomSelect({
   return (
     <div className="space-y-2.5" ref={containerRef}>
       {label && (
-        <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1 flex items-center gap-2">
+        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 ml-1 flex items-center gap-2">
           {label}
-          {required && <span className="text-destructive">*</span>}
+          {required && <span className="text-red-500">*</span>}
         </label>
       )}
       
@@ -81,15 +81,15 @@ export default function CustomSelect({
           onClick={() => setIsOpen(!isOpen)}
           className={`w-full h-12 flex items-center justify-between px-6 rounded-full border transition-all text-left shadow-sm ${
             isOpen 
-              ? 'border-primary ring-4 ring-primary/10 bg-background' 
-              : 'border-border bg-muted/30 hover:bg-background hover:border-border/80'
-          } ${error ? 'border-destructive' : ''}`}
+              ? 'border-primary ring-4 ring-primary/10 bg-white dark:bg-slate-950' 
+              : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 hover:border-slate-300'
+          } ${error ? 'border-red-500' : ''}`}
         >
           <div className="flex items-center gap-3">
-            <div className={`p-1.5 rounded-full ${selectedOption ? 'bg-primary/10 text-primary' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>
+            <div className={`p-1.5 rounded-full ${selectedOption ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
               <Icon size={14} />
             </div>
-            <span className={`text-sm ${selectedOption ? 'text-foreground font-bold' : 'text-muted-foreground font-medium'}`}>
+            <span className={`text-sm ${selectedOption ? 'text-slate-900 dark:text-white font-bold' : 'text-slate-400 font-medium'}`}>
               {selectedOption ? selectedOption.name : placeholder}
             </span>
           </div>

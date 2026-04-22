@@ -133,11 +133,13 @@ export async function getResidentById(id: string) {
     };
 
     // Log akses data sensitif saat akan diedit (Non-blocking)
-    logSensitiveView(id, resident.name + ' (FOR EDIT)').catch(console.error);
+    logSensitiveView(id, resident.name + ' (FOR EDIT)').catch(err => 
+      console.error('Logging failed:', err)
+    );
 
     return resident;
   } catch (e) {
-    console.error('ERROR in getResidentById:', e);
+    console.error('ERROR in getResidentById:', JSON.stringify(e, null, 2));
     return null;
   }
 }
