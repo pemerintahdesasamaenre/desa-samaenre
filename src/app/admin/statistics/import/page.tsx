@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { ArrowLeft, FileSpreadsheet, Upload, Loader2, BarChart, ShieldCheck, Trash2, Activity } from 'lucide-react';
+import { ArrowLeft, FileSpreadsheet, Upload, Loader2, BarChart, Trash2, Activity } from 'lucide-react';
 import Link from 'next/link';
 import * as XLSX from 'xlsx';
 import { importResidents, type ResidentImportData } from '@/actions/residents';
