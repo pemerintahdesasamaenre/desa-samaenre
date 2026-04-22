@@ -186,20 +186,30 @@ export default function StatisticsImportPage() {
         setLogs(prev => [...prev, `Info: Mengabaikan ${duplicateCount} baris NIK ganda di file Excel.`]);
       }
 
-      // 2. VALIDASI TANGGAL KERAS (Cegah error "date out of range")
+      // 2. VALIDASI & STANDARDISASI TANGGAL (Cegah error "invalid input syntax")
       const finalCleanData = uniqueFormattedData.map(item => {
         if (!item.birth_date) return item;
         
-        const [y, m, d] = item.birth_date.split('-').map(Number);
+        // Bersihkan string tanggal dari karakter aneh dan split
+        const parts = item.birth_date.split('-').map(p => p.replace(/[^0-9]/g, ''));
+        if (parts.length !== 3) return { ...item, birth_date: null };
+
+        const y = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10);
+        const d = parseInt(parts[2], 10);
+
         const date = new Date(y, m - 1, d);
         
-        // Cek apakah tanggal valid secara kalender (misal bukan bulan 13 atau tgl 32)
+        // Cek validitas kalender
         const isValid = date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
         
         if (!isValid) {
           return { ...item, birth_date: null };
         }
-        return item;
+
+        // Standardisasi ke YYYY-MM-DD (Penting: harus tepat 2 digit untuk bulan & hari)
+        const cleanDate = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        return { ...item, birth_date: cleanDate };
       });
 
       // PROSES BATCHING (PER 100 DATA)
