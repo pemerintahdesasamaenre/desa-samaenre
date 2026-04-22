@@ -4,8 +4,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { addFinanceEntry } from '@/actions/finances';
 import type { FinanceInput } from '@/lib/validations';
-import { Save, Loader2, ArrowLeft, Wallet } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, Wallet, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 export default function FinanceForm() {
   const router = useRouter();
@@ -68,62 +70,67 @@ export default function FinanceForm() {
             </div>
           )}
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Tahun Anggaran</label>
-              <input 
-                type="number" 
-                name="year" 
-                defaultValue={new Date().getFullYear()} 
-                required 
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight" 
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Tipe Anggaran</label>
-              <select 
-                name="type" 
-                required 
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold"
-              >
-                <option value="income">Pendapatan</option>
-                <option value="expense">Pengeluaran</option>
-                <option value="financing">Pembiayaan</option>
-              </select>
-            </div>
+          <div className="space-y-10">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <TrendingUp size={18} />
+              </div>
+              Rincian Anggaran
+            </h3>
 
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Kategori / Nama Akun</label>
-              <input 
-                type="text" 
-                name="category_name" 
-                required 
-                placeholder="Contoh: Dana Desa (DDS)" 
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight" 
-              />
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <Label>Tahun Anggaran</Label>
+                <Input 
+                  type="number" 
+                  name="year" 
+                  defaultValue={new Date().getFullYear()} 
+                  required 
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Tipe Anggaran</Label>
+                <select 
+                  name="type" 
+                  required 
+                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold hover:border-primary/50"
+                >
+                  <option value="income">Pendapatan</option>
+                  <option value="expense">Pengeluaran</option>
+                  <option value="financing">Pembiayaan</option>
+                </select>
+              </div>
 
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Jumlah (Rp)</label>
-              <input 
-                type="number" 
-                name="amount" 
-                required 
-                min="0" 
-                placeholder="Masukkan nominal angka saja"
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight" 
-              />
-            </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label>Kategori / Nama Akun</Label>
+                <Input 
+                  name="category_name" 
+                  required 
+                  placeholder="Contoh: Dana Desa (DDS)" 
+                />
+              </div>
 
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Catatan (Opsional)</label>
-              <textarea 
-                name="note" 
-                rows={4} 
-                className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium"
-                placeholder="Penjelasan tambahan mengenai anggaran ini..."
-              ></textarea>
+              <div className="space-y-2 md:col-span-2">
+                <Label>Jumlah (Rp)</Label>
+                <Input 
+                  type="number" 
+                  name="amount" 
+                  required 
+                  min="0" 
+                  placeholder="Masukkan nominal angka saja"
+                />
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label>Catatan (Opsional)</Label>
+                <textarea 
+                  name="note" 
+                  rows={4} 
+                  className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium hover:border-primary/50"
+                  placeholder="Penjelasan tambahan mengenai anggaran ini..."
+                ></textarea>
+              </div>
             </div>
           </div>
 

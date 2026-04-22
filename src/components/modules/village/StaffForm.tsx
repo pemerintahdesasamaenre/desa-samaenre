@@ -6,8 +6,10 @@ import { upsertStaffMember } from '@/actions/staff';
 import type { StaffMemberInput } from '@/lib/validations';
 import type { StaffMember } from '@/types';
 import ImageUpload from '@/components/ui/ImageUpload';
-import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Network } from 'lucide-react';
 import Link from 'next/link';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 interface StaffFormProps {
   staffList: StaffMember[];
@@ -70,71 +72,75 @@ export default function StaffForm({ staffList, initialData }: StaffFormProps) {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-10 space-y-10">
+        <form onSubmit={handleSubmit} className="p-10 space-y-12">
           {error && (
             <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
               {error}
             </div>
           )}
         
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Nama Lengkap</label>
-              <input 
-                type="text" 
-                name="name" 
-                required 
-                defaultValue={initialData?.name}
-                placeholder="Masukkan nama lengkap beserta gelar jika ada"
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight" 
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Jabatan</label>
-              <input 
-                type="text" 
-                name="position" 
-                required 
-                defaultValue={initialData?.position}
-                placeholder="Contoh: Kepala Desa, Sekretaris Desa" 
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight" 
-              />
-            </div>
+          <div className="space-y-10">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Network size={18} />
+              </div>
+              Profil Aparatur
+            </h3>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Urutan Tampil (Order)</label>
-              <input 
-                type="number" 
-                name="order_index" 
-                defaultValue={initialData?.order_index || 0} 
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight" 
-              />
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2 md:col-span-2">
+                <Label>Nama Lengkap</Label>
+                <Input 
+                  name="name" 
+                  required 
+                  defaultValue={initialData?.name}
+                  placeholder="Masukkan nama lengkap beserta gelar jika ada"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Jabatan</Label>
+                <Input 
+                  name="position" 
+                  required 
+                  defaultValue={initialData?.position}
+                  placeholder="Contoh: Kepala Desa, Sekretaris Desa" 
+                />
+              </div>
 
-            <div className="md:col-span-2">
-              <ImageUpload 
-                label="Foto Profil"
-                folder="staff"
-                value={photoUrl}
-                onChange={setPhotoUrl}
-              />
-            </div>
+              <div className="space-y-2">
+                <Label>Urutan Tampil (Order)</Label>
+                <Input 
+                  type="number" 
+                  name="order_index" 
+                  defaultValue={initialData?.order_index || 0} 
+                />
+              </div>
 
-            <div className="md:col-span-2 space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Atasan Langsung (Hirarki)</label>
-              <select 
-                name="parent_id" 
-                defaultValue={initialData?.parent_id || ''}
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold"
-              >
-                <option value="">Tidak ada (Posisi Tertinggi)</option>
-                {staffList
-                  .filter(s => s.id !== initialData?.id) 
-                  .map((s) => (
-                    <option key={s.id} value={s.id}>{s.name} - {s.position}</option>
-                  ))}
-              </select>
+              <div className="md:col-span-2">
+                <ImageUpload 
+                  label="Foto Profil"
+                  folder="staff"
+                  value={photoUrl}
+                  onChange={setPhotoUrl}
+                />
+              </div>
+
+              <div className="md:col-span-2 space-y-2">
+                <Label>Atasan Langsung (Hirarki)</Label>
+                <select 
+                  name="parent_id" 
+                  defaultValue={initialData?.parent_id || ''}
+                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold hover:border-primary/50"
+                >
+                  <option value="">Tidak ada (Posisi Tertinggi)</option>
+                  {staffList
+                    .filter(s => s.id !== initialData?.id) 
+                    .map((s) => (
+                      <option key={s.id} value={s.id}>{s.name} - {s.position}</option>
+                    ))}
+                </select>
+              </div>
             </div>
           </div>
 

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { updateVillageInfo } from '@/actions/village-info';
 import { Save, Loader2, Plus, Trash2, Globe, Info, HelpCircle, Map as MapIcon, Compass } from 'lucide-react';
 import ImageUpload from '@/components/ui/ImageUpload';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 interface VillageInfoFormProps {
   initialData: {
@@ -145,57 +147,53 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-8">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Nama Resmi Desa</label>
-                <input 
+                <Label>Nama Resmi Desa</Label>
+                <Input 
                   name="name" 
                   defaultValue={initialData.name} 
                   required
-                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight" 
                 />
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Email Desa</label>
-                  <input 
+                  <Label>Email Desa</Label>
+                  <Input 
                     name="email" 
                     type="email"
                     defaultValue={initialData.contact_info?.email} 
-                    className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-medium" 
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Nomor Telepon / WA</label>
-                  <input 
+                  <Label>Nomor Telepon / WA</Label>
+                  <Input 
                     type="text"
                     value={phoneNumber}
                     onChange={handlePhoneChange}
                     placeholder="08xxxxxxxxxx"
-                    className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-mono font-bold" 
                   />
                 </div>
               </div>
 
               <div className="space-y-2 group">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1 flex items-center gap-2">
+                <Label className="flex items-center gap-2">
                   Peta Lokasi Google Maps
                   <HelpCircle size={14} className="text-muted-foreground" />
-                </label>
-                <input 
+                </Label>
+                <Input 
                   value={mapsUrl}
                   onChange={handleMapsInputChange}
                   placeholder="Paste link atau kode iframe dari Google Maps"
-                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all text-sm" 
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Alamat Lengkap Kantor Desa</label>
+                <Label>Alamat Kantor Desa</Label>
                 <textarea 
                   name="address" 
                   rows={4}
                   defaultValue={initialData.contact_info?.address} 
-                  className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed" 
+                  className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed hover:border-primary/50" 
                 />
               </div>
             </div>
@@ -220,54 +218,49 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Luas Wilayah (km² / Ha)</label>
-              <input 
+              <Label>Luas Wilayah (km² / Ha)</Label>
+              <Input 
                 name="area_size" 
                 defaultValue={initialData.area_size} 
                 placeholder="Contoh: 12.5 km²"
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight" 
               />
             </div>
 
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 flex items-center gap-2">
+                <Label className="text-muted-foreground flex items-center gap-2">
                   <Compass size={12} /> Utara
-                </label>
-                <input 
+                </Label>
+                <Input 
                   name="boundary_north" 
                   defaultValue={initialData.boundaries?.north} 
-                  className="w-full h-12 px-5 rounded-full border border-border bg-background text-foreground text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 flex items-center gap-2">
+                <Label className="text-muted-foreground flex items-center gap-2">
                   <Compass size={12} /> Selatan
-                </label>
-                <input 
+                </Label>
+                <Input 
                   name="boundary_south" 
                   defaultValue={initialData.boundaries?.south} 
-                  className="w-full h-12 px-5 rounded-full border border-border bg-background text-foreground text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 flex items-center gap-2">
+                <Label className="text-muted-foreground flex items-center gap-2">
                   <Compass size={12} /> Timur
-                </label>
-                <input 
+                </Label>
+                <Input 
                   name="boundary_east" 
                   defaultValue={initialData.boundaries?.east} 
-                  className="w-full h-12 px-5 rounded-full border border-border bg-background text-foreground text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 flex items-center gap-2">
+                <Label className="text-muted-foreground flex items-center gap-2">
                   <Compass size={12} /> Barat
-                </label>
-                <input 
+                </Label>
+                <Input 
                   name="boundary_west" 
                   defaultValue={initialData.boundaries?.west} 
-                  className="w-full h-12 px-5 rounded-full border border-border bg-background text-foreground text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold" 
                 />
               </div>
             </div>
@@ -287,13 +280,13 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
 
           <div className="space-y-10">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Visi Desa</label>
-              <textarea name="vision" rows={2} defaultValue={initialData.vision} className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-bold text-lg tracking-tight" />
+              <Label>Visi Desa</Label>
+              <textarea name="vision" rows={2} defaultValue={initialData.vision} className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-bold text-lg tracking-tight hover:border-primary/50" />
             </div>
 
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Misi Desa</label>
+                <Label>Misi Desa</Label>
                 <button type="button" onClick={addMission} className="text-[10px] bg-primary text-primary-foreground px-6 py-2.5 rounded-full flex items-center gap-2 transition-all font-black uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95">
                   <Plus size={14} /> Tambah Misi
                 </button>
@@ -301,7 +294,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
               <div className="space-y-4">
                 {missions.map((mission, index) => (
                   <div key={index} className="flex gap-3">
-                    <input value={mission} onChange={(e) => updateMission(index, e.target.value)} placeholder={`Tulis misi ke-${index + 1}`} className="flex-1 h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-medium" />
+                    <Input value={mission} onChange={(e) => updateMission(index, e.target.value)} placeholder={`Tulis misi ke-${index + 1}`} />
                     <button type="button" onClick={() => removeMission(index)} className="p-4 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl transition-all border border-transparent hover:border-destructive/20">
                       <Trash2 size={20} />
                     </button>
@@ -311,8 +304,8 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Sejarah Lengkap Desa</label>
-              <textarea name="history" rows={10} defaultValue={initialData.history} className="w-full p-8 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed" />
+              <Label>Sejarah Lengkap Desa</Label>
+              <textarea name="history" rows={10} defaultValue={initialData.history} className="w-full p-8 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed hover:border-primary/50" />
             </div>
           </div>
         </section>

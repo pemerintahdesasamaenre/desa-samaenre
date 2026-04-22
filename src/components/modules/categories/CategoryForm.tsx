@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createCategory, updateCategory, type CategoryInput } from '@/actions/categories'
-import { Save, Loader2, ArrowLeft } from 'lucide-react'
+import { Save, Loader2, ArrowLeft, Layers } from 'lucide-react'
 import Link from 'next/link'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 
 interface CategoryFormProps {
   initialData?: CategoryInput & { id?: string }
@@ -89,53 +91,58 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
             </div>
           )}
 
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Nama Kategori</label>
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={handleNameChange}
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight"
-                placeholder="Contoh: Berita Utama, Data Penduduk, dll"
-              />
-            </div>
+          <div className="space-y-10">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Layers size={18} />
+              </div>
+              Detail Kategori
+            </h3>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Slug (URL)</label>
-              <input
-                type="text"
-                required
-                value={formData.slug}
-                onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-mono text-sm"
-              />
-            </div>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label>Nama Kategori</Label>
+                <Input
+                  required
+                  value={formData.name}
+                  onChange={handleNameChange}
+                  placeholder="Contoh: Berita Utama, Data Penduduk, dll"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Tipe Konten</label>
-              <select
-                value={formData.type}
-                onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CategoryInput['type'] }))}
-                className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold"
-              >
-                <option value="post">Berita & Agenda (Post)</option>
-                <option value="demographic">Data Statistik (Demographic)</option>
-                <option value="finance">Keuangan (Finance)</option>
-                <option value="gallery">Galeri Foto (Gallery)</option>
-              </select>
-            </div>
+              <div className="space-y-2">
+                <Label>Slug (URL)</Label>
+                <Input
+                  required
+                  value={formData.slug}
+                  onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+                />
+              </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Deskripsi (Opsional)</label>
-              <textarea
-                rows={4}
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium"
-                placeholder="Penjelasan singkat mengenai kategori ini..."
-              />
+              <div className="space-y-2">
+                <Label>Tipe Konten</Label>
+                <select
+                  value={formData.type}
+                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CategoryInput['type'] }))}
+                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold hover:border-primary/50"
+                >
+                  <option value="post">Berita & Agenda (Post)</option>
+                  <option value="demographic">Data Statistik (Demographic)</option>
+                  <option value="finance">Keuangan (Finance)</option>
+                  <option value="gallery">Galeri Foto (Gallery)</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Deskripsi (Opsional)</Label>
+                <textarea
+                  rows={4}
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium hover:border-primary/50"
+                  placeholder="Penjelasan singkat mengenai kategori ini..."
+                />
+              </div>
             </div>
           </div>
 
