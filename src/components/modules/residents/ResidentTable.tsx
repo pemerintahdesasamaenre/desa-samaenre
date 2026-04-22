@@ -40,8 +40,8 @@ export default function ResidentTable() {
     const isBecomingVisible = !visibleIds.includes(id);
     
     if (isBecomingVisible) {
-      // Log akses data sensitif ke database audit
-      await logSensitiveView(id, name);
+      // Log akses data sensitif ke database audit (Non-blocking)
+      logSensitiveView(id, name).catch(console.error);
     }
 
     setVisibleIds(prev => 
@@ -110,7 +110,7 @@ export default function ResidentTable() {
             placeholder="Cari NIK, KK, atau Nama..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-sm"
+            className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all shadow-sm h-12"
           />
         </div>
 
@@ -127,7 +127,7 @@ export default function ResidentTable() {
 
           <Link
             href="/admin/statistics/import"
-            className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3.5 rounded-2xl transition-all hover:bg-slate-50 dark:hover:bg-slate-700 font-bold shadow-sm"
+            className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-3 rounded-2xl transition-all hover:bg-slate-50 dark:hover:bg-slate-700 font-bold shadow-sm h-12"
           >
             <FileSpreadsheet size={18} />
             <span className="hidden sm:inline">Import</span>
@@ -135,7 +135,7 @@ export default function ResidentTable() {
 
           <Link
             href="/admin/residents/new"
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3.5 rounded-2xl transition-all shadow-lg shadow-blue-900/20 font-bold"
+            className="flex items-center gap-2 bg-primary hover:opacity-90 text-primary-foreground px-5 py-3 rounded-full transition-all shadow-lg shadow-primary/20 font-bold h-12"
           >
             <UserPlus size={18} />
             <span className="hidden sm:inline">Tambah Penduduk</span>
@@ -147,10 +147,10 @@ export default function ResidentTable() {
       <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
         <button
           onClick={() => { setDusun('SEMUA'); setPage(1); }}
-          className={`px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+          className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
             dusun === 'SEMUA' 
-            ? 'bg-blue-600 text-white shadow-md' 
-            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:border-blue-300'
+            ? 'bg-primary text-primary-foreground shadow-md' 
+            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:border-primary/50'
           }`}
         >
           Semua Wilayah
@@ -159,10 +159,10 @@ export default function ResidentTable() {
           <button
             key={d}
             onClick={() => { setDusun(d); setPage(1); }}
-            className={`px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
               dusun === d 
-              ? 'bg-blue-600 text-white shadow-md' 
-              : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:border-blue-300'
+              ? 'bg-primary text-primary-foreground shadow-md' 
+              : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:border-primary/50'
             }`}
           >
             {d}
@@ -186,7 +186,7 @@ export default function ResidentTable() {
               {loading ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-20 text-center">
-                    <Loader2 className="animate-spin mx-auto text-blue-600 mb-2" size={32} />
+                    <Loader2 className="animate-spin mx-auto text-primary mb-2" size={32} />
                     <p className="text-slate-500 font-medium">Memuat data penduduk...</p>
                   </td>
                 </tr>
@@ -198,9 +198,9 @@ export default function ResidentTable() {
                 </tr>
               ) : (
                 data.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+                  <tr key={item.id} className="hover:bg-primary/5 dark:hover:bg-primary/5 transition-colors group">
                     <td className="px-6 py-4">
-                      <div className="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
+                      <div className="font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
                         {item.name}
                       </div>
                       <div className="text-xs text-slate-500 mt-0.5">
@@ -219,7 +219,7 @@ export default function ResidentTable() {
                         </div>
                         <button
                           onClick={() => toggleVisibility(item.id, item.name)}
-                          className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
+                          className="p-1.5 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                           title={visibleIds.includes(item.id) ? 'Sembunyikan' : 'Tampilkan'}
                         >
                           {visibleIds.includes(item.id) ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -238,7 +238,7 @@ export default function ResidentTable() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/admin/residents/edit/${item.id}`}
-                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all"
+                          className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
                           title="Edit"
                         >
                           <Edit size={18} />
@@ -246,7 +246,7 @@ export default function ResidentTable() {
                         <button
                           onClick={() => setDeleteConfirm({ id: item.id, name: item.name })}
                           disabled={isDeleting === item.id}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-blue-900/20 rounded-xl transition-all"
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all"
                           title="Hapus"
                         >
                           {isDeleting === item.id ? <Loader2 className="animate-spin" size={18} /> : <Trash2 size={18} />}
@@ -290,7 +290,7 @@ export default function ResidentTable() {
                       onClick={() => setPage(pageNum)}
                       className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${
                         page === pageNum
-                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20'
+                        ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
                         : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 border border-slate-200 dark:border-slate-700'
                       }`}
                     >
@@ -312,13 +312,15 @@ export default function ResidentTable() {
         )}
       </div>
 
+      {/* MODAL KONFIRMASI HAPUS (DENGAN PHRASE UNTUK KEAMANAN) */}
       <ConfirmDialog 
         isOpen={!!deleteConfirm}
         onClose={() => setDeleteConfirm(null)}
         onConfirm={handleDelete}
         title="Hapus Data Penduduk"
-        description={`Apakah Anda benar-benar yakin ingin menghapus data penduduk atas nama "${deleteConfirm?.name}"? Tindakan ini akan menghilangkan record secara permanen dari database.`}
+        description={`Apakah Anda benar-benar yakin ingin menghapus data penduduk atas nama "${deleteConfirm?.name}"? Tindakan ini akan menghilangkan record secara permanen.`}
         variant="danger"
+        requirePhrase={deleteConfirm?.name}
         confirmLabel="Hapus Permanen"
         loading={!!isDeleting}
       />

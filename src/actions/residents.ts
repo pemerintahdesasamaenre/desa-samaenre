@@ -132,12 +132,12 @@ export async function getResidentById(id: string) {
       data_year: data.data_year
     };
 
-    // Log akses data sensitif saat akan diedit
-    await logSensitiveView(id, resident.name + ' (FOR EDIT)');
+    // Log akses data sensitif saat akan diedit (Non-blocking)
+    logSensitiveView(id, resident.name + ' (FOR EDIT)').catch(console.error);
 
     return resident;
   } catch (e) {
-    console.error(e);
+    console.error('ERROR in getResidentById:', e);
     return null;
   }
 }

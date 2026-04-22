@@ -13,7 +13,10 @@ interface ConfirmDialogProps {
   cancelLabel?: string;
   variant?: 'danger' | 'warning' | 'primary';
   loading?: boolean;
-  requirePhrase?: string; // Jika diisi, user wajib mengetik kalimat ini
+  requirePhrase?: string | undefined;
+  requirePhrase2?: string | undefined;
+  phraseLabel?: string;
+  phraseLabel2?: string;
 }
 
 export default function ConfirmDialog({
@@ -26,36 +29,43 @@ export default function ConfirmDialog({
   cancelLabel = "Batal",
   variant = 'primary',
   loading = false,
-  requirePhrase
+  requirePhrase,
+  requirePhrase2,
+  phraseLabel = "Ketik kalimat di bawah untuk verifikasi:",
+  phraseLabel2 = "Ketik kalimat kedua untuk konfirmasi akhir:"
 }: ConfirmDialogProps) {
   const [inputText, setConfirmText] = useState('');
+  const [inputText2, setConfirmText2] = useState('');
 
-  // Reset input saat dibuka/tutup
   useEffect(() => {
-    if (!isOpen) setConfirmText('');
+    if (!isOpen) {
+      setConfirmText('');
+      setConfirmText2('');
+    }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const isConfirmed = requirePhrase ? inputText === requirePhrase : true;
+  const isConfirmed = 
+    (!requirePhrase || inputText === requirePhrase) && 
+    (!requirePhrase2 || inputText2 === requirePhrase2);
 
   const variantStyles = {
     danger: 'bg-red-600 hover:bg-red-700 shadow-red-500/20 text-white',
     warning: 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/20 text-white',
-    primary: 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20 text-white',
+    primary: 'bg-primary hover:opacity-90 shadow-primary/20 text-primary-foreground',
   };
 
   const iconStyles = {
     danger: 'bg-red-100 dark:bg-red-900/30 text-red-600',
     warning: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600',
-    primary: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600',
+    primary: 'bg-primary/10 text-primary',
   };
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
       <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in zoom-in-95 duration-200">
         
-        {/* Header */}
         <div className={`p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center ${variant === 'danger' ? 'bg-red-50/50 dark:bg-red-900/10' : 'bg-slate-50/50 dark:bg-slate-800/50'}`}>
           <div className="flex items-center gap-4">
             <div className={`p-2.5 rounded-xl ${iconStyles[variant]}`}>
@@ -68,32 +78,50 @@ export default function ConfirmDialog({
           </button>
         </div>
 
-        {/* Content */}
         <div className="p-8 space-y-6">
           <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
             {description}
           </p>
 
-          {requirePhrase && (
-            <div className="space-y-4">
-              <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
-                <p className="text-xs font-bold text-slate-500 mb-2 uppercase tracking-tighter text-center">Ketik kalimat di bawah untuk verifikasi:</p>
-                <p className="text-sm font-black text-slate-900 dark:text-white select-none text-center italic">
-                  &quot;{requirePhrase}&quot;
-                </p>
+          <div className="space-y-4">
+            {requirePhrase && (
+              <div className="space-y-2">
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                  <p className="text-[10px] font-black text-slate-500 mb-1 uppercase tracking-widest text-center">{phraseLabel}</p>
+                  <p className="text-sm font-black text-slate-900 dark:text-white select-none text-center italic">
+                    &quot;{requirePhrase}&quot;
+                  </p>
+                </div>
+                <input
+                  type="text"
+                  autoFocus={!requirePhrase2}
+                  value={inputText}
+                  onChange={(e) => setConfirmText(e.target.value)}
+                  placeholder="Ketik di sini..."
+                  className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary outline-none transition-all font-bold tracking-tight text-center"
+                />
               </div>
-              <input
-                type="text"
-                autoFocus
-                value={inputText}
-                onChange={(e) => setConfirmText(e.target.value)}
-                placeholder="Ketik di sini..."
-                className="w-full px-6 py-3.5 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all font-bold tracking-tight text-center"
-              />
-            </div>
-          )}
+            )}
 
-          {/* Actions */}
+            {requirePhrase2 && (
+              <div className="space-y-2">
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                  <p className="text-[10px] font-black text-slate-500 mb-1 uppercase tracking-widest text-center">{phraseLabel2}</p>
+                  <p className="text-sm font-black text-slate-900 dark:text-white select-none text-center italic">
+                    &quot;{requirePhrase2}&quot;
+                  </p>
+                </div>
+                <input
+                  type="text"
+                  value={inputText2}
+                  onChange={(e) => setConfirmText2(e.target.value)}
+                  placeholder="Ketik di sini..."
+                  className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary outline-none transition-all font-bold tracking-tight text-center"
+                />
+              </div>
+            )}
+          </div>
+
           <div className="flex flex-col gap-3 pt-2">
             <button
               onClick={onConfirm}

@@ -65,9 +65,9 @@ export default function CustomSelect({
   }
 
   return (
-    <div className="space-y-2" ref={containerRef}>
+    <div className="space-y-2.5" ref={containerRef}>
       {label && (
-        <label className="text-sm font-semibold text-foreground/70 flex items-center gap-2">
+        <label className="text-[11px] font-black uppercase tracking-[0.15em] text-foreground/60 dark:text-foreground/40 ml-1 flex items-center gap-2">
           {label}
           {required && <span className="text-destructive">*</span>}
         </label>
@@ -79,31 +79,31 @@ export default function CustomSelect({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center justify-between p-3.5 rounded-xl border transition-all text-left ${
+          className={`w-full h-12 flex items-center justify-between px-6 rounded-full border transition-all text-left shadow-sm ${
             isOpen 
-              ? 'border-primary ring-4 ring-primary/10 bg-background shadow-sm' 
-              : 'border-border bg-muted/30 hover:bg-background'
+              ? 'border-primary ring-4 ring-primary/10 bg-background' 
+              : 'border-border bg-muted/30 hover:bg-background hover:border-border/80'
           } ${error ? 'border-destructive' : ''}`}
         >
           <div className="flex items-center gap-3">
-            <div className={`p-1.5 rounded-lg ${selectedOption ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
-              <Icon size={16} />
+            <div className={`p-1.5 rounded-full ${selectedOption ? 'bg-primary/10 text-primary' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'}`}>
+              <Icon size={14} />
             </div>
-            <span className={selectedOption ? 'text-foreground font-medium' : 'text-muted-foreground'}>
+            <span className={`text-sm ${selectedOption ? 'text-foreground font-bold' : 'text-muted-foreground font-medium'}`}>
               {selectedOption ? selectedOption.name : placeholder}
             </span>
           </div>
           <ChevronDown 
-            size={18} 
-            className={`text-muted-foreground transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+            size={16} 
+            className={`text-slate-400 transition-transform duration-500 ${isOpen ? 'rotate-180' : ''}`} 
           />
         </button>
 
         {isOpen && (
-          <div className="absolute z-[100] w-full mt-2 bg-popover border border-border rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="max-h-60 overflow-y-auto p-2 space-y-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:display-none">
+          <div className="absolute z-[999] w-full mt-3 bg-popover border border-border rounded-[2rem] shadow-2xl shadow-black/5 dark:shadow-none overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="max-h-72 overflow-y-auto p-3 space-y-1.5 custom-scrollbar">
               {options.length === 0 && (
-                <div className="p-4 text-center text-sm text-muted-foreground">
+                <div className="p-6 text-center text-sm text-muted-foreground italic">
                   Tidak ada opsi tersedia
                 </div>
               )}
@@ -112,14 +112,14 @@ export default function CustomSelect({
                   key={opt.id}
                   type="button"
                   onClick={() => handleSelect(opt.id)}
-                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-colors ${
+                  className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-sm transition-all ${
                     selectedId === opt.id 
-                      ? 'bg-primary/10 text-primary font-bold' 
-                      : 'text-foreground hover:bg-muted'
+                      ? 'bg-primary text-primary-foreground font-black shadow-lg shadow-primary/30' 
+                      : 'text-foreground hover:bg-muted hover:translate-x-1'
                   }`}
                 >
                   {opt.name}
-                  {selectedId === opt.id && <Check size={16} />}
+                  {selectedId === opt.id && <Check size={18} className="animate-in zoom-in duration-300" />}
                 </button>
               ))}
             </div>
@@ -127,7 +127,7 @@ export default function CustomSelect({
         )}
       </div>
       
-      {error && <p className="text-xs text-destructive font-medium pl-1">{error}</p>}
+      {error && <p className="text-xs text-destructive font-bold pl-2 animate-in slide-in-from-top-1">{error}</p>}
     </div>
   )
 }

@@ -65,7 +65,7 @@ async function PageContent({ searchParams }: PageProps) {
               Laporan realisasi anggaran pendapatan dan belanja desa tahun {selectedYear}.
             </p>
           </div>
-          <div className="glass px-6 py-4 rounded-3xl shadow-xl">
+          <div className="glass px-6 py-4 rounded-3xl shadow-xl relative z-[50]">
              <YearFilter currentYear={currentYear} />
           </div>
         </div>

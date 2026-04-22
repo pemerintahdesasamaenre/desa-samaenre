@@ -1,6 +1,8 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation';
+import CustomSelect from '@/components/ui/CustomSelect';
+import { Calendar } from 'lucide-react';
 
 interface YearFilterProps {
   currentYear: number;
@@ -9,33 +11,26 @@ interface YearFilterProps {
 export default function YearFilter({ currentYear }: YearFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const selectedYear = searchParams.get('year') || currentYear;
+  const selectedYear = searchParams.get('year') || currentYear.toString();
 
-  const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+  const years = Array.from({ length: 5 }, (_, i) => ({
+    id: (currentYear - i).toString(),
+    name: (currentYear - i).toString()
+  }));
 
-  function handleYearChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const year = e.target.value;
+  function handleYearChange(year: string) {
     router.push(`/transparansi?year=${year}`);
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <label htmlFor="year-select" className="text-sm font-medium text-slate-700">
-        Tahun:
-      </label>
-      <select
-        id="year-select"
-        name="year"
+    <div className="w-full sm:w-48 relative z-[50]">
+      <CustomSelect
+        options={years}
         value={selectedYear}
         onChange={handleYearChange}
-        className="rounded-lg border-slate-200 text-sm focus:ring-blue-500 focus:border-blue-500"
-      >
-        {years.map((y) => (
-          <option key={y} value={y}>
-            {y}
-          </option>
-        ))}
-      </select>
+        icon={Calendar}
+        placeholder="Pilih Tahun"
+      />
     </div>
   );
 }
