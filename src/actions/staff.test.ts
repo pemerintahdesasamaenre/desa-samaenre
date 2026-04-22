@@ -25,7 +25,7 @@ describe('upsertStaffMember', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(supabaseServer.createClient).mockResolvedValue(mockSupabase as any);
+    vi.mocked(supabaseServer.createClient).mockResolvedValue(mockSupabase as unknown as Awaited<ReturnType<typeof supabaseServer.createClient>>);
     // Reset individual method mocks to default behavior
     mockSupabase.from.mockReturnThis();
     mockSupabase.delete.mockReturnThis();
@@ -50,7 +50,7 @@ describe('upsertStaffMember', () => {
     
     const result = await upsertStaffMember({ 
       name: '', position: '', order_index: -1
-    } as any);
+    } as Parameters<typeof upsertStaffMember>[0]);
     
     expect(result.error).toBeDefined();
     const errorObj = result.error as Record<string, string[]>;
@@ -129,7 +129,7 @@ describe('upsertStaffMember', () => {
     it('should call delete with correct id', async () => {
       mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: '123' } }, error: null });
       mockSupabase.single.mockResolvedValue({ data: { photo_url: null }, error: null });
-      mockSupabase.eq.mockResolvedValue({ error: null });
+      mockSupabase.eq.mockReturnValue({ error: null });
       
       const id = 'some-uuid';
       const result = await deleteStaffMember(id);

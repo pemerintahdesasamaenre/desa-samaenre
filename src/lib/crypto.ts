@@ -3,73 +3,86 @@ import crypto from 'crypto';
 // Gunakan ENCRYPTION_KEY dari .env
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
-// FAIL-SAFE: Jangan biarkan aplikasi jalan di produksi tanpa kunci yang benar
-// Namun izinkan saat proses build agar tidak gagal deployment
-if (!ENCRYPTION_KEY && process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE !== 'phase-production-build') {
-  // Jika benar-benar sedang jalan di server (bukan build), baru lempar error
-  if (typeof window === 'undefined' && !process.env.VERCEL) {
-     // Di Vercel build phase seringkali NODE_ENV=production
-     // Jadi kita hanya throw jika tidak ada ENCRYPTION_KEY dan ini bukan saat build
+/**
+ * Validasi dan ambil kunci enkripsi dalam bentuk Buffer (32 byte)
+ */
+function getEncryptionKeyBuffer(): Buffer {
+  if (!ENCRYPTION_KEY) {
+    if (process.env.NODE_ENV === 'production') {
+      const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI;
+      if (!isBuildPhase) {
+        throw new Error('KEAMANAN KRITIS: ENCRYPTION_KEY tidak ditemukan di environment produksi!');
+      }
+    }
+    // Fallback development (32 karakter)
+    return Buffer.from('kunci_rahasia_desa_32_karak_1234');
   }
+
+  // Coba parse sebagai base64 (hasil script generate-key)
+  let keyBuffer = Buffer.from(ENCRYPTION_KEY, 'base64');
+  
+  // Jika bukan base64 valid atau panjangnya bukan 32 byte, coba sebagai string mentah
+  if (keyBuffer.length !== 32) {
+    keyBuffer = Buffer.from(ENCRYPTION_KEY);
+  }
+
+  if (keyBuffer.length !== 32) {
+    throw new Error(`KEAMANAN KRITIS: ENCRYPTION_KEY harus berukuran tepat 32 byte (ditemukan ${keyBuffer.length} byte).`);
+  }
+
+  return keyBuffer;
 }
 
-// Cara yang lebih aman untuk build:
-const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI;
-if (!ENCRYPTION_KEY && process.env.NODE_ENV === 'production' && !isBuildPhase) {
-  throw new Error('KEAMANAN KRITIS: ENCRYPTION_KEY tidak ditemukan di environment produksi!');
-}
-
-// Fallback hanya untuk development (PENTING: Ganti di .env segera)
-const KEY = ENCRYPTION_KEY || 'kunci_rahasia_desa_32_karak_1234'; 
 const IV_LENGTH = 16; 
 
 /**
  * Hash NIK (Satu Arah dengan Pepper/Secret)
- * Menggunakan HMAC-SHA256 agar hash tidak bisa ditebak tanpa kunci rahasia
- * Digunakan sebagai Unique Key (nik_hash)
  */
 export function hashNIK(nik: string): string {
   if (!nik) return '';
+  const key = getEncryptionKeyBuffer();
   return crypto
-    .createHmac('sha256', KEY)
+    .createHmac('sha256', key)
     .update(nik)
     .digest('hex');
 }
 
 /**
  * Enkripsi (Dua Arah - Bisa Diterjemahkan)
- * Digunakan untuk kolom nik_enc, kk_enc, dan name_enc
  */
 export function encrypt(text: string): string {
   if (!text) return '';
+  const key = getEncryptionKeyBuffer();
   
   const iv = crypto.randomBytes(IV_LENGTH);
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(KEY), iv);
+  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   
-  // Hasil: iv (dalam hex) + : + data_terenkripsi (dalam hex)
   return iv.toString('hex') + ':' + encrypted.toString('hex');
 }
 
 /**
  * Dekripsi (Menerjemahkan Balik)
- * Khusus untuk dipanggil di level Admin agar bisa baca data asli
  */
 export function decrypt(text: string): string {
   if (!text || !text.includes(':')) return text;
 
   try {
+    const key = getEncryptionKeyBuffer();
     const textParts = text.split(':');
     const iv = Buffer.from(textParts.shift()!, 'hex');
     const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(KEY), iv);
+    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     
     return decrypted.toString();
   } catch (error) {
     console.error('Dekripsi Gagal:', error);
+    if (error instanceof Error && error.message.includes('ENCRYPTION_KEY')) {
+      throw error;
+    }
     return '*** DATA TERKUNCI ***';
   }
 }

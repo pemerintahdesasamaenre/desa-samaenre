@@ -27,7 +27,7 @@ describe('createPost', () => {
   it('should return error if not authenticated', async () => {
     vi.mocked(createClient).mockResolvedValue({
       auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }) }
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const result = await createPost(mockPostData);
     expect(result.error).toBe('Unauthorized');
@@ -36,7 +36,7 @@ describe('createPost', () => {
   it('should return validation error if data is invalid', async () => {
     vi.mocked(createClient).mockResolvedValue({
       auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-123' } }, error: null }) }
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const result = await createPost({ ...mockPostData, title: 'sh' }); // too short
     expect(result.error).toHaveProperty('title');
@@ -49,7 +49,7 @@ describe('createPost', () => {
       from: vi.fn().mockReturnValue({
         insert: mockInsert
       })
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const result = await createPost(mockPostData);
     
@@ -67,7 +67,7 @@ describe('createPost', () => {
       from: vi.fn().mockReturnValue({
         insert: vi.fn().mockResolvedValue({ error: { message: 'Database error' } })
       })
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const result = await createPost(mockPostData);
     expect(result.error).toBe('Database error');

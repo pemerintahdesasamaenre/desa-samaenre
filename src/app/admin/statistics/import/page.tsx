@@ -3,14 +3,14 @@
 import { useState, useRef } from 'react';
 import { ArrowLeft, FileSpreadsheet, Upload, Loader2, BarChart, ShieldCheck, Trash2, Activity } from 'lucide-react';
 import Link from 'next/link';
-// import { processDemographicsExcel } from '@/actions/analytics';
+import * as XLSX from 'xlsx';
+import { importResidents, type ResidentImportData } from '@/actions/residents';
 
 export default function StatisticsImportPage() {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [sheets, setSheets] = useState<string[]>([]);
-  const [mappings, setMappings] = useState<Record<string, string>>({});
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -35,10 +35,32 @@ export default function StatisticsImportPage() {
     if (dropped) prepareFile(dropped);
   };
 
-  const prepareFile = (selected: File) => {
+  const prepareFile = async (selected: File) => {
     setFile(selected);
-    setSheets(['PENDIDIKAN', 'PEKERJAAN', 'USIA', 'DUSUN', 'PERKAWINAN', 'POPULASI']);
     setLogs(['File "' + selected.name + '" berhasil dimuat.', 'Mendeteksi struktur data...']);
+    
+    try {
+      const data = await selected.arrayBuffer();
+      const workbook = XLSX.read(data, { type: 'array' });
+      
+      const validSheets = workbook.SheetNames.filter(name => {
+        const n = name.toUpperCase().trim();
+        const isSummary = n.includes('T.U.') || n.includes('K.U.') || n.includes('KESIMPULAN');
+        return !isSummary;
+      });
+      
+      setSheets(validSheets);
+      const excludedCount = workbook.SheetNames.length - validSheets.length;
+      
+      setLogs(prev => [
+        ...prev, 
+        `Total: ${workbook.SheetNames.length} sheet terdeteksi.`,
+        `Filter: Mengabaikan ${excludedCount} sheet ringkasan/statistik.`,
+        `Target: Siap memproses ${validSheets.length} sheet dusun: [${validSheets.join(', ')}].`
+      ]);
+    } catch {
+      setLogs(prev => [...prev, 'ERROR: Gagal membaca file Excel.']);
+    }
   };
 
   const reset = () => {
@@ -49,18 +71,168 @@ export default function StatisticsImportPage() {
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file || sheets.length === 0) return;
     setLoading(true);
-    setLogs(prev => [...prev, 'Memulai proses import...', 'Menghubungkan ke database...']);
+    setLogs(prev => [...prev, 'Memulai proses import massal...', 'Menganalisis struktur kolom perdusun...']);
 
     try {
-      // Mocking the process for now since the action is not yet available
-      setTimeout(() => {
-        setLogs(prev => [...prev, 'ERROR: Fitur import mandiri sedang dalam pengembangan. Silakan hubungi tim teknis.']);
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data, { type: 'array' });
+      
+      let allFormattedData: ResidentImportData[] = [];
+
+      for (const sheetName of sheets) {
+        const worksheet = workbook.Sheets[sheetName];
+        const rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' }) as unknown[][];
+        
+        let headerRowIndex = -1;
+        for (let i = 0; i < Math.min(rawRows.length, 15); i++) {
+          const row = rawRows[i];
+          if (row.some(cell => {
+            const c = String(cell).toUpperCase();
+            return c.includes('NIK') || c.includes('NAMA') || c.includes('KELUARGA');
+          })) {
+            headerRowIndex = i;
+            break;
+          }
+        }
+
+        if (headerRowIndex === -1) {
+          setLogs(prev => [...prev, `WARNING: Sheet ${sheetName} diabaikan (header tidak ditemukan).`]);
+          continue;
+        }
+
+        const headers = rawRows[headerRowIndex].map(h => String(h || '').trim().toUpperCase());
+        const dataRows = rawRows.slice(headerRowIndex + 1);
+        
+        const sheetProcessedData = dataRows.map((row) => {
+          const getCell = (names: string[]) => {
+            const idx = headers.findIndex(h => names.some(n => h.includes(n)));
+            return idx !== -1 ? String(row[idx] || '').trim() : '';
+          };
+
+          const name = getCell(['NAMA', 'NAMA LENGKAP']);
+          const nikRaw = getCell(['NIK', 'NOMOR INDUK']);
+          const kkRaw = getCell(['NO KARTU KELUARGA', 'NO KK', 'NO. KK', 'NOMOR KK']);
+          
+          if (!name || name === 'NAMA' || name.startsWith('DATA')) return null;
+
+          // Bersihkan NIK/KK dari karakter aneh
+          const nik = nikRaw.replace(/[^0-9]/g, '');
+          const kk = kkRaw.replace(/[^0-9]/g, '');
+
+          const ttl = getCell(['TEMPAT TANGGAL LAHIR', 'TTL']);
+          let birthPlace = '';
+          let birthDate = null;
+          if (ttl.includes(',')) {
+             const parts = ttl.split(',');
+             birthPlace = parts[0].trim();
+             const dateStr = parts[1].trim();
+             const dParts = dateStr.split(/[-/]/);
+             if (dParts.length === 3) {
+               birthDate = `${dParts[2]}-${dParts[1]}-${dParts[0]}`;
+             }
+          }
+
+          let gender: 'L' | 'P' = 'L';
+          const isLaki = getCell(['LAKI-LAKI', 'LAKI LAKI', 'L']).length > 0;
+          const isPere = getCell(['PEREMPUAN', 'P']).length > 0;
+          if (isPere && !isLaki) gender = 'P';
+
+          const statusIdx = headers.findIndex(h => h.includes('STATUS'));
+          const ayah = statusIdx !== -1 ? String(row[statusIdx + 1] || '').trim() : '';
+          const ibu = statusIdx !== -1 ? String(row[statusIdx + 2] || '').trim() : '';
+
+          return {
+            nik: (nik.length >= 15) ? nik : '0000000000000000',
+            kk: (kk.length >= 15) ? kk : (nik.length >= 15 ? nik : '0000000000000000'),
+            name,
+            birth_place: birthPlace,
+            birth_date: birthDate,
+            gender,
+            education: getCell(['PENDIDIKAN']),
+            occupation: getCell(['PEKERJAAN']),
+            marital_status: getCell(['STATUS']),
+            father_name: ayah,
+            mother_name: ibu,
+            dusun: sheetName.replace('DATA PENDUDUK DUSUN ', '').trim(),
+            rt: getCell(['RT']),
+            rw: getCell(['RW']),
+            data_year: currentYear
+          };
+        }).filter((d): d is ResidentImportData => d !== null);
+
+        allFormattedData = [...allFormattedData, ...sheetProcessedData];
+        setLogs(prev => [...prev, `Sheet ${sheetName}: ${sheetProcessedData.length} data siap.`]);
+      }
+
+      if (allFormattedData.length === 0) {
+        setLogs(prev => [...prev, 'ERROR: Format tidak dikenali.']);
         setLoading(false);
-      }, 2000);
-    } catch {
-      setLogs(prev => [...prev, 'Terjadi kesalahan sistem yang tidak terduga.']);
+        return;
+      }
+
+      // 1. DEDUPLIKASI LOKAL (Cegah error "affect row a second time")
+      // Jika ada NIK ganda di Excel, kita ambil yang paling bawah/terakhir
+      const uniqueDataMap = new Map<string, ResidentImportData>();
+      allFormattedData.forEach(item => {
+        const key = `${item.nik}-${item.data_year}`;
+        uniqueDataMap.set(key, item);
+      });
+      const uniqueFormattedData = Array.from(uniqueDataMap.values());
+      
+      const duplicateCount = allFormattedData.length - uniqueFormattedData.length;
+      if (duplicateCount > 0) {
+        setLogs(prev => [...prev, `Info: Mengabaikan ${duplicateCount} baris NIK ganda di file Excel.`]);
+      }
+
+      // 2. VALIDASI TANGGAL KERAS (Cegah error "date out of range")
+      const finalCleanData = uniqueFormattedData.map(item => {
+        if (!item.birth_date) return item;
+        
+        const [y, m, d] = item.birth_date.split('-').map(Number);
+        const date = new Date(y, m - 1, d);
+        
+        // Cek apakah tanggal valid secara kalender (misal bukan bulan 13 atau tgl 32)
+        const isValid = date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
+        
+        if (!isValid) {
+          return { ...item, birth_date: null };
+        }
+        return item;
+      });
+
+      // PROSES BATCHING (PER 100 DATA)
+      const BATCH_SIZE = 100;
+      let totalSuccess = 0;
+      setLogs(prev => [...prev, `Membagi ${finalCleanData.length} data bersih menjadi ${Math.ceil(finalCleanData.length / BATCH_SIZE)} gelombang...`]);
+
+      for (let i = 0; i < finalCleanData.length; i += BATCH_SIZE) {
+        const batch = finalCleanData.slice(i, i + BATCH_SIZE);
+        const currentBatchNum = Math.floor(i / BATCH_SIZE) + 1;
+        
+        const result = await importResidents(batch);
+        
+        if (result.success) {
+          totalSuccess += result.count || 0;
+          setLogs(prev => [...prev, `Gelombang ${currentBatchNum}: Berhasil menyimpan ${result.count} data.`]);
+        } else {
+          setLogs(prev => [...prev, `Gelombang ${currentBatchNum} GAGAL: ${result.error}`]);
+        }
+      }
+
+      setLogs(prev => [
+        ...prev, 
+        `-----------------------------`,
+        `IMPORT SELESAI!`,
+        `Total Sukses: ${totalSuccess} data.`,
+        `Dusun: ${sheets.join(', ')}`
+      ]);
+
+      setLoading(false);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Unknown error';
+      setLogs(prev => [...prev, `ERROR FATAL: ${msg}`]);
       setLoading(false);
     }
   };
@@ -86,11 +258,11 @@ export default function StatisticsImportPage() {
               </div>
               Import Master Data
             </h1>
-            <p className="text-muted-foreground font-medium italic">Sistem akan otomatis melakukan validasi dan pembersihan data baris sampah.</p>
+            <p className="text-muted-foreground font-medium italic">Sistem memproses data perdusun dengan teknik Batch Import.</p>
           </div>
           
           <div className="bg-background p-5 rounded-[2rem] border border-border shadow-sm text-center min-w-[140px]">
-            <span className="block text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">Target Tahun</span>
+            <span className="block text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">Tahun Data</span>
             <span className="text-2xl font-black text-foreground tracking-tighter">{currentYear}</span>
           </div>
         </div>
@@ -110,8 +282,8 @@ export default function StatisticsImportPage() {
               <div className="w-24 h-24 bg-background rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-xl group-hover:scale-110 transition-transform border border-border">
                 <FileSpreadsheet size={48} className="text-primary/40 group-hover:text-primary transition-colors" />
               </div>
-              <p className="text-xl font-black text-foreground tracking-tight hover:text-primary transition-colors">Pilih File Master Desa (.xlsx)</p>
-              <p className="text-muted-foreground mt-2 font-medium">Seret file ke sini atau klik untuk menjelajah komputer Anda.</p>
+              <p className="text-xl font-black text-foreground tracking-tight hover:text-primary transition-colors">Unggah File Desa (.xlsx)</p>
+              <p className="text-muted-foreground mt-2 font-medium">Data perdusun akan otomatis dipecah menjadi batch kecil.</p>
             </div>
           ) : (
             <div className="space-y-10">
@@ -122,7 +294,7 @@ export default function StatisticsImportPage() {
                   </div>
                   <div>
                     <h3 className="text-xl font-black text-foreground tracking-tight">{file.name}</h3>
-                    <p className="text-primary text-[10px] font-black uppercase tracking-widest mt-1">{(file.size / 1024).toFixed(1)} KB • Siap diproses</p>
+                    <p className="text-primary text-[10px] font-black uppercase tracking-widest mt-1">{(file.size / 1024).toFixed(1)} KB • Siap Import</p>
                   </div>
                 </div>
                 <button 
@@ -136,35 +308,17 @@ export default function StatisticsImportPage() {
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
                   <div className="w-1 h-6 bg-primary rounded-full" />
-                  <h3 className="text-sm font-black text-foreground uppercase tracking-widest">Daftar Sheet yang Terdeteksi</h3>
+                  <h3 className="text-sm font-black text-foreground uppercase tracking-widest">Daftar Dusun:</h3>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {sheets.map((sheetName) => (
                     <div key={sheetName} className="p-6 bg-muted/30 rounded-3xl border border-border flex items-center justify-between group hover:border-primary/30 transition-colors">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 bg-background rounded-xl flex items-center justify-center text-primary/60 group-hover:text-primary border border-border transition-colors">
                           <BarChart size={20} />
                         </div>
-                        <div className="flex flex-col">
-                          <span className="font-black text-foreground uppercase text-base tracking-tight">{sheetName}</span>
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Format Standar Kemendagri</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-6">
-                        <div className="hidden md:flex flex-col items-end">
-                          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1 opacity-50">Mapping Key:</span>
-                          <input 
-                            value={mappings[sheetName] || ''}
-                            onChange={(e) => setMappings({...mappings, [sheetName]: e.target.value.toUpperCase()})}
-                            placeholder="NIK / KK / NAMA"
-                            className="bg-background border border-border rounded-xl px-4 py-2 text-xs font-black text-primary focus:border-primary outline-none w-48 shadow-sm text-center hover:border-primary/50 transition-all"
-                          />
-                        </div>
-                        <div className="w-12 h-12 bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center border border-emerald-500/20">
-                          <ShieldCheck size={24} />
-                        </div>
+                        <span className="font-black text-foreground uppercase text-sm tracking-tight">{sheetName}</span>
                       </div>
                     </div>
                   ))}
@@ -174,10 +328,10 @@ export default function StatisticsImportPage() {
               <div className="p-8 bg-background border border-border rounded-[2.5rem] shadow-inner">
                 <div className="flex items-center gap-3 mb-4">
                   <Activity size={18} className="text-primary" />
-                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Logs Sistem:</span>
+                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Proses Log:</span>
                 </div>
-                <div className="p-6 bg-muted/30 text-primary/80 rounded-2xl font-mono text-xs border border-border leading-relaxed">
-                  {logs.length > 0 ? logs.map((log, i) => <div key={i} className="mb-1">{`> ${log}`}</div>) : '> Sistem standby... Menunggu instruksi import.'}
+                <div className="p-6 bg-muted/30 text-primary/80 rounded-2xl font-mono text-xs border border-border leading-relaxed max-h-60 overflow-y-auto">
+                  {logs.length > 0 ? logs.map((log, i) => <div key={i} className="mb-1">{`> ${log}`}</div>) : '> Menunggu perintah...'}
                 </div>
               </div>
             </div>
@@ -187,11 +341,11 @@ export default function StatisticsImportPage() {
         <div className="p-10 bg-muted/30 border-t border-border flex justify-end">
           <button
             onClick={handleUpload}
-            disabled={!file || loading}
+            disabled={!file || loading || sheets.length === 0}
             className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center justify-center gap-4 hover:opacity-90 disabled:opacity-30 disabled:grayscale transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
           >
             {loading ? <Loader2 className="animate-spin" size={24} /> : <Upload size={24} />}
-            {loading ? 'Sedang Memproses...' : 'Eksekusi Import Data'}
+            {loading ? 'Mengirim Data...' : 'Mulai Batch Import'}
           </button>
         </div>
       </div>

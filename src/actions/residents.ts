@@ -235,6 +235,7 @@ export async function importResidents(data: ResidentImportData[]) {
       kk_enc: encrypt(item.kk),
       name_enc: encrypt(item.name),
       data_year: item.data_year,
+      birth_place: item.birth_place,
       birth_date: item.birth_date,
       gender: item.gender,
       education: item.education,
@@ -251,7 +252,10 @@ export async function importResidents(data: ResidentImportData[]) {
       onConflict: 'nik_hash, data_year' 
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase Upsert Error:', error);
+      return { error: error.message || 'Gagal menyimpan ke database.' };
+    }
 
     // CATAT AUDIT
     await logActivity('IMPORT_RESIDENTS', { 
@@ -261,10 +265,13 @@ export async function importResidents(data: ResidentImportData[]) {
     });
 
     revalidatePath('/admin/statistics');
+    revalidatePath('/admin/residents');
     return { success: true, count: formattedData.length };
   } catch (e: unknown) {
-    console.error(e);
-    return { error: e instanceof Error ? e.message : 'Terjadi kesalahan sistem.' };
+    console.error('Import residents exception:', e);
+    // Kembalikan pesan error asli agar bisa didebug di UI
+    const errorMessage = e instanceof Error ? e.message : (typeof e === 'object' && e !== null && 'message' in e) ? (e as any).message : 'Terjadi kesalahan sistem yang tidak diketahui.';
+    return { error: errorMessage };
   }
 }
 
