@@ -16,14 +16,25 @@ ON CONFLICT (slug) DO UPDATE SET
   description = EXCLUDED.description;
 
 -- 2. UPSERT VILLAGE INFO
-INSERT INTO public.village_info (id, name, vision, mission, history, area_size, boundaries, contact_info) VALUES
+INSERT INTO public.village_info (id, name, vision, mission, history, area_size, boundaries, contact_info, former_leaders) VALUES
 (1, 'Samaenre', 
  'Menjadi desa digital yang mandiri, sejahtera, dan berbudaya.', 
  '["Meningkatkan layanan publik berbasis teknologi", "Membangun infrastruktur desa yang berkelanjutan", "Memberdayakan ekonomi kreatif warga", "Melestarikan nilai gotong royong dan budaya lokal"]', 
  'Desa Samaenre memiliki sejarah panjang sebagai pusat pertanian di wilayah Mallawa. Berdiri sejak masa kolonial, desa ini terus berkembang menjadi wilayah yang adaptif terhadap teknologi...', 
  '15.45 km²', 
  '{"north": "Desa Mallawa", "south": "Kecamatan Camba", "east": "Kabupaten Bone", "west": "Hutan Lindung"}',
- '{"email": "kontak@samaenre.desa.id", "phone": "6281234567890", "address": "Jl. Poros Maros-Bone KM. 50, Kec. Mallawa, Kab. Maros", "maps_url": "https://www.google.com/maps/place/Samaenre,+Mallawa,+Maros+Regency,+South+Sulawesi/@-4.784789,119.8411115,13z/data=!3m1!4b1!4m6!3m5!1s0x2dbe69042aecc4fb:0xef615dd54a9f5b1c!8m2!3d-4.782142!4d119.8468043!16s%2Fg%2F1hc0g_blp?hl=en&entry=ttu&g_ep=EgoyMDI2MDQxNS4wIKXMDSoASAFQAw%3D%3D"}')
+ '{"email": "kontak@samaenre.desa.id", "phone": "6281234567890", "address": "Jl. Poros Maros-Bone KM. 50, Kec. Mallawa, Kab. Maros", "maps_url": "https://www.google.com/maps/place/Samaenre,+Mallawa,+Maros+Regency,+South+Sulawesi/@-4.784789,119.8411115,13z/data=!3m1!4b1!4m6!3m5!1s0x2dbe69042aecc4fb:0xef615dd54a9f5b1c!8m2!3d-4.782142!4d119.8468043!16s%2Fg%2F1hc0g_blp?hl=en&entry=ttu&g_ep=EgoyMDI2MDQxNS4wIKXMDSoASAFQAw%3D%3D"}',
+ '[
+  {"name": "Puang Talunru Arung Cempae", "period": "1905"},
+  {"name": "Andi Hamsah Dg.Pabeta Karaeng Pokko", "period": "1925"},
+  {"name": "Mina Hajje Puang Lette", "period": "1961"},
+  {"name": "P.Sadda", "period": "1965"},
+  {"name": "Amirul Yusuf P.Sese", "period": "1980"},
+  {"name": "H.P.Sadda", "period": "1985"},
+  {"name": "A.Saifullah", "period": "1990"},
+  {"name": "H.A.Rifai .S", "period": "2000"},
+  {"name": "Andi Majjalekka", "period": "2013 - Sekarang"}
+ ]'::jsonb)
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
   vision = EXCLUDED.vision,
@@ -31,7 +42,8 @@ ON CONFLICT (id) DO UPDATE SET
   history = EXCLUDED.history,
   area_size = EXCLUDED.area_size,
   boundaries = EXCLUDED.boundaries,
-  contact_info = EXCLUDED.contact_info;
+  contact_info = EXCLUDED.contact_info,
+  former_leaders = EXCLUDED.former_leaders;
 
 -- 3. UPSERT STAFF MEMBERS
 INSERT INTO public.staff_members (id, name, position, order_index, parent_id) VALUES 

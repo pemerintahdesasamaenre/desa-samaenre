@@ -3,10 +3,15 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateVillageInfo } from '@/actions/village-info';
-import { Save, Loader2, Plus, Trash2, Globe, Info, HelpCircle, Map as MapIcon, Compass } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2, Globe, Info, HelpCircle, Map as MapIcon, Compass, History } from 'lucide-react';
 import ImageUpload from '@/components/ui/ImageUpload';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+
+interface FormerLeader {
+  name: string;
+  period: string;
+}
 
 interface VillageInfoFormProps {
   initialData: {
@@ -14,6 +19,7 @@ interface VillageInfoFormProps {
     name: string;
     vision?: string;
     mission?: string[];
+    former_leaders?: FormerLeader[];
     history?: string;
     logo_url?: string;
     header_banner_url?: string;
@@ -47,12 +53,24 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
     Array.isArray(initialData.mission) ? initialData.mission : []
   );
 
+  const [formerLeaders, setFormerLeaders] = useState<FormerLeader[]>(
+    Array.isArray(initialData.former_leaders) ? initialData.former_leaders : []
+  );
+
   const addMission = () => setMissions([...missions, '']);
   const removeMission = (index: number) => setMissions(missions.filter((_, i) => i !== index));
   const updateMission = (index: number, value: string) => {
     const newMissions = [...missions];
     newMissions[index] = value;
     setMissions(newMissions);
+  };
+
+  const addLeader = () => setFormerLeaders([...formerLeaders, { name: '', period: '' }]);
+  const removeLeader = (index: number) => setFormerLeaders(formerLeaders.filter((_, i) => i !== index));
+  const updateLeader = (index: number, field: keyof FormerLeader, value: string) => {
+    const newLeaders = [...formerLeaders];
+    newLeaders[index] = { ...newLeaders[index], [field]: value };
+    setFormerLeaders(newLeaders);
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +106,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
       name: formData.get('name') as string,
       vision: formData.get('vision') as string,
       mission: missions.filter(m => m.trim() !== ''),
+      former_leaders: formerLeaders.filter(l => l.name.trim() !== '' && l.period.trim() !== ''),
       history: formData.get('history') as string,
       logo_url: logoUrl,
       header_banner_url: bannerUrl,
@@ -107,7 +126,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
     };
 
     try {
-      const result = await updateVillageInfo(initialData.id, data);
+      const result = await updateVillageInfo(initialData.id, data as any);
       if (result.error) {
         const errorMessages = typeof result.error === 'string' 
           ? result.error 
@@ -267,14 +286,14 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
           </div>
         </section>
 
-        {/* Section 3: Vision, Mission & History */}
+        {/* Section 3: Vision, Mission & Leaders */}
         <section className="space-y-10">
           <div className="border-b border-border pb-6">
             <h2 className="text-xl font-black flex items-center gap-3 tracking-tight text-foreground uppercase">
               <div className="p-2 bg-primary/10 text-primary rounded-xl">
                 <Info size={24} />
               </div>
-              Visi, Misi & Sejarah
+              Visi, Misi & Kepemimpinan
             </h2>
           </div>
 
@@ -303,8 +322,39 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Sejarah Lengkap Desa</Label>
+            <div className="space-y-6 pt-6 border-t border-border">
+              <div className="flex items-center justify-between">
+                <Label>Daftar Mantan Kepala Desa</Label>
+                <button type="button" onClick={addLeader} className="text-[10px] bg-secondary text-secondary-foreground px-6 py-2.5 rounded-full flex items-center gap-2 transition-all font-black uppercase tracking-widest shadow-lg active:scale-95">
+                  <Plus size={14} /> Tambah Mantan Kades
+                </button>
+              </div>
+              <div className="space-y-4">
+                {formerLeaders.map((leader, index) => (
+                  <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-3 p-4 bg-muted/30 rounded-[2rem] border border-border">
+                    <div className="md:col-span-7">
+                      <Input value={leader.name} onChange={(e) => updateLeader(index, 'name', e.target.value)} placeholder="Nama Lengkap Kades" />
+                    </div>
+                    <div className="md:col-span-4">
+                      <Input value={leader.period} onChange={(e) => updateLeader(index, 'period', e.target.value)} placeholder="Periode (Contoh: 2010 - 2016)" />
+                    </div>
+                    <div className="md:col-span-1 flex justify-end">
+                      <button type="button" onClick={() => removeLeader(index)} className="p-3 text-muted-foreground hover:text-destructive transition-colors">
+                        <Trash2 size={20} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2 pt-6 border-t border-border">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-primary/10 text-primary rounded-xl">
+                  <History size={18} />
+                </div>
+                <Label>Sejarah Lengkap Desa</Label>
+              </div>
               <textarea name="history" rows={10} defaultValue={initialData.history} className="w-full p-8 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed hover:border-primary/50" />
             </div>
           </div>

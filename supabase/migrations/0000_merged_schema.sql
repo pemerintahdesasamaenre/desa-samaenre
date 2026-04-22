@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS public.village_info (
   boundaries JSONB DEFAULT '{"north": "", "south": "", "east": "", "west": ""}'::jsonb,
   logo_url TEXT,
   header_banner_url TEXT,
+  former_leaders JSONB DEFAULT '[]'::jsonb,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
 

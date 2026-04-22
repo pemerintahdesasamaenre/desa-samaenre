@@ -13,6 +13,10 @@ export const villageInfoSchema = z.object({
   name: z.string().min(1, "Village name is required"),
   vision: z.string().optional(),
   mission: z.array(z.string()).default([]),
+  former_leaders: z.array(z.object({
+    name: z.string().min(1),
+    period: z.string().min(1),
+  })).default([]),
   history: z.string().optional(),
   logo_url: z.string().url().optional().or(z.literal('')).nullable(),
   header_banner_url: z.string().url().optional().or(z.literal('')).nullable(),

@@ -1,51 +1,56 @@
 import { getStaffMembers } from '@/actions/staff';
 import { getVillageInfo } from '@/services/data-service';
 import OrgChartTree from '@/components/modules/village/OrgChartTree';
-import { MapPin, Mail, Phone, Map as MapIcon, Compass } from 'lucide-react';
+import { MapPin, Mail, Phone, Map as MapIcon, Compass, Network } from 'lucide-react';
+import { Timeline } from '@/components/ui/Timeline';
+import ExpandableHistory from '@/components/modules/village/ExpandableHistory';
 
 export default async function TentangPage() {
   const staff = await getStaffMembers();
   const villageInfo = await getVillageInfo();
   const contact = villageInfo?.contact_info || {};
 
-  // Logika Pemrosesan URL yang Fleksibel
+  const formerLeaders = Array.isArray(villageInfo.former_leaders) 
+    ? [...villageInfo.former_leaders].reverse() 
+    : [];
+
+  const timelineData = formerLeaders.map((leader: any, idx: number) => ({
+    title: leader.period,
+    content: (
+      <div key={`leader-${idx}`} className="space-y-4">
+        <h4 className="text-3xl md:text-5xl font-black text-foreground tracking-tighter uppercase leading-none">
+          {leader.name}
+        </h4>
+        <p className="text-muted-foreground text-sm md:text-lg font-medium leading-relaxed max-w-2xl">
+          Beliau menjabat dan mengabdi sebagai Kepala Desa pada periode tahun {leader.period}, memberikan kontribusi nyata bagi fondasi kemajuan desa yang kita nikmati saat ini.
+        </p>
+        <div className="flex items-center gap-3">
+           <div className="h-px w-10 bg-primary/30" />
+           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Aparatur Berjasa</span>
+        </div>
+      </div>
+    )
+  }));
+
   const getMapsUrls = (url: string) => {
     const fallbackSearch = `https://www.google.com/maps/search/${encodeURIComponent(`${villageInfo.name} ${contact.address || ''}`)}`;
-    
-    if (!url) {
-      return {
-        embed: `${fallbackSearch}&output=embed`,
-        external: fallbackSearch
-      };
-    }
-
-    // Jika ini adalah link EMBED (sudah matang)
+    if (!url) return { embed: `${fallbackSearch}&output=embed`, external: fallbackSearch };
     if (url.includes('/maps/embed') || url.includes('output=embed')) {
-      return {
-        embed: url,
-        external: url.includes('/maps/embed') ? fallbackSearch : url // Link embed tidak bisa dibuka di tab baru
-      };
+      return { embed: url, external: url.includes('/maps/embed') ? fallbackSearch : url };
     }
-
-    // Jika ini adalah link TEMPAT/SEARCH (seperti yang Anda berikan)
-    return {
-      embed: `${url}&output=embed`, // Tambahkan output=embed agar bisa masuk iframe
-      external: url
-    };
+    return { embed: `${url}&output=embed`, external: url };
   };
 
   const { embed: embedUrl, external: externalUrl } = getMapsUrls(contact.maps_url);
 
   return (
     <main className="min-h-screen bg-background pt-32 pb-20 overflow-hidden relative text-foreground font-sans">
-      {/* Background Pattern */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-0 w-full h-96 bg-primary/5 skew-y-3 -translate-y-48"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20"></div>
       </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header Section */}
         <section className="text-center mb-24 space-y-6 animate-fade-in">
           <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-sm font-bold uppercase tracking-widest">
             Profil Resmi
@@ -58,7 +63,6 @@ export default async function TentangPage() {
           </p>
         </section>
 
-        {/* Geography & Boundaries Section */}
         <section className="grid lg:grid-cols-3 gap-8 mb-32">
            <div className="lg:col-span-1 bg-emerald-600 p-12 rounded-[3rem] text-white space-y-6 shadow-2xl shadow-emerald-600/20 relative overflow-hidden group border-none">
               <div className="absolute -bottom-10 -right-10 opacity-10 group-hover:scale-110 transition-transform duration-700">
@@ -74,11 +78,11 @@ export default async function TentangPage() {
               </p>
            </div>
 
-           <div className="lg:col-span-2 glass p-12 rounded-[3.5rem] relative overflow-hidden group">
+           <div className="lg:col-span-2 glass p-12 rounded-[3.5rem] relative overflow-hidden group border border-border/50">
               <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:rotate-12 transition-transform duration-1000">
                  <Compass size={200} />
               </div>
-              <h3 className="text-xl font-black mb-10 flex items-center gap-3">
+              <h3 className="text-xl font-black mb-10 flex items-center gap-3 uppercase tracking-tighter">
                  <Compass className="text-primary" />
                  Batas-batas Wilayah
               </h3>
@@ -103,10 +107,9 @@ export default async function TentangPage() {
            </div>
         </section>
 
-        {/* Vision & Mission Section */}
         <section className="grid md:grid-cols-2 gap-8 mb-32">
-          <div className="glass p-12 rounded-[3rem] space-y-6">
-            <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight">
+          <div className="glass p-12 rounded-[3rem] space-y-6 border border-border/50">
+            <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight uppercase">
                <div className="w-2 h-8 bg-primary rounded-full"></div>
                Visi
             </h2>
@@ -114,13 +117,13 @@ export default async function TentangPage() {
               &quot;{villageInfo.vision}&quot;
             </p>
           </div>
-          <div className="glass p-12 rounded-[3rem] space-y-6">
-            <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight">
+          <div className="glass p-12 rounded-[3rem] space-y-6 border border-border/50">
+            <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight uppercase">
                <div className="w-2 h-8 bg-secondary rounded-full"></div>
                Misi
             </h2>
             <ul className="space-y-5">
-              {villageInfo.mission.map((item: string, index: number) => (
+              {(villageInfo.mission || []).map((item: string, index: number) => (
                 <li key={index} className="flex gap-4 text-muted-foreground text-lg leading-snug font-medium">
                   <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs shrink-0 mt-1">
                     {index + 1}
@@ -132,40 +135,39 @@ export default async function TentangPage() {
           </div>
         </section>
 
-        {/* History Section */}
         {villageInfo.history && (
-          <section className="mb-32">
-            <div className="glass-premium p-12 md:p-24 rounded-[4rem] relative overflow-hidden shadow-2xl">
-               <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
-               <h2 className="text-4xl md:text-5xl font-black mb-16 text-center uppercase tracking-tighter text-foreground">Sejarah Singkat</h2>
-               <div className="prose prose-xl prose-slate dark:prose-invert max-w-none text-muted-foreground leading-relaxed font-light space-y-8">
-                 {villageInfo.history.split('\n').map((para: string, i: number) => (
-                   para.trim() && <p key={i}>{para}</p>
-                 ))}
-               </div>
-            </div>
-          </section>
+          <ExpandableHistory content={villageInfo.history} />
         )}
 
         {/* Organizational Chart Section */}
         <section id="staff" className="scroll-mt-32 mb-32">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="text-4xl md:text-6xl font-black tracking-tight text-foreground leading-none">Struktur Pemerintahan</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-medium">
-              Susunan organisasi Pemerintah Desa {villageInfo.name} yang bertugas melayani masyarakat dengan integritas.
+          <div className="text-center mb-16 space-y-6">
+            <div className="p-4 bg-primary/10 text-primary rounded-3xl inline-block mx-auto mb-2">
+              <Network size={40} className="w-10 h-10 md:w-12 md:h-12" />
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black tracking-tight text-foreground leading-none uppercase">
+              Struktur <br/><span className="text-primary italic border-b-4 border-primary/20">Pemerintahan</span>
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg md:text-xl font-medium">
+              Susunan organisasi Pemerintah Desa {villageInfo.name} yang saat ini aktif bertugas melayani masyarakat.
             </p>
           </div>
           
-          <div className="glass p-8 md:p-16 rounded-[4rem] overflow-x-auto border border-border/50">
-            <OrgChartTree staff={staff} />
-          </div>
+          <OrgChartTree staff={staff} />
         </section>
 
-        {/* Contact & Map Section */}
+        {/* Former Leaders Timeline Section */}
+        {timelineData.length > 0 && (
+          <section className="mb-32 scroll-mt-32">
+            <div className="glass-premium rounded-[4rem] border border-border/50 overflow-hidden bg-card/30">
+               <Timeline data={timelineData} />
+            </div>
+          </section>
+        )}
+
         <section className="scroll-mt-32">
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Contact Details Card */}
-            <div className="lg:col-span-1 glass p-10 rounded-[3.5rem] space-y-10">
+            <div className="lg:col-span-1 glass p-10 rounded-[3.5rem] space-y-10 border border-border/50">
               <h2 className="text-3xl font-black mb-4 leading-none uppercase tracking-tighter">Kontak <br/><span className="text-primary italic">Resmi Kami</span></h2>
               
               <div className="space-y-8">
@@ -210,8 +212,7 @@ export default async function TentangPage() {
               </a>
             </div>
 
-            {/* Map Display */}
-            <div className="lg:col-span-2 glass rounded-[3.5rem] overflow-hidden min-h-[400px] sm:min-h-[500px] relative group border-none">
+            <div className="lg:col-span-2 glass rounded-[3.5rem] overflow-hidden min-h-[400px] sm:min-h-[500px] relative group border border-border/50">
               <iframe
                 title="Lokasi Desa"
                 src={embedUrl}

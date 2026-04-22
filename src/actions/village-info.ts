@@ -34,6 +34,7 @@ export async function updateVillageInfo(id: number, data: VillageInfoInput) {
       name: validated.data.name,
       vision: validated.data.vision,
       mission: validated.data.mission,
+      former_leaders: validated.data.former_leaders,
       history: validated.data.history,
       logo_url: validated.data.logo_url,
       header_banner_url: validated.data.header_banner_url,
