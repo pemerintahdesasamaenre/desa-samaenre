@@ -1,6 +1,4 @@
--- Nuclear Clean Script
--- This script will drop all tables, functions, and triggers created by the application.
--- It's designed for a complete database reset.
+
 
 -- Disable RLS on all tables before dropping them
 ALTER TABLE public.posts DISABLE ROW LEVEL SECURITY;
