@@ -25,18 +25,18 @@ describe('createPost', () => {
   });
 
   it('should return error if not authenticated', async () => {
-    (createClient as any).mockReturnValue({
+    vi.mocked(createClient).mockReturnValue({
       auth: { getUser: vi.fn(() => Promise.resolve({ data: { user: null }, error: null })) }
-    });
+    } as unknown as ReturnType<typeof createClient>);
 
     const result = await createPost(mockPostData);
     expect(result.error).toBe('Unauthorized');
   });
 
   it('should return validation error if data is invalid', async () => {
-    (createClient as any).mockReturnValue({
+    vi.mocked(createClient).mockReturnValue({
       auth: { getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-123' } }, error: null })) }
-    });
+    } as unknown as ReturnType<typeof createClient>);
 
     const result = await createPost({ ...mockPostData, title: 'sh' }); // too short
     expect(result.error).toHaveProperty('title');
@@ -44,12 +44,12 @@ describe('createPost', () => {
 
   it('should create post successfully', async () => {
     const mockInsert = vi.fn(() => Promise.resolve({ error: null }));
-    (createClient as any).mockReturnValue({
+    vi.mocked(createClient).mockReturnValue({
       auth: { getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-123' } }, error: null })) },
       from: vi.fn(() => ({
         insert: mockInsert
       }))
-    });
+    } as unknown as ReturnType<typeof createClient>);
 
     const result = await createPost(mockPostData);
     
@@ -61,12 +61,12 @@ describe('createPost', () => {
   });
 
   it('should return error if database insert fails', async () => {
-    (createClient as any).mockReturnValue({
+    vi.mocked(createClient).mockReturnValue({
       auth: { getUser: vi.fn(() => Promise.resolve({ data: { user: { id: 'user-123' } }, error: null })) },
       from: vi.fn(() => ({
         insert: vi.fn(() => Promise.resolve({ error: { message: 'Database error' } }))
       }))
-    });
+    } as unknown as ReturnType<typeof createClient>);
 
     const result = await createPost(mockPostData);
     expect(result.error).toBe('Database error');

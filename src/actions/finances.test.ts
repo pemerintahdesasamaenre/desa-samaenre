@@ -14,7 +14,7 @@ describe('addFinanceEntry', () => {
   it('should return error if unauthorized', async () => {
     vi.mocked(createClient).mockResolvedValue({
       auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }) }
-    } as any);
+    } as unknown as ReturnType<typeof createClient>);
 
     const result = await addFinanceEntry({ 
       year: 2026, type: 'income', category_name: 'PADesa', amount: 1000000 
@@ -23,13 +23,13 @@ describe('addFinanceEntry', () => {
   });
 
   it('should return error if validation fails', async () => {
-    (createClient as any).mockResolvedValue({
+    vi.mocked(createClient).mockResolvedValue({
       auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: '123' } }, error: null }) }
-    });
+    } as unknown as ReturnType<typeof createClient>);
 
     const result = await addFinanceEntry({ 
       year: 1999, type: 'income', category_name: '', amount: -1 
-    } as any);
+    } as Parameters<typeof addFinanceEntry>[0]);
     
     expect(result.error).toBeDefined();
     expect(result.error).toHaveProperty('year');
@@ -39,12 +39,12 @@ describe('addFinanceEntry', () => {
 
   it('should return success if authorized and data is valid', async () => {
     const mockInsert = vi.fn().mockResolvedValue({ error: null });
-    (createClient as any).mockResolvedValue({
+    vi.mocked(createClient).mockResolvedValue({
       auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: '123' } }, error: null }) },
       from: vi.fn().mockReturnValue({
         insert: mockInsert
       })
-    });
+    } as unknown as ReturnType<typeof createClient>);
 
     const result = await addFinanceEntry({ 
       year: 2026, type: 'income', category_name: 'PADesa', amount: 1000000 

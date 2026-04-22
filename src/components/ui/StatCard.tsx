@@ -7,6 +7,7 @@ interface StatCardProps {
   label: string;
   value: string | number;
   unit?: string;
+  prefix?: string;
   icon?: React.ReactNode;
 }
 
@@ -29,12 +30,12 @@ function NumberTicker({ value }: { value: number }) {
   useEffect(() => {
     // Set initial text
     if (ref.current) {
-      ref.current.textContent = Intl.NumberFormat("en-US").format(0);
+      ref.current.textContent = Intl.NumberFormat("id-ID").format(0);
     }
 
     const unsubscribe = springValue.on("change", (latest) => {
       if (ref.current) {
-        ref.current.textContent = Intl.NumberFormat("en-US").format(
+        ref.current.textContent = Intl.NumberFormat("id-ID").format(
           Math.round(latest)
         );
       }
@@ -45,12 +46,14 @@ function NumberTicker({ value }: { value: number }) {
   return <span ref={ref} className="tabular-nums">0</span>;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ label, value: rawValue, unit, icon }) => {
+export const StatCard: React.FC<StatCardProps> = ({ label, value: rawValue, unit, prefix, icon }) => {
   // Pastikan ada nilai, default ke 0
   const value = rawValue ?? 0;
   
   // Cek apakah value adalah angka murni
-  const numericValue = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.-]+/g,"")) : value;
+  const numericValue = typeof value === 'string' 
+    ? parseFloat(value.replace(/[^0-9,-]+/g,"").replace(",", ".")) 
+    : value;
   const isNumeric = !isNaN(numericValue as number) && typeof numericValue === 'number';
 
   return (
@@ -73,7 +76,8 @@ export const StatCard: React.FC<StatCardProps> = ({ label, value: rawValue, unit
           {label}
         </p>
         <div className="flex items-baseline gap-2">
-          <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground tracking-tighter flex items-baseline gap-1">
+            {prefix && <span className="text-xl md:text-2xl opacity-50 font-bold">{prefix}</span>}
             {isNumeric ? <NumberTicker value={numericValue as number} /> : (value || "0")}
           </h2>
           {unit && (

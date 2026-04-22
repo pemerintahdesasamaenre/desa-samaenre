@@ -102,7 +102,7 @@ export default function FinanceCharts({ data }: FinanceChartsProps) {
                 }}
                 itemStyle={{ color: 'var(--foreground)' }}
                 labelStyle={{ color: 'var(--primary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}
-                formatter={(value: any) => formatCurrency(value)}
+                formatter={(value: any) => formatCurrency(Number(value || 0))} // eslint-disable-line @typescript-eslint/no-explicit-any
               />
               <Bar dataKey="total" radius={[12, 12, 0, 0]} barSize={60}>
                 {summaryData.map((dataEntry, index) => (
@@ -145,7 +145,7 @@ export default function FinanceCharts({ data }: FinanceChartsProps) {
                     fontWeight: 700
                   }}
                   itemStyle={{ color: 'var(--foreground)' }}
-                  formatter={(value: any) => formatCurrency(value)} 
+                  formatter={(value: any) => formatCurrency(Number(value || 0))} // eslint-disable-line @typescript-eslint/no-explicit-any 
                 />
                 <Legend iconType="circle" />
               </PieChart>
@@ -183,7 +183,7 @@ export default function FinanceCharts({ data }: FinanceChartsProps) {
                     fontWeight: 700
                   }}
                   itemStyle={{ color: 'var(--foreground)' }}
-                  formatter={(value: any) => formatCurrency(value)} 
+                  formatter={(value: any) => formatCurrency(Number(value || 0))} // eslint-disable-line @typescript-eslint/no-explicit-any 
                 />
                 <Legend iconType="circle" />
               </PieChart>

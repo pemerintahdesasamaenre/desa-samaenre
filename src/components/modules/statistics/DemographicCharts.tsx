@@ -63,9 +63,10 @@ export const DemographicCharts = ({ data }: ChartProps) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Avoid synchronous setState warning by letting the next tick handle it if needed, 
-    // though for rehydration it's usually fine.
-    setIsMounted(true);
+    const frame = requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   if (!isMounted) {

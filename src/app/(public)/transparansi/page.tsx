@@ -73,17 +73,20 @@ async function PageContent({ searchParams }: PageProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           <StatCard
             label="Total Pendapatan"
-            value={formatCurrency(totalIncome)}
+            value={totalIncome}
+            prefix="Rp"
             icon={<Wallet />}
           />
           <StatCard
             label="Total Pengeluaran"
-            value={formatCurrency(totalExpense)}
+            value={totalExpense}
+            prefix="Rp"
             icon={<TrendingDown />}
           />
           <StatCard
             label="Selisih/Saldo"
-            value={formatCurrency(balance)}
+            value={balance}
+            prefix="Rp"
             icon={<ShieldCheck />}
           />
         </div>

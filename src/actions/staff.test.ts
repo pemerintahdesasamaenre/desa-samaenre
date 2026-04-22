@@ -22,13 +22,13 @@ describe('upsertStaffMember', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (supabaseServer.createClient as any).mockResolvedValue(mockSupabase);
+    vi.mocked(supabaseServer.createClient).mockResolvedValue(mockSupabase as unknown as ReturnType<typeof supabaseServer.createClient>);
   });
 
   it('should return error if unauthorized', async () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: null }, error: null });
     
-    const result = await (upsertStaffMember as any)({ 
+    const result = await upsertStaffMember({ 
       name: 'John Doe', position: 'Sekdes'
     });
     
@@ -38,7 +38,7 @@ describe('upsertStaffMember', () => {
   it('should return validation error if data is invalid', async () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: '123' } }, error: null });
     
-    const result = await (upsertStaffMember as any)({ 
+    const result = await upsertStaffMember({ 
       name: '', position: '' // Invalid data
     });
     
@@ -50,7 +50,7 @@ describe('upsertStaffMember', () => {
   it('should call upsert with correct data including parent_id', async () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: '123' } }, error: null });
     const upsertSpy = vi.fn(() => ({ error: null }));
-    mockSupabase.from.mockReturnValue({ upsert: upsertSpy } as any);
+    mockSupabase.from.mockReturnValue({ upsert: upsertSpy } as unknown as ReturnType<typeof supabaseServer.createClient>);
     
     const staffData = {
       name: 'Jane Doe',
@@ -59,7 +59,7 @@ describe('upsertStaffMember', () => {
       order_index: 1
     };
     
-    const result = await (upsertStaffMember as any)(staffData);
+    const result = await upsertStaffMember(staffData);
     
     expect(result.success).toBe(true);
     expect(upsertSpy).toHaveBeenCalledWith(expect.objectContaining(staffData));
@@ -68,7 +68,7 @@ describe('upsertStaffMember', () => {
   it('should call upsert with id when updating', async () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: '123' } }, error: null });
     const upsertSpy = vi.fn(() => ({ error: null }));
-    mockSupabase.from.mockReturnValue({ upsert: upsertSpy } as any);
+    mockSupabase.from.mockReturnValue({ upsert: upsertSpy } as unknown as ReturnType<typeof supabaseServer.createClient>);
     
     const staffData = {
       name: 'Jane Doe',
@@ -78,7 +78,7 @@ describe('upsertStaffMember', () => {
     };
     const id = 'existing-uuid';
     
-    const result = await (upsertStaffMember as any)(staffData, id);
+    const result = await upsertStaffMember(staffData, id);
     
     expect(result.success).toBe(true);
     expect(upsertSpy).toHaveBeenCalledWith({ id, ...staffData });
@@ -87,14 +87,14 @@ describe('upsertStaffMember', () => {
   it('should return error if supabase upsert fails', async () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: '123' } }, error: null });
     const upsertSpy = vi.fn(() => ({ error: { message: 'Database error' } }));
-    mockSupabase.from.mockReturnValue({ upsert: upsertSpy } as any);
+    mockSupabase.from.mockReturnValue({ upsert: upsertSpy } as unknown as ReturnType<typeof supabaseServer.createClient>);
     
     const staffData = {
       name: 'Jane Doe',
       position: 'Staff'
     };
     
-    const result = await (upsertStaffMember as any)(staffData);
+    const result = await upsertStaffMember(staffData);
     
     expect(result.error).toBe('Database error');
   });
@@ -112,7 +112,7 @@ describe('upsertStaffMember', () => {
     it('should call delete with correct id', async () => {
       mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: '123' } }, error: null });
       const deleteSpy = vi.fn(() => ({ eq: vi.fn(() => ({ error: null })) }));
-      mockSupabase.from.mockReturnValue({ delete: deleteSpy } as any);
+      mockSupabase.from.mockReturnValue({ delete: deleteSpy } as unknown as ReturnType<typeof supabaseServer.createClient>);
       
       const id = 'some-uuid';
       const { deleteStaffMember } = await import('./staff');
