@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateVillageInfo } from '@/actions/village-info';
-import { Save, Loader2, Plus, Trash2, Globe, Info, HelpCircle, Map as MapIcon, Compass, History } from 'lucide-react';
+import { Save, Loader2, Trash2, Globe, Info, HelpCircle, Map as MapIcon, History } from 'lucide-react';
 import ImageUpload from '@/components/ui/ImageUpload';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -18,25 +18,25 @@ interface VillageInfoFormProps {
   initialData: {
     id: number;
     name: string;
-    vision?: string;
-    mission?: string[];
-    former_leaders?: FormerLeader[];
-    history?: string;
-    logo_url?: string;
-    header_banner_url?: string;
-    area_size?: string;
+    vision?: string | null;
+    mission?: string[] | null;
+    former_leaders?: FormerLeader[] | null;
+    history?: string | null;
+    logo_url?: string | null;
+    header_banner_url?: string | null;
+    area_size?: string | null;
     boundaries?: {
-      north?: string;
-      south?: string;
-      east?: string;
-      west?: string;
-    };
+      north?: string | null;
+      south?: string | null;
+      east?: string | null;
+      west?: string | null;
+    } | null;
     contact_info?: {
-      email?: string;
-      phone?: string;
-      address?: string;
-      maps_url?: string;
-    }
+      email?: string | null;
+      phone?: string | null;
+      address?: string | null;
+      maps_url?: string | null;
+    } | null;
   };
 }
 
@@ -135,235 +135,158 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
         setError(errorMessages || 'Gagal memvalidasi data.');
       } else {
         router.refresh();
-        alert('Data desa berhasil diperbarui!');
+        alert('Berhasil diperbarui!');
       }
     } catch {
-      setError('Terjadi kesalahan koneksi.');
+      setError('Kesalahan koneksi.');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="bg-card rounded-[3rem] shadow-sm border border-border overflow-hidden">
-      <form onSubmit={handleSubmit} className="p-10 space-y-12">
+    <div className="bg-card rounded-2xl sm:rounded-[3rem] shadow-sm border border-border overflow-hidden">
+      <form onSubmit={handleSubmit} className="p-5 sm:p-10 space-y-8 sm:space-y-12">
         {error && (
-          <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
+          <div className="p-3 sm:p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-xl text-xs sm:text-sm font-bold">
             {error}
           </div>
         )}
 
-        {/* Section 1: Identity & Contact */}
-        <section className="space-y-10">
-          <div className="border-b border-border pb-6">
-            <h2 className="text-xl font-black flex items-center gap-3 tracking-tight text-foreground uppercase">
-              <div className="p-2 bg-primary/10 text-primary rounded-xl">
-                <Globe size={24} />
-              </div>
-              Identitas & Kontak Desa
-            </h2>
+        {/* Identity & Contact */}
+        <section className="space-y-6 sm:space-y-10">
+          <div className="border-b border-border pb-4 sm:pb-6 flex items-center gap-3">
+             <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg sm:rounded-xl">
+               <Globe size={20} />
+             </div>
+             <h2 className="text-sm sm:text-xl font-black uppercase tracking-tight text-foreground">Identitas & Kontak</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
+            <div className="space-y-6 sm:space-y-8">
               <div className="space-y-2">
                 <Label>Nama Resmi Desa</Label>
-                <Input 
-                  name="name" 
-                  defaultValue={initialData.name} 
-                  required
-                />
+                <Input name="name" defaultValue={initialData.name || ''} required className="h-11 sm:h-12 text-sm" />
               </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <Label>Email Desa</Label>
-                  <Input 
-                    name="email" 
-                    type="email"
-                    defaultValue={initialData.contact_info?.email} 
-                  />
+                  <Label>Email</Label>
+                  <Input name="email" type="email" defaultValue={initialData.contact_info?.email || ''} className="h-11 sm:h-12 text-sm" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Nomor Telepon / WA</Label>
-                  <Input 
-                    type="text"
-                    value={phoneNumber}
-                    onChange={handlePhoneChange}
-                    placeholder="08xxxxxxxxxx"
-                  />
+                  <Label>Nomor Telepon</Label>
+                  <Input type="text" value={phoneNumber} onChange={handlePhoneChange} className="h-11 sm:h-12 text-sm" />
                 </div>
               </div>
-
-              <div className="space-y-2 group">
-                <Label className="flex items-center gap-2">
-                  Peta Lokasi Google Maps
-                  <HelpCircle size={14} className="text-muted-foreground" />
-                </Label>
-                <Input 
-                  value={mapsUrl}
-                  onChange={handleMapsInputChange}
-                  placeholder="Paste link atau kode iframe dari Google Maps"
-                />
-              </div>
-
               <div className="space-y-2">
-                <Label>Alamat Kantor Desa</Label>
+                <Label className="flex items-center gap-2">Google Maps <HelpCircle size={12} /></Label>
+                <Input value={mapsUrl} onChange={handleMapsInputChange} placeholder="Link Iframe Maps" className="h-11 sm:h-12 text-sm" />
+              </div>
+              <div className="space-y-2">
+                <Label>Alamat Kantor</Label>
                 <textarea 
                   name="address" 
-                  rows={4}
-                  defaultValue={initialData.contact_info?.address} 
-                  className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed hover:border-primary/50" 
+                  rows={3}
+                  defaultValue={initialData.contact_info?.address || ''} 
+                  className="w-full p-4 rounded-xl sm:rounded-[2rem] border border-border bg-background text-sm font-medium resize-none outline-none focus:ring-4 focus:ring-primary/10 transition-all" 
                 />
               </div>
             </div>
-
-            <div className="space-y-8">
-              <ImageUpload label="Logo Resmi Desa" folder="branding" value={logoUrl} onChange={setLogoUrl} />
-              <ImageUpload label="Banner Halaman Utama" folder="branding" value={bannerUrl} onChange={setBannerUrl} />
+            <div className="space-y-6 sm:space-y-8">
+              <ImageUpload label="Logo Desa" folder="branding" value={logoUrl} onChange={setLogoUrl} />
+              <ImageUpload label="Banner Header" folder="branding" value={bannerUrl} onChange={setBannerUrl} />
             </div>
           </div>
         </section>
 
-        {/* Section 2: Geography & Boundaries */}
-        <section className="space-y-10">
-          <div className="border-b border-border pb-6">
-            <h2 className="text-xl font-black flex items-center gap-3 tracking-tight text-foreground uppercase">
-              <div className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl">
-                <MapIcon size={24} />
-              </div>
-              Geografis & Batas Wilayah
-            </h2>
+        {/* Geography */}
+        <section className="space-y-6 sm:space-y-10 pt-4 sm:pt-6 border-t border-border">
+          <div className="flex items-center gap-3 border-b border-border pb-4">
+             <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
+               <MapIcon size={20} />
+             </div>
+             <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em]">Geografis & Batas</h3>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="space-y-2">
-              <Label>Luas Wilayah (km² / Ha)</Label>
-              <Input 
-                name="area_size" 
-                defaultValue={initialData.area_size} 
-                placeholder="Contoh: 12.5 km²"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-muted-foreground flex items-center gap-2">
-                  <Compass size={12} /> Utara
-                </Label>
-                <Input 
-                  name="boundary_north" 
-                  defaultValue={initialData.boundaries?.north} 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-muted-foreground flex items-center gap-2">
-                  <Compass size={12} /> Selatan
-                </Label>
-                <Input 
-                  name="boundary_south" 
-                  defaultValue={initialData.boundaries?.south} 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-muted-foreground flex items-center gap-2">
-                  <Compass size={12} /> Timur
-                </Label>
-                <Input 
-                  name="boundary_east" 
-                  defaultValue={initialData.boundaries?.east} 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-muted-foreground flex items-center gap-2">
-                  <Compass size={12} /> Barat
-                </Label>
-                <Input 
-                  name="boundary_west" 
-                  defaultValue={initialData.boundaries?.west} 
-                />
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
+             <div className="space-y-2">
+                <Label>Luas Wilayah</Label>
+                <Input name="area_size" defaultValue={initialData.area_size || ''} placeholder="KM2 / Ha" className="h-11 sm:h-12 text-sm" />
+             </div>
+             <div className="grid grid-cols-2 gap-4">
+                <Input name="boundary_north" defaultValue={initialData.boundaries?.north || ''} placeholder="Utara" className="h-11 text-xs" />
+                <Input name="boundary_south" defaultValue={initialData.boundaries?.south || ''} placeholder="Selatan" className="h-11 text-xs" />
+                <Input name="boundary_east" defaultValue={initialData.boundaries?.east || ''} placeholder="Timur" className="h-11 text-xs" />
+                <Input name="boundary_west" defaultValue={initialData.boundaries?.west || ''} placeholder="Barat" className="h-11 text-xs" />
+             </div>
           </div>
         </section>
 
-        {/* Section 3: Vision, Mission & Leaders */}
-        <section className="space-y-10">
-          <div className="border-b border-border pb-6">
-            <h2 className="text-xl font-black flex items-center gap-3 tracking-tight text-foreground uppercase">
-              <div className="p-2 bg-primary/10 text-primary rounded-xl">
-                <Info size={24} />
-              </div>
-              Visi, Misi & Kepemimpinan
-            </h2>
+        {/* Vision & Mission */}
+        <section className="space-y-6 sm:space-y-10 pt-4 sm:pt-6 border-t border-border">
+          <div className="flex items-center gap-3 border-b border-border pb-4">
+             <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
+               <Info size={20} />
+             </div>
+             <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em]">Visi & Misi</h3>
           </div>
-
-          <div className="space-y-10">
-            <div className="space-y-2">
-              <Label>Visi Desa</Label>
-              <textarea name="vision" rows={2} defaultValue={initialData.vision} className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-bold text-lg tracking-tight hover:border-primary/50" />
-            </div>
-
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <Label>Misi Desa</Label>
-                <button type="button" onClick={addMission} className="text-[10px] bg-primary text-primary-foreground px-6 py-2.5 rounded-full flex items-center gap-2 transition-all font-black uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95">
-                  <Plus size={14} /> Tambah Misi
-                </button>
-              </div>
-              <div className="space-y-4">
-                {missions.map((mission, index) => (
-                  <div key={index} className="flex gap-3">
-                    <Input value={mission} onChange={(e) => updateMission(index, e.target.value)} placeholder={`Tulis misi ke-${index + 1}`} />
-                    <button type="button" onClick={() => removeMission(index)} className="p-4 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl transition-all border border-transparent hover:border-destructive/20">
-                      <Trash2 size={20} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-6 pt-6 border-t border-border">
-              <div className="flex items-center justify-between">
-                <Label>Daftar Mantan Kepala Desa</Label>
-                <button type="button" onClick={addLeader} className="text-[10px] bg-secondary text-secondary-foreground px-6 py-2.5 rounded-full flex items-center gap-2 transition-all font-black uppercase tracking-widest shadow-lg active:scale-95">
-                  <Plus size={14} /> Tambah Mantan Kades
-                </button>
-              </div>
-              <div className="space-y-4">
-                {formerLeaders.map((leader, index) => (
-                  <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-3 p-4 bg-muted/30 rounded-[2rem] border border-border">
-                    <div className="md:col-span-7">
-                      <Input value={leader.name} onChange={(e) => updateLeader(index, 'name', e.target.value)} placeholder="Nama Lengkap Kades" />
-                    </div>
-                    <div className="md:col-span-4">
-                      <Input value={leader.period} onChange={(e) => updateLeader(index, 'period', e.target.value)} placeholder="Periode (Contoh: 2010 - 2016)" />
-                    </div>
-                    <div className="md:col-span-1 flex justify-end">
-                      <button type="button" onClick={() => removeLeader(index)} className="p-3 text-muted-foreground hover:text-destructive transition-colors">
-                        <Trash2 size={20} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2 pt-6 border-t border-border">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-primary/10 text-primary rounded-xl">
-                  <History size={18} />
+          <div className="space-y-6">
+             <div className="space-y-2">
+                <Label>Visi Desa</Label>
+                <textarea name="vision" rows={2} defaultValue={initialData.vision || ''} className="w-full p-4 rounded-xl border border-border bg-background text-sm font-bold resize-none" />
+             </div>
+             <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                   <Label>Daftar Misi</Label>
+                   <button type="button" onClick={addMission} className="text-[10px] bg-primary text-primary-foreground px-4 py-1.5 rounded-full font-black uppercase tracking-widest active:scale-95">Tambah</button>
                 </div>
-                <Label>Sejarah Lengkap Desa</Label>
-              </div>
-              <textarea name="history" rows={10} defaultValue={initialData.history} className="w-full p-8 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed hover:border-primary/50" />
-            </div>
+                {missions.map((m, i) => (
+                  <div key={i} className="flex gap-2">
+                    <Input value={m} onChange={(e) => updateMission(i, e.target.value)} placeholder="Tulis misi..." className="h-11 text-sm" />
+                    <button type="button" onClick={() => removeMission(i)} className="p-3 text-destructive hover:bg-destructive/10 rounded-xl"><Trash2 size={16} /></button>
+                  </div>
+                ))}
+             </div>
           </div>
         </section>
 
-        <div className="pt-10 border-t border-border flex justify-end">
-          <button type="submit" disabled={loading} className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center justify-center gap-4 hover:opacity-90 disabled:opacity-50 transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm uppercase tracking-widest">
-            {loading ? <Loader2 className="animate-spin" size={24} /> : <Save size={24} />}
+        {/* History */}
+        <section className="space-y-6 sm:space-y-10 pt-4 sm:pt-6 border-t border-border">
+          <div className="flex items-center gap-3 border-b border-border pb-4">
+             <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
+               <History size={20} />
+             </div>
+             <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em]">Sejarah & Kepemimpinan</h3>
+          </div>
+          <div className="space-y-6">
+             <div className="space-y-2">
+                <Label>Sejarah Desa</Label>
+                <textarea name="history" rows={6} defaultValue={initialData.history || ''} className="w-full p-4 rounded-xl border border-border bg-background text-sm leading-relaxed" />
+             </div>
+             <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                   <Label>Mantan Kepala Desa</Label>
+                   <button type="button" onClick={addLeader} className="text-[10px] bg-muted text-foreground px-4 py-1.5 rounded-full font-black uppercase tracking-widest active:scale-95 border border-border">Tambah Tokoh</button>
+                </div>
+                {formerLeaders.map((l, i) => (
+                  <div key={i} className="grid grid-cols-1 sm:grid-cols-12 gap-2 p-3 bg-muted/30 rounded-xl border border-border">
+                    <div className="sm:col-span-7">
+                      <Input value={l.name} onChange={(e) => updateLeader(i, 'name', e.target.value)} placeholder="Nama" className="h-10 text-xs" />
+                    </div>
+                    <div className="sm:col-span-4">
+                      <Input value={l.period} onChange={(e) => updateLeader(i, 'period', e.target.value)} placeholder="Periode" className="h-10 text-xs text-center" />
+                    </div>
+                    <div className="sm:col-span-1 flex justify-end">
+                       <button type="button" onClick={() => removeLeader(i)} className="p-2 text-destructive"><Trash2 size={16} /></button>
+                    </div>
+                  </div>
+                ))}
+             </div>
+          </div>
+        </section>
+
+        <div className="pt-6 sm:pt-10 border-t border-border flex justify-end">
+          <button type="submit" disabled={loading} className="w-full sm:w-auto bg-primary text-primary-foreground px-10 py-4 rounded-full font-black flex items-center justify-center gap-3 hover:opacity-90 disabled:opacity-50 transition-all shadow-lg text-[10px] sm:text-sm tracking-widest uppercase active:scale-95">
+            {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
             Simpan Seluruh Perubahan
           </button>
         </div>

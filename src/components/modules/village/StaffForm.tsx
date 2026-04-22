@@ -39,9 +39,8 @@ export default function StaffForm({ staffList, initialData }: StaffFormProps) {
     };
 
     const result = await upsertStaffMember(data, initialData?.id);
-    
     if (result.error) {
-      setError(typeof result.error === 'string' ? result.error : 'Terjadi kesalahan validasi.');
+      setError(typeof result.error === 'string' ? result.error : 'Gagal menyimpan.');
       setLoading(false);
       return;
     }
@@ -51,107 +50,72 @@ export default function StaffForm({ staffList, initialData }: StaffFormProps) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto pb-20 px-4 sm:px-0">
-      <div className="mb-6">
+    <div className="max-w-4xl mx-auto pb-20 px-2 sm:px-0">
+      <div className="mb-4 sm:mb-6">
         <Link 
           href="/admin/staff" 
-          className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors font-bold uppercase text-[10px] tracking-widest"
+          className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors font-bold uppercase text-[9px] sm:text-[10px] tracking-widest"
         >
-          <ArrowLeft size={18} />
-          Kembali ke Daftar
+          <ArrowLeft size={16} />
+          Kembali
         </Link>
       </div>
 
-      <div className="bg-card rounded-[3rem] border border-border shadow-sm overflow-hidden">
-        <div className="p-10 border-b border-border bg-muted/30">
-          <h2 className="text-3xl font-black text-foreground tracking-tighter">
-            {initialData ? 'Edit Data Aparatur' : 'Tambah Aparatur Baru'}
+      <div className="bg-card rounded-2xl sm:rounded-[3rem] border border-border shadow-sm overflow-hidden">
+        <div className="p-6 sm:p-10 border-b border-border bg-muted/30">
+          <h2 className="text-xl sm:text-3xl font-black text-foreground tracking-tighter">
+            {initialData ? 'Edit Aparatur' : 'Tambah Aparatur'}
           </h2>
-          <p className="text-muted-foreground mt-2 font-medium">
-            Lengkapi data perangkat desa untuk bagan organisasi.
-          </p>
+          <p className="text-[10px] sm:text-base text-muted-foreground mt-1 font-medium italic">Update bagan organisasi desa.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-10 space-y-12">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-8 sm:space-y-12">
           {error && (
-            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
+            <div className="p-3 sm:p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold">
               {error}
             </div>
           )}
         
-          <div className="space-y-10">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Network size={18} />
+          <div className="space-y-6 sm:space-y-10">
+            <h3 className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-primary flex items-center gap-3">
+              <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg">
+                <Network size={16} />
               </div>
               Profil Aparatur
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
               <div className="space-y-2 md:col-span-2">
                 <Label>Nama Lengkap</Label>
-                <Input 
-                  name="name" 
-                  required 
-                  defaultValue={initialData?.name}
-                  placeholder="Masukkan nama lengkap beserta gelar jika ada"
-                />
+                <Input name="name" required defaultValue={initialData?.name} className="h-11 sm:h-12 text-sm" />
               </div>
-              
               <div className="space-y-2">
                 <Label>Jabatan</Label>
-                <Input 
-                  name="position" 
-                  required 
-                  defaultValue={initialData?.position}
-                  placeholder="Contoh: Kepala Desa, Sekretaris Desa" 
-                />
+                <Input name="position" required defaultValue={initialData?.position} className="h-11 sm:h-12 text-sm" />
               </div>
-
               <div className="space-y-2">
-                <Label>Urutan Tampil (Order)</Label>
-                <Input 
-                  type="number" 
-                  name="order_index" 
-                  defaultValue={initialData?.order_index || 0} 
-                />
+                <Label>Urutan</Label>
+                <Input type="number" name="order_index" defaultValue={initialData?.order_index || 0} className="h-11 sm:h-12 text-sm" />
               </div>
-
               <div className="md:col-span-2">
-                <ImageUpload 
-                  label="Foto Profil"
-                  folder="staff"
-                  value={photoUrl}
-                  onChange={setPhotoUrl}
-                />
+                <ImageUpload label="Foto Profil" folder="staff" value={photoUrl} onChange={setPhotoUrl} />
               </div>
-
               <div className="md:col-span-2 space-y-2">
-                <Label>Atasan Langsung (Hirarki)</Label>
-                <select 
-                  name="parent_id" 
-                  defaultValue={initialData?.parent_id || ''}
-                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold hover:border-primary/50"
-                >
-                  <option value="">Tidak ada (Posisi Tertinggi)</option>
-                  {staffList
-                    .filter(s => s.id !== initialData?.id) 
-                    .map((s) => (
-                      <option key={s.id} value={s.id}>{s.name} - {s.position}</option>
-                    ))}
+                <Label>Atasan Langsung</Label>
+                <select name="parent_id" defaultValue={initialData?.parent_id || ''} className="w-full h-11 sm:h-14 px-4 sm:px-6 rounded-xl sm:rounded-full border border-border bg-background text-sm sm:font-bold outline-none">
+                  <option value="">Posisi Tertinggi</option>
+                  {staffList.filter(s => s.id !== initialData?.id).map((s) => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
                 </select>
               </div>
             </div>
           </div>
 
-          <div className="pt-10 border-t border-border flex justify-end">
-            <button 
-              type="submit" 
-              disabled={loading} 
-              className="bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
-            >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-              {initialData ? 'Simpan Perubahan' : 'Tambah Aparatur'}
+          <div className="pt-6 border-t border-border flex justify-end">
+            <button type="submit" disabled={loading} className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 sm:px-12 sm:py-5 rounded-full font-black flex items-center justify-center gap-3 hover:opacity-90 disabled:opacity-50 transition-all shadow-lg text-[10px] sm:text-sm tracking-widest uppercase">
+              {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+              {initialData ? 'Simpan' : 'Tambah'}
             </button>
           </div>
         </form>

@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { upsertResident, deleteResident } from '@/actions/residents';
-import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Briefcase, Users, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Briefcase, Users, Eye, EyeOff, Trash2, Heart, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import CustomSelect from '@/components/ui/CustomSelect';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
@@ -28,15 +28,12 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // State untuk visibilitas input
   const [showNik, setShowNik] = useState(false);
   const [showKk, setShowKk] = useState(false);
-  
-  // State untuk modal konfirmasi
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const TARGET_SAVE_PHRASE = "SAYA BERTANGGUNG JAWAB ATAS PERUBAHAN DATA INI";
+  const TARGET_SAVE_PHRASE = "SAYA BERTANGGUNG JAWAB";
 
   const handleOpenSaveConfirm = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +70,6 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
 
     try {
       const result = await upsertResident(data, isEditing ? initialData?.id : undefined);
-
       if (result.error) {
         setError(result.error as string);
       } else {
@@ -81,7 +77,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         router.refresh();
       }
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Gagal menyimpan data penduduk.');
+      setError(e instanceof Error ? e.message : 'Gagal menyimpan data.');
     } finally {
       setLoading(false);
     }
@@ -89,10 +85,8 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
 
   async function handleDelete() {
     if (!initialData?.id) return;
-    
     setIsDeleting(true);
     setShowDeleteConfirm(false);
-    
     try {
       const result = await deleteResident(initialData.id);
       if (result.success) {
@@ -102,20 +96,20 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         alert('Gagal menghapus: ' + result.error);
       }
     } catch {
-      alert('Terjadi kesalahan sistem saat menghapus.');
+      alert('Terjadi kesalahan sistem.');
     } finally {
       setIsDeleting(false);
     }
   }
 
   return (
-    <div className="max-w-4xl mx-auto pb-20 px-4 sm:px-0">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="max-w-4xl mx-auto pb-20 px-2 sm:px-0">
+      <div className="mb-4 sm:mb-6 flex items-center justify-between">
         <Link 
           href="/admin/residents" 
-          className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors font-bold uppercase text-[10px] tracking-widest"
+          className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors font-bold uppercase text-[9px] sm:text-[10px] tracking-widest"
         >
-          <ArrowLeft size={18} />
+          <ArrowLeft size={16} />
           Kembali ke Daftar
         </Link>
 
@@ -123,127 +117,106 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
-            className="flex items-center gap-2 text-destructive hover:bg-destructive/10 font-black text-[10px] uppercase tracking-widest bg-destructive/5 px-6 py-3 rounded-full transition-all border border-destructive/20 shadow-sm"
+            className="flex items-center gap-2 text-destructive hover:bg-destructive/10 font-black text-[9px] sm:text-[10px] uppercase tracking-widest bg-destructive/5 px-4 py-2 sm:px-6 sm:py-3 rounded-full border border-destructive/20 active:scale-95"
           >
-            <Trash2 size={16} />
+            <Trash2 size={14} />
             Hapus Record
           </button>
         )}
       </div>
 
-      <div className="bg-card rounded-[3rem] border border-border shadow-sm overflow-hidden">
-        <div className="p-10 border-b border-border bg-muted/30">
-          <h2 className="text-3xl font-black text-foreground tracking-tighter">
-            {isEditing ? 'Edit Data Penduduk' : 'Tambah Penduduk Baru'}
+      <div className="bg-card rounded-2xl sm:rounded-[3rem] border border-border shadow-sm overflow-hidden">
+        <div className="p-6 sm:p-10 border-b border-border bg-muted/30">
+          <h2 className="text-xl sm:text-3xl font-black text-foreground tracking-tighter uppercase">
+            {isEditing ? 'Update Data Penduduk' : 'Input Penduduk Baru'}
           </h2>
-          <p className="text-muted-foreground mt-2 font-medium">
-            Setiap perubahan data kependudukan resmi akan dicatat secara otomatis dalam sistem audit log.
+          <p className="text-[10px] sm:text-base text-muted-foreground mt-1 font-medium italic">
+            Seluruh perubahan akan tervalidasi dan tercatat dalam sistem audit desa.
           </p>
         </div>
 
-        <form ref={formRef} onSubmit={handleOpenSaveConfirm} className="p-10 space-y-10">
+        <form ref={formRef} onSubmit={handleOpenSaveConfirm} className="p-6 sm:p-10 space-y-10 sm:space-y-12">
           {typeof error === 'string' && (
-            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
+            <div className="p-3 sm:p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold">
               {error}
             </div>
           )}
 
           {/* Section 1: Identitas Utama */}
-          <div className="space-y-8">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          <div className="space-y-6 sm:space-y-8">
+            <div className="flex items-center gap-3 border-b border-border pb-4">
+              <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                 <Contact size={18} />
               </div>
-              Identitas Utama
-            </h3>
+              <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Identitas Utama</h3>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
               <div className="space-y-2">
                 <Label>NIK (16 Digit)</Label>
                 <div className="relative">
                   <Input 
                     name="nik" 
                     type={showNik ? "text" : "password"}
-                    defaultValue={initialData?.nik}
-                    placeholder="16 digit NIK"
+                    defaultValue={initialData?.nik || ''}
                     required
                     maxLength={16}
-                    className="font-mono tracking-[0.2em]"
+                    placeholder="Masukkan NIK 16 Digit"
+                    className="font-mono tracking-widest h-11 sm:h-12 text-sm"
                   />
-                  <button 
-                    type="button"
-                    onClick={() => setShowNik(!showNik)}
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {showNik ? <EyeOff size={18} /> : <Eye size={18} />}
+                  <button type="button" onClick={() => setShowNik(!showNik)} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary">
+                    {showNik ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
-
               <div className="space-y-2">
                 <Label>No. Kartu Keluarga (16 Digit)</Label>
                 <div className="relative">
                   <Input 
                     name="kk" 
                     type={showKk ? "text" : "password"}
-                    defaultValue={initialData?.kk}
-                    placeholder="16 digit Nomor KK"
+                    defaultValue={initialData?.kk || ''}
                     required
                     maxLength={16}
-                    className="font-mono tracking-[0.2em]"
+                    placeholder="Masukkan No. KK 16 Digit"
+                    className="font-mono tracking-widest h-11 sm:h-12 text-sm"
                   />
-                  <button 
-                    type="button"
-                    onClick={() => setShowKk(!showKk)}
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {showKk ? <EyeOff size={18} /> : <Eye size={18} />}
+                  <button type="button" onClick={() => setShowKk(!showKk)} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary">
+                    {showKk ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
-
               <div className="space-y-2 md:col-span-2">
-                <Label>Nama Lengkap Sesuai KTP</Label>
+                <Label>Nama Lengkap (Sesuai KTP)</Label>
                 <Input 
                   name="name" 
-                  defaultValue={initialData?.name}
+                  defaultValue={initialData?.name || ''} 
+                  required 
                   placeholder="NAMA LENGKAP"
-                  required
-                  className="uppercase font-black tracking-tight"
+                  className="uppercase font-black h-11 sm:h-12 tracking-tight text-sm" 
                 />
               </div>
             </div>
           </div>
 
-          <div className="space-y-8 pt-6 border-t border-border">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          {/* Section 2: Kelahiran & Gender */}
+          <div className="space-y-6 sm:space-y-8 pt-4 sm:pt-6 border-t border-border">
+            <div className="flex items-center gap-3 border-b border-border pb-4">
+              <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                 <Calendar size={18} />
               </div>
-              Kelahiran & Gender
-            </h3>
+              <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Kelahiran & Gender</h3>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-8">
               <div className="space-y-2">
                 <Label>Tempat Lahir</Label>
-                <Input 
-                  name="birth_place" 
-                  defaultValue={initialData?.birth_place}
-                  placeholder="KABUPATEN / KOTA"
-                  className="uppercase"
-                />
+                <Input name="birth_place" defaultValue={initialData?.birth_place || ''} placeholder="KOTA / KABUPATEN" className="uppercase h-11 sm:h-12 text-sm" />
               </div>
-
               <div className="space-y-2">
                 <Label>Tanggal Lahir</Label>
-                <Input 
-                  name="birth_date" 
-                  type="date"
-                  defaultValue={initialData?.birth_date}
-                  required
-                />
+                <Input name="birth_date" type="date" defaultValue={initialData?.birth_date || ''} required className="h-11 sm:h-12 text-sm" />
               </div>
-
               <div className="space-y-2">
                 <CustomSelect 
                   label="Jenis Kelamin"
@@ -257,141 +230,98 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             </div>
           </div>
 
-          <div className="space-y-8 pt-6 border-t border-border">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          {/* Section 3: Domisili */}
+          <div className="space-y-6 sm:space-y-8 pt-4 sm:pt-6 border-t border-border">
+            <div className="flex items-center gap-3 border-b border-border pb-4">
+              <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                 <MapPin size={18} />
               </div>
-              Alamat Domisili
-            </h3>
+              <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Domisili (Alamat)</h3>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="space-y-2">
-                <Label>Dusun / Lingkungan</Label>
-                <Input 
-                  name="dusun" 
-                  defaultValue={initialData?.dusun}
-                  placeholder="NAMA DUSUN"
-                  className="uppercase"
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
+              <div className="space-y-2 sm:col-span-1">
+                <Label>Nama Dusun</Label>
+                <Input name="dusun" defaultValue={initialData?.dusun || ''} placeholder="NAMA DUSUN" className="uppercase h-11 sm:h-12 text-sm" />
               </div>
-
               <div className="space-y-2">
                 <Label>RT</Label>
-                <Input 
-                  name="rt" 
-                  defaultValue={initialData?.rt}
-                  placeholder="000"
-                  className="font-mono"
-                />
+                <Input name="rt" defaultValue={initialData?.rt || ''} placeholder="000" className="font-mono h-11 sm:h-12 text-sm text-center" />
               </div>
-
               <div className="space-y-2">
                 <Label>RW</Label>
-                <Input 
-                  name="rw" 
-                  defaultValue={initialData?.rw}
-                  placeholder="000"
-                  className="font-mono"
-                />
+                <Input name="rw" defaultValue={initialData?.rw || ''} placeholder="000" className="font-mono h-11 sm:h-12 text-sm text-center" />
               </div>
             </div>
           </div>
 
-          <div className="space-y-8 pt-6 border-t border-border">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          {/* Section 4: Sosial & Ekonomi */}
+          <div className="space-y-6 sm:space-y-8 pt-4 sm:pt-6 border-t border-border">
+            <div className="flex items-center gap-3 border-b border-border pb-4">
+              <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                 <Briefcase size={18} />
               </div>
-              Sosial & Ekonomi
-            </h3>
+              <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Sosial & Ekonomi</h3>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
               <div className="space-y-2">
                 <Label>Pendidikan Terakhir</Label>
-                <Input 
-                  name="education" 
-                  defaultValue={initialData?.education}
-                  placeholder="CONTOH: SMA / SEDERAJAT"
-                  required
-                  className="uppercase"
-                />
+                <div className="relative">
+                   <Input name="education" defaultValue={initialData?.education || ''} required placeholder="CONTOH: SMA / SARJANA" className="uppercase h-11 sm:h-12 pl-10 text-sm" />
+                   <GraduationCap size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
               </div>
-
               <div className="space-y-2">
                 <Label>Pekerjaan Utama</Label>
-                <Input 
-                  name="occupation" 
-                  defaultValue={initialData?.occupation}
-                  placeholder="CONTOH: PETANI / PEKEBUN"
-                  required
-                  className="uppercase"
-                />
+                <div className="relative">
+                   <Input name="occupation" defaultValue={initialData?.occupation || ''} required placeholder="CONTOH: PETANI / PEGAWAI" className="uppercase h-11 sm:h-12 pl-10 text-sm" />
+                   <Briefcase size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
               </div>
-
               <div className="space-y-2">
                 <Label>Status Perkawinan</Label>
-                <Input 
-                  name="marital_status" 
-                  defaultValue={initialData?.marital_status}
-                  placeholder="CONTOH: KAWIN"
-                  required
-                  className="uppercase"
-                />
+                <div className="relative">
+                   <Input name="marital_status" defaultValue={initialData?.marital_status || ''} required placeholder="KAWIN / BELUM KAWIN" className="uppercase h-11 sm:h-12 pl-10 text-sm" />
+                   <Heart size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
               </div>
-
               <div className="space-y-2">
                 <Label>Tahun Pendataan</Label>
-                <Input 
-                  name="data_year" 
-                  type="number"
-                  defaultValue={initialData?.data_year || new Date().getFullYear()}
-                  required
-                  className="font-mono"
-                />
+                <Input name="data_year" type="number" defaultValue={initialData?.data_year || new Date().getFullYear()} required className="font-mono h-11 sm:h-12 text-sm" />
               </div>
             </div>
           </div>
 
-          <div className="space-y-8 pt-6 border-t border-border">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          {/* Section 5: Orang Tua */}
+          <div className="space-y-6 sm:space-y-8 pt-4 sm:pt-6 border-t border-border">
+            <div className="flex items-center gap-3 border-b border-border pb-4">
+              <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                 <Users size={18} />
               </div>
-              Data Orang Tua
-            </h3>
+              <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Data Orang Tua</h3>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
               <div className="space-y-2">
-                <Label>Nama Ayah Kandung</Label>
-                <Input 
-                  name="father_name" 
-                  defaultValue={initialData?.father_name}
-                  placeholder="NAMA AYAH"
-                  className="uppercase"
-                />
+                <Label>Nama Lengkap Ayah</Label>
+                <Input name="father_name" defaultValue={initialData?.father_name || ''} placeholder="AYAH KANDUNG" className="uppercase h-11 sm:h-12 text-sm" />
               </div>
-
               <div className="space-y-2">
-                <Label>Nama Ibu Kandung</Label>
-                <Input 
-                  name="mother_name" 
-                  defaultValue={initialData?.mother_name}
-                  placeholder="NAMA IBU"
-                  className="uppercase"
-                />
+                <Label>Nama Lengkap Ibu</Label>
+                <Input name="mother_name" defaultValue={initialData?.mother_name || ''} placeholder="IBU KANDUNG" className="uppercase h-11 sm:h-12 text-sm" />
               </div>
             </div>
           </div>
 
-          <div className="pt-10 border-t border-border flex justify-end">
+          <div className="pt-8 sm:pt-10 border-t border-border flex flex-col sm:flex-row justify-end gap-4">
             <button 
               type="submit" 
               disabled={loading}
-              className="bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
+              className="w-full sm:w-auto bg-primary text-primary-foreground px-10 py-4 sm:px-12 sm:py-5 rounded-full font-black flex items-center justify-center gap-3 hover:opacity-90 disabled:opacity-50 transition-all shadow-xl shadow-primary/20 text-[10px] sm:text-xs tracking-widest uppercase active:scale-95"
             >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-              {isEditing ? 'Simpan Perubahan' : 'Tambah Penduduk'}
+              {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+              {isEditing ? 'Simpan Seluruh Perubahan' : 'Simpan Data Penduduk'}
             </button>
           </div>
         </form>
@@ -401,10 +331,10 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         isOpen={showSaveConfirm}
         onClose={() => setShowSaveConfirm(false)}
         onConfirm={handleSave}
-        title="Konfirmasi Integritas Data"
-        description="Anda sedang mencoba mengubah data kependudukan resmi. Kesalahan penginputan data dapat berakibat pada validitas statistik desa."
+        title="Validasi Data"
+        description="Apakah Anda yakin data kependudukan ini sudah sesuai dengan dokumen resmi kependudukan yang berlaku?"
         requirePhrase={TARGET_SAVE_PHRASE}
-        confirmLabel="Saya Yakin & Simpan"
+        confirmLabel="Ya, Saya Bertanggung Jawab"
         loading={loading}
       />
 
@@ -412,11 +342,11 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
         onConfirm={handleDelete}
-        title="Hapus Record Penduduk"
-        description={`Apakah Anda benar-benar yakin ingin menghapus data penduduk atas nama "${initialData?.name}"? Record ini akan hilang selamanya dari database desa.`}
+        title="Hapus Data Permanen"
+        description={`Anda akan menghapus data penduduk atas nama "${initialData?.name}". Seluruh history kependudukan untuk orang ini akan hilang.`}
         variant="danger"
         requirePhrase={initialData?.name}
-        confirmLabel="Hapus Permanen"
+        confirmLabel="Hapus Sekarang"
         loading={isDeleting}
       />
     </div>
