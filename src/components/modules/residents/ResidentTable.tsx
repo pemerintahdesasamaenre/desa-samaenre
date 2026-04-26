@@ -24,11 +24,6 @@ export default function ResidentTable() {
   
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string, name: string } | null>(null);
 
-  const dusunOptions = [
-    { id: 'SEMUA', name: 'Semua' },
-    ...dusuns.map(d => ({ id: d, name: d }))
-  ];
-
   const maskString = (str: string) => {
     if (!str) return '';
     if (str.length <= 6) return '******';
@@ -109,7 +104,6 @@ export default function ResidentTable() {
         onSearchChange={setSearch}
         dusun={dusun}
         onDusunChange={(val) => { setDusun(val); setPage(1); }}
-        dusunOptions={dusunOptions}
         dusuns={dusuns}
       />
 

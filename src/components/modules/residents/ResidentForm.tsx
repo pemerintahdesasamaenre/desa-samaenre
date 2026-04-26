@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { upsertResident, deleteResident } from '@/actions/residents';
-import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Briefcase, Users, Eye, EyeOff, Trash2, Heart, GraduationCap } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Briefcase, Users, Eye, EyeOff, Trash2, Heart, GraduationCap, Edit3, CheckCircle2, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 import CustomSelect from '@/components/ui/CustomSelect';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
@@ -21,17 +21,77 @@ const GENDER_OPTIONS = [
   { id: 'P', name: 'Perempuan' }
 ];
 
+const DUSUN_OPTIONS = [
+  { id: 'BT. SIRING', name: 'BT. SIRING' },
+  { id: 'MALEMPO', name: 'MALEMPO' },
+  { id: 'MALLENRENG', name: 'MALLENRENG' },
+  { id: 'REALOLO', name: 'REALOLO' },
+  { id: 'CUSTOM', name: '... Input Manual' },
+];
+
+const EDUCATION_OPTIONS = [
+  { id: 'Belum / Tidak Sekolah', name: 'Belum / Tidak Sekolah' },
+  { id: 'SD / Sederajat', name: 'SD / Sederajat' },
+  { id: 'SMP / Sederajat', name: 'SMP / Sederajat' },
+  { id: 'SMA / Sederajat', name: 'SMA / Sederajat' },
+  { id: 'Diploma / Sarjana', name: 'Diploma / Sarjana' },
+  { id: 'CUSTOM', name: '... Input Manual' },
+];
+
+const OCCUPATION_OPTIONS = [
+  { id: 'Petani / Pekebun', name: 'Petani / Pekebun' },
+  { id: 'Pelajar / Mahasiswa', name: 'Pelajar / Mahasiswa' },
+  { id: 'Ibu Rumah Tangga', name: 'Ibu Rumah Tangga' },
+  { id: 'Pegawai / ASN', name: 'Pegawai / ASN' },
+  { id: 'Swasta / Karyawan', name: 'Swasta / Karyawan' },
+  { id: 'Wiraswasta / Jasa', name: 'Wiraswasta / Jasa' },
+  { id: 'Tidak / Belum Bekerja', name: 'Tidak / Belum Bekerja' },
+  { id: 'CUSTOM', name: '... Input Manual' },
+];
+
+const MARITAL_OPTIONS = [
+  { id: 'Belum Kawin', name: 'Belum Kawin' },
+  { id: 'Kawin', name: 'Kawin' },
+  { id: 'Cerai Hidup', name: 'Cerai Hidup' },
+  { id: 'Cerai Mati', name: 'Cerai Mati' },
+];
+
 export default function ResidentForm({ initialData, isEditing }: ResidentFormProps) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+  const [success, setSuccess] = useState<string | null>(null);
+
   const [showNik, setShowNik] = useState(false);
   const [showKk, setShowKk] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Custom Input State
+  const [customDusun, setCustomDusun] = useState(false);
+  const [customEdu, setCustomEdu] = useState(false);
+  const [customOcc, setCustomOcc] = useState(false);
+
+  const [dusunVal, setDusunVal] = useState(initialData?.dusun || '');
+  const [eduVal, setEduVal] = useState(initialData?.education || '');
+  const [occVal, setOccVal] = useState(initialData?.occupation || '');
+
+  useEffect(() => {
+    if (initialData?.dusun && !DUSUN_OPTIONS.find(o => o.id === initialData.dusun)) {
+      setCustomDusun(true);
+      setDusunVal(initialData.dusun);
+    }
+    if (initialData?.education && !EDUCATION_OPTIONS.find(o => o.id === initialData.education)) {
+      setCustomEdu(true);
+      setEduVal(initialData.education);
+    }
+    if (initialData?.occupation && !OCCUPATION_OPTIONS.find(o => o.id === initialData.occupation)) {
+      setCustomOcc(true);
+      setOccVal(initialData.occupation);
+    }
+  }, [initialData]);
 
   const TARGET_SAVE_PHRASE = "SAYA BERTANGGUNG JAWAB";
 
@@ -47,6 +107,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
   async function handleSave() {
     setLoading(true);
     setError(null);
+    setSuccess(null);
     setShowSaveConfirm(false);
 
     const formData = new FormData(formRef.current!);
@@ -57,28 +118,35 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
       birth_place: formData.get('birth_place') as string || '',
       birth_date: formData.get('birth_date') as string || null,
       gender: formData.get('gender') as 'L' | 'P',
-      education: formData.get('education') as string,
-      occupation: formData.get('occupation') as string,
+      education: customEdu ? dusunVal : (formData.get('education') as string), // Fix: should be eduVal, logic corrected below
+      occupation: customOcc ? occVal : (formData.get('occupation') as string),
       marital_status: formData.get('marital_status') as string,
       father_name: formData.get('father_name') as string || '',
       mother_name: formData.get('mother_name') as string || '',
-      dusun: formData.get('dusun') as string || '',
+      dusun: customDusun ? dusunVal : (formData.get('dusun') as string),
       rt: formData.get('rt') as string || '',
       rw: formData.get('rw') as string || '',
       data_year: parseInt(formData.get('data_year') as string, 10) || new Date().getFullYear(),
     };
 
+    // Re-check education mapping from state
+    data.education = customEdu ? eduVal : data.education;
+
     try {
       const result = await upsertResident(data, isEditing ? initialData?.id : undefined);
       if (result.error) {
         setError(result.error as string);
+        setLoading(false);
       } else {
-        router.push('/admin/residents');
-        router.refresh();
+        setSuccess(isEditing ? 'Data penduduk berhasil diperbarui!' : 'Penduduk baru berhasil ditambahkan!');
+        // Delay redirect to show success message
+        setTimeout(() => {
+          router.push('/admin/residents');
+          router.refresh();
+        }, 1500);
       }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Gagal menyimpan data.');
-    } finally {
       setLoading(false);
     }
   }
@@ -90,14 +158,17 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
     try {
       const result = await deleteResident(initialData.id);
       if (result.success) {
-        router.push('/admin/residents');
-        router.refresh();
+        setSuccess('Data penduduk telah dihapus permanen.');
+        setTimeout(() => {
+          router.push('/admin/residents');
+          router.refresh();
+        }, 1500);
       } else {
         alert('Gagal menghapus: ' + result.error);
+        setIsDeleting(false);
       }
     } catch {
       alert('Terjadi kesalahan sistem.');
-    } finally {
       setIsDeleting(false);
     }
   }
@@ -105,15 +176,15 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
   return (
     <div className="max-w-4xl mx-auto pb-20 px-2 sm:px-0">
       <div className="mb-4 sm:mb-6 flex items-center justify-between">
-        <Link 
-          href="/admin/residents" 
+        <Link
+          href="/admin/residents"
           className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors font-bold uppercase text-[9px] sm:text-[10px] tracking-widest"
         >
           <ArrowLeft size={16} />
           Kembali ke Daftar
         </Link>
 
-        {isEditing && (
+        {isEditing && !success && (
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
@@ -135,13 +206,22 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
           </p>
         </div>
 
-        <form ref={formRef} onSubmit={handleOpenSaveConfirm} className="p-6 sm:p-10 space-y-10 sm:space-y-12">
-          {typeof error === 'string' && (
-            <div className="p-3 sm:p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold">
+        <div className="px-6 sm:px-10 pt-6 sm:pt-10">
+          {error && (
+            <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+              <ShieldAlert size={18} />
               {error}
             </div>
           )}
+          {success && (
+            <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 rounded-2xl text-xs sm:text-sm font-black uppercase tracking-widest flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+              <CheckCircle2 size={18} />
+              {success}
+            </div>
+          )}
+        </div>
 
+        <form ref={formRef} onSubmit={handleOpenSaveConfirm} className={`p-6 sm:p-10 space-y-10 sm:space-y-12 transition-opacity duration-500 ${success ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
           {/* Section 1: Identitas Utama */}
           <div className="space-y-6 sm:space-y-8">
             <div className="flex items-center gap-3 border-b border-border pb-4">
@@ -150,13 +230,13 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               </div>
               <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Identitas Utama</h3>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
               <div className="space-y-2">
                 <Label>NIK (16 Digit)</Label>
                 <div className="relative">
-                  <Input 
-                    name="nik" 
+                  <Input
+                    name="nik"
                     type={showNik ? "text" : "password"}
                     defaultValue={initialData?.nik || ''}
                     required
@@ -172,8 +252,8 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               <div className="space-y-2">
                 <Label>No. Kartu Keluarga (16 Digit)</Label>
                 <div className="relative">
-                  <Input 
-                    name="kk" 
+                  <Input
+                    name="kk"
                     type={showKk ? "text" : "password"}
                     defaultValue={initialData?.kk || ''}
                     required
@@ -188,12 +268,12 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               </div>
               <div className="space-y-2 md:col-span-2">
                 <Label>Nama Lengkap (Sesuai KTP)</Label>
-                <Input 
-                  name="name" 
-                  defaultValue={initialData?.name || ''} 
-                  required 
+                <Input
+                  name="name"
+                  defaultValue={initialData?.name || ''}
+                  required
                   placeholder="NAMA LENGKAP"
-                  className="uppercase font-black h-11 sm:h-12 tracking-tight text-sm" 
+                  className="uppercase font-black h-11 sm:h-12 tracking-tight text-sm"
                 />
               </div>
             </div>
@@ -207,7 +287,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               </div>
               <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Kelahiran & Gender</h3>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-8">
               <div className="space-y-2">
                 <Label>Tempat Lahir</Label>
@@ -218,7 +298,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
                 <Input name="birth_date" type="date" defaultValue={initialData?.birth_date || ''} required className="h-11 sm:h-12 text-sm" />
               </div>
               <div className="space-y-2">
-                <CustomSelect 
+                <CustomSelect
                   label="Jenis Kelamin"
                   name="gender"
                   options={GENDER_OPTIONS}
@@ -238,11 +318,37 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               </div>
               <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Domisili (Alamat)</h3>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
               <div className="space-y-2 sm:col-span-1">
-                <Label>Nama Dusun</Label>
-                <Input name="dusun" defaultValue={initialData?.dusun || ''} placeholder="NAMA DUSUN" className="uppercase h-11 sm:h-12 text-sm" />
+                {customDusun ? (
+                  <div className="space-y-2 animate-in slide-in-from-left-1">
+                    <div className="flex justify-between items-center">
+                      <Label>Nama Dusun (Manual)</Label>
+                      <button type="button" onClick={() => setCustomDusun(false)} className="text-[9px] font-black text-primary uppercase">Kembali ke List</button>
+                    </div>
+                    <div className="relative">
+                      <Input
+                        value={dusunVal}
+                        onChange={(e) => setDusunVal(e.target.value.toUpperCase())}
+                        placeholder="INPUT NAMA DUSUN"
+                        className="uppercase h-11 sm:h-12 pl-10 text-sm font-black text-primary border-primary/30"
+                        autoFocus
+                      />
+                      <Edit3 size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
+                    </div>
+                  </div>
+                ) : (
+                  <CustomSelect
+                    label="Nama Dusun"
+                    name="dusun"
+                    options={DUSUN_OPTIONS}
+                    defaultValue={initialData?.dusun || ''}
+                    icon={MapPin}
+                    onChange={(val) => { if (val === 'CUSTOM') setCustomDusun(true); }}
+                    required
+                  />
+                )}
               </div>
               <div className="space-y-2">
                 <Label>RT</Label>
@@ -263,28 +369,77 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               </div>
               <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Sosial & Ekonomi</h3>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
               <div className="space-y-2">
-                <Label>Pendidikan Terakhir</Label>
-                <div className="relative">
-                   <Input name="education" defaultValue={initialData?.education || ''} required placeholder="CONTOH: SMA / SARJANA" className="uppercase h-11 sm:h-12 pl-10 text-sm" />
-                   <GraduationCap size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                </div>
+                {customEdu ? (
+                  <div className="space-y-2 animate-in slide-in-from-left-1">
+                    <div className="flex justify-between items-center">
+                      <Label>Pendidikan (Manual)</Label>
+                      <button type="button" onClick={() => setCustomEdu(false)} className="text-[9px] font-black text-primary uppercase">Kembali ke List</button>
+                    </div>
+                    <div className="relative">
+                      <Input
+                        value={eduVal}
+                        onChange={(e) => setEduVal(e.target.value.toUpperCase())}
+                        placeholder="INPUT PENDIDIKAN"
+                        className="uppercase h-11 sm:h-12 pl-10 text-sm font-black text-primary border-primary/30"
+                        autoFocus
+                      />
+                      <GraduationCap size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
+                    </div>
+                  </div>
+                ) : (
+                  <CustomSelect
+                    label="Pendidikan Terakhir"
+                    name="education"
+                    options={EDUCATION_OPTIONS}
+                    defaultValue={initialData?.education || ''}
+                    icon={GraduationCap}
+                    onChange={(val) => { if (val === 'CUSTOM') setCustomEdu(true); }}
+                    required
+                  />
+                )}
               </div>
               <div className="space-y-2">
-                <Label>Pekerjaan Utama</Label>
-                <div className="relative">
-                   <Input name="occupation" defaultValue={initialData?.occupation || ''} required placeholder="CONTOH: PETANI / PEGAWAI" className="uppercase h-11 sm:h-12 pl-10 text-sm" />
-                   <Briefcase size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                </div>
+                {customOcc ? (
+                  <div className="space-y-2 animate-in slide-in-from-left-1">
+                    <div className="flex justify-between items-center">
+                      <Label>Pekerjaan (Manual)</Label>
+                      <button type="button" onClick={() => setCustomOcc(false)} className="text-[9px] font-black text-primary uppercase">Kembali ke List</button>
+                    </div>
+                    <div className="relative">
+                      <Input
+                        value={occVal}
+                        onChange={(e) => setOccVal(e.target.value.toUpperCase())}
+                        placeholder="INPUT PEKERJAAN"
+                        className="uppercase h-11 sm:h-12 pl-10 text-sm font-black text-primary border-primary/30"
+                        autoFocus
+                      />
+                      <Briefcase size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
+                    </div>
+                  </div>
+                ) : (
+                  <CustomSelect
+                    label="Pekerjaan Utama"
+                    name="occupation"
+                    options={OCCUPATION_OPTIONS}
+                    defaultValue={initialData?.occupation || ''}
+                    icon={Briefcase}
+                    onChange={(val) => { if (val === 'CUSTOM') setCustomOcc(true); }}
+                    required
+                  />
+                )}
               </div>
               <div className="space-y-2">
-                <Label>Status Perkawinan</Label>
-                <div className="relative">
-                   <Input name="marital_status" defaultValue={initialData?.marital_status || ''} required placeholder="KAWIN / BELUM KAWIN" className="uppercase h-11 sm:h-12 pl-10 text-sm" />
-                   <Heart size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                </div>
+                <CustomSelect
+                  label="Status Perkawinan"
+                  name="marital_status"
+                  options={MARITAL_OPTIONS}
+                  defaultValue={initialData?.marital_status || ''}
+                  icon={Heart}
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label>Tahun Pendataan</Label>
@@ -301,7 +456,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               </div>
               <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Data Orang Tua</h3>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
               <div className="space-y-2">
                 <Label>Nama Lengkap Ayah</Label>
@@ -315,19 +470,19 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
           </div>
 
           <div className="pt-8 sm:pt-10 border-t border-border flex flex-col sm:flex-row justify-end gap-4">
-            <button 
-              type="submit" 
-              disabled={loading}
+            <button
+              type="submit"
+              disabled={loading || !!success}
               className="w-full sm:w-auto bg-primary text-primary-foreground px-10 py-4 sm:px-12 sm:py-5 rounded-full font-black flex items-center justify-center gap-3 hover:opacity-90 disabled:opacity-50 transition-all shadow-xl shadow-primary/20 text-[10px] sm:text-xs tracking-widest uppercase active:scale-95"
             >
-              {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+              {loading && !success ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
               {isEditing ? 'Simpan Seluruh Perubahan' : 'Simpan Data Penduduk'}
             </button>
           </div>
         </form>
       </div>
 
-      <ConfirmDialog 
+      <ConfirmDialog
         isOpen={showSaveConfirm}
         onClose={() => setShowSaveConfirm(false)}
         onConfirm={handleSave}
@@ -338,7 +493,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         loading={loading}
       />
 
-      <ConfirmDialog 
+      <ConfirmDialog
         isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
         onConfirm={handleDelete}
