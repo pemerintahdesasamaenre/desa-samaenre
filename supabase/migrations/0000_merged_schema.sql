@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS public.staff_members (
   position TEXT NOT NULL,
   photo_url TEXT,
   order_index INTEGER DEFAULT 0 NOT NULL,
+  org_type TEXT NOT NULL DEFAULT 'pemdes' CHECK (org_type IN ('pemdes', 'bpd')),
   parent_id UUID REFERENCES public.staff_members(id) ON DELETE SET NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
@@ -116,8 +117,10 @@ CREATE TABLE IF NOT EXISTS public.residents (
 CREATE TABLE IF NOT EXISTS public.activity_logs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    user_email TEXT,
     action TEXT NOT NULL,
     entity_type TEXT NOT NULL,
+    method TEXT,
     details JSONB DEFAULT '{}'::jsonb,
     ip_address TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
@@ -209,6 +212,18 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 CREATE TRIGGER tr_audit_residents AFTER INSERT OR UPDATE OR DELETE ON public.residents FOR EACH ROW EXECUTE PROCEDURE public.log_resident_changes();
+
+-- Cleanup Old Logs Function
+CREATE OR REPLACE FUNCTION public.cleanup_old_logs()
+RETURNS void AS $$
+BEGIN
+    DELETE FROM public.activity_logs
+    WHERE created_at < (NOW() - INTERVAL '2 months');
+    
+    DELETE FROM public.resident_audit_logs
+    WHERE created_at < (NOW() - INTERVAL '2 months');
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ==========================================
 -- 5. MATERIALIZED VIEW (TUKANG KESIMPULAN)
