@@ -272,7 +272,11 @@ export async function importResidents(data: ResidentImportData[]) {
   } catch (e: unknown) {
     console.error('Import residents exception:', e);
     // Kembalikan pesan error asli agar bisa didebug di UI
-    const errorMessage = e instanceof Error ? e.message : (typeof e === 'object' && e !== null && 'message' in e) ? (e as any).message : 'Terjadi kesalahan sistem yang tidak diketahui.';
+    const errorMessage = e instanceof Error 
+      ? e.message 
+      : (typeof e === 'object' && e !== null && 'message' in e) 
+        ? String((e as { message: unknown }).message) 
+        : 'Terjadi kesalahan sistem yang tidak diketahui.';
     return { error: errorMessage };
   }
 }

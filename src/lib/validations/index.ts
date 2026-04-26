@@ -12,7 +12,15 @@ export type DemographicInput = z.infer<typeof demographicSchema>;
 export const villageInfoSchema = z.object({
   name: z.string().min(1, "Village name is required"),
   vision: z.string().optional(),
-  mission: z.array(z.string()).default([]),
+  mission: z.array(
+    z.union([
+      z.string(),
+      z.object({
+        title: z.string().min(1),
+        items: z.array(z.string()),
+      })
+    ])
+  ).default([]),
   former_leaders: z.array(z.object({
     name: z.string().min(1),
     period: z.string().min(1),
@@ -69,6 +77,7 @@ export const staffMemberSchema = z.object({
   photo_url: z.string().url().optional().or(z.literal('')),
   parent_id: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, "ID tidak valid").optional().nullable(),
   order_index: z.number().int().default(0),
+  org_type: z.enum(['pemdes', 'bpd']).default('pemdes'),
 });
 
 export type StaffMemberInput = z.infer<typeof staffMemberSchema>;

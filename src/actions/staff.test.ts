@@ -10,6 +10,10 @@ vi.mock('next/cache', () => ({
   revalidatePath: vi.fn(),
 }));
 
+vi.mock('../lib/supabase/storage', () => ({
+  deleteImage: vi.fn().mockResolvedValue({ success: true }),
+}));
+
 describe('upsertStaffMember', () => {
   const mockSupabase = {
     auth: {
@@ -39,7 +43,7 @@ describe('upsertStaffMember', () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: null }, error: null });
     
     const result = await upsertStaffMember({ 
-      name: 'John Doe', position: 'Sekdes', order_index: 0
+      name: 'John Doe', position: 'Sekdes', order_index: 0, org_type: 'pemdes'
     });
     
     expect(result.error).toBe('Unauthorized');
@@ -49,7 +53,7 @@ describe('upsertStaffMember', () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: '123' } }, error: null });
     
     const result = await upsertStaffMember({ 
-      name: '', position: '', order_index: -1
+      name: '', position: '', order_index: -1, org_type: 'pemdes'
     } as Parameters<typeof upsertStaffMember>[0]);
     
     expect(result.error).toBeDefined();
@@ -62,12 +66,13 @@ describe('upsertStaffMember', () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: '123' } }, error: null });
     mockSupabase.upsert.mockResolvedValue({ error: null });
     
-    const staffData = {
+    const staffData: Parameters<typeof upsertStaffMember>[0] = {
       name: 'Jane Doe',
       position: 'Staff',
       parent_id: '550e8400-e29b-41d4-a716-446655440000',
       order_index: 1,
-      photo_url: ''
+      photo_url: '',
+      org_type: 'pemdes'
     };
     
     const result = await upsertStaffMember(staffData);
@@ -76,7 +81,8 @@ describe('upsertStaffMember', () => {
     expect(mockSupabase.upsert).toHaveBeenCalledWith(expect.objectContaining({
       name: staffData.name,
       position: staffData.position,
-      order_index: staffData.order_index
+      order_index: staffData.order_index,
+      org_type: staffData.org_type
     }));
   });
 
@@ -85,12 +91,13 @@ describe('upsertStaffMember', () => {
     mockSupabase.upsert.mockResolvedValue({ error: null });
     mockSupabase.single.mockResolvedValue({ data: { photo_url: 'old-photo.jpg' }, error: null });
     
-    const staffData = {
+    const staffData: Parameters<typeof upsertStaffMember>[0] = {
       name: 'Jane Doe',
       position: 'Staff',
       parent_id: null,
       order_index: 0,
-      photo_url: 'new-photo.jpg'
+      photo_url: 'new-photo.jpg',
+      org_type: 'pemdes'
     };
     const id = 'existing-uuid';
     
@@ -104,12 +111,13 @@ describe('upsertStaffMember', () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: '123' } }, error: null });
     mockSupabase.upsert.mockResolvedValue({ error: { message: 'Database error' } });
     
-    const staffData = {
+    const staffData: Parameters<typeof upsertStaffMember>[0] = {
       name: 'Jane Doe',
       position: 'Staff',
       order_index: 0,
       photo_url: '',
-      parent_id: null
+      parent_id: null,
+      org_type: 'pemdes'
     };
     
     const result = await upsertStaffMember(staffData);
@@ -128,8 +136,9 @@ describe('upsertStaffMember', () => {
 
     it('should call delete with correct id', async () => {
       mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: '123' } }, error: null });
-      mockSupabase.single.mockResolvedValue({ data: { photo_url: null }, error: null });
-      mockSupabase.eq.mockReturnValue({ error: null });
+      mockSupabase.single.mockResolvedValueOnce({ data: { photo_url: null }, error: null });
+      mockSupabase.eq.mockReturnThis();
+      mockSupabase.delete.mockResolvedValue({ error: null });
       
       const id = 'some-uuid';
       const result = await deleteStaffMember(id);

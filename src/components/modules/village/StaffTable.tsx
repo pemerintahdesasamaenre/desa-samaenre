@@ -38,6 +38,7 @@ export const StaffTable = ({ staff }: StaffTableProps) => {
               
               {/* Kolom Desktop Only */}
               <th className="hidden md:table-cell px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] w-1/4">Jabatan</th>
+              <th className="hidden md:table-cell px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] w-24">Org</th>
               <th className="hidden lg:table-cell px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] w-1/4">Atasan</th>
               <th className="hidden md:table-cell px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] w-16">Urutan</th>
               
@@ -67,6 +68,15 @@ export const StaffTable = ({ staff }: StaffTableProps) => {
                   <td className="hidden md:table-cell px-10 py-5">
                     <span className="px-2 py-0.5 bg-muted rounded text-[9px] font-black uppercase tracking-widest text-muted-foreground border border-border/50">
                       {item.position}
+                    </span>
+                  </td>
+                  <td className="hidden md:table-cell px-10 py-5">
+                    <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest border ${
+                      item.org_type === 'bpd'
+                        ? 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                        : 'bg-primary/10 text-primary border-primary/20'
+                    }`}>
+                      {item.org_type === 'bpd' ? 'BPD' : 'Pemdes'}
                     </span>
                   </td>
                   <td className="hidden lg:table-cell px-10 py-5 text-xs font-bold text-muted-foreground truncate">{getParentName(item.parent_id)}</td>

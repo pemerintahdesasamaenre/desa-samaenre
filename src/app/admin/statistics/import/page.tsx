@@ -125,7 +125,7 @@ export default function StatisticsImportPage() {
           const nikRaw = nikIdx !== -1 ? String(row[nikIdx] || '').trim() : '';
           
           const kkIdx = getIdx(['NO KARTU KELUARGA', 'NOMOR KK', 'NO KK'], false);
-          let kkRaw = kkIdx !== -1 ? String(row[kkIdx] || '').trim() : '';
+          const kkRaw = kkIdx !== -1 ? String(row[kkIdx] || '').trim() : '';
 
           const nik = nikRaw.replace(/[^0-9]/g, '');
           let kk = kkRaw.replace(/[^0-9]/g, '');

@@ -1,17 +1,86 @@
 {
-  "name": "Desa Contoh",
-  "vision": "Terwujudnya Desa yang Mandiri, Sejahtera, dan Berbudaya.",
+  "name": "Samaenre",
+  "vision": "Mewujudkan Desa Samaenre Sebagai Desa Sejahtera, Aman, Berbudaya, Beriman Dan Bertaqwa",
   "mission": [
-    "Meningkatkan kualitas pelayanan publik berbasis digital.",
-    "Mengembangkan potensi ekonomi lokal melalui UMKM dan Pertanian.",
-    "Membangun infrastruktur desa yang merata dan berkelanjutan.",
-    "Meningkatkan kualitas sumber daya manusia yang agamis dan kompetitif."
+    {
+      "title": "Peningkatan Sektor Agama",
+      "items": [
+        "Meningkatkan Syiar-Syiar Agama",
+        "Meningkatkan kepengurusan mesjid dan acara-acara keagamaan",
+        "Meningkatkan kualitas pemahaman keagamaan",
+        "Meningkatkan kualitas kehidupan beragama"
+      ]
+    },
+    {
+      "title": "Peningkatan Sektor Pertanian dan Perkebunan",
+      "items": [
+        "Penataan Kelompok Tani Secara Profesional",
+        "Pengaturan Waktu Tanam (melalui musyawarah yang nantinya dijadikan acuan)",
+        "Pemilihan tanaman unggulan untuk pertanian dan perkebunan",
+        "Menjalin kerja sama dengan dinas terkait dalam pengadaan kebutuhan pertanian dan perkebunan"
+      ]
+    },
+    {
+      "title": "Peningkatan Sektor Pariwisata",
+      "items": [
+        "Mengembangkan infrastruktur Wisata Permandian Air Panas",
+        "Mengembangkan destinasi Wisata Permandian Air Panas",
+        "Meningkatkan kualitas layanan Wisata Permandian Air Panas",
+        "Memberdayakan Komunitas Lokal"
+      ]
+    },
+    {
+      "title": "Peningkatan Sektor Keamanan",
+      "items": [
+        "Meningkatkan kesadaran masyarakat dalam membina kerukunan, keamanan dan ketertiban dalam lingkungan",
+        "Meningkatkan kapasitas Tenaga Keamanan",
+        "Meningkatkan kegiatan pemuda melalui olahraga, kesenian, agama dalam wadah Karang Taruna",
+        "Menghindarkan masyarakat Desa Samaenre dari anak-anak sampai orang tua untuk tidak mendekati, mencoba apalagi menggunakan NARKOBA"
+      ]
+    },
+    {
+      "title": "Ketertiban, Kebersihan dan Kesehatan",
+      "items": [
+        "Meningkatkan kesadaran masyarakat untuk menjaga kebersihan",
+        "Melakukan kerja bakti kebersihan setiap hari Jumat",
+        "Meningkatkan sistem pengelolaan sampah",
+        "Meningkatkan kualitas fasilitas kesehatan",
+        "Meningkatkan pelayanan petugas kesehatan dan dapat dihubungi jika terjadi kebutuhan pelayanan kesehatan mendesak"
+      ]
+    },
+    {
+      "title": "Perbaikan Sektor Usaha",
+      "items": [
+        "Meningkatkan usaha-usaha UMKM",
+        "Meningkatkan kerja sama dengan pemasaran UMKM",
+        "Meningkatkan usaha BUMDes",
+        "Menjalin hubungan dengan pengusaha lokal maupun pengusaha luar untuk pemasaran hasil bumi"
+      ]
+    }
   ],
-  "history": "Desa ini didirikan pada tahun...",
+  "history": "Desa Samaenre berawal dari sebuah kampong yang bernama Samalette yang diperkirakan pemberian nama tersebut sekitar Tahun 1905 yang dipimpin oleh seorang arung yang diberi gelar Arung Cempa yang bernama Petta Lunru. Kemudian berpindah ke Realolo pada Tahun 1925 yang dipimpin oleh Andi Hamsah Dg Pabeta Karaeng Pokko, yang selanjutnya pada tahun 1961 berpindah lagi ke Lappa Lakumpe yang kemudian diubah namanya menjadi Realolo yang diambil dari nama Kampung Realolo, dipimpin oleh Mina Hajji P.Lette. Pada Tahun 1965 terbentuk Desa Samaenre yang dinakhodai oleh P.Sadda.\n\nDesa Samaenre diambil dari sebuah nama kampong di Desa Samaenre yang sekarang bernama Dusun Mallenreng. Kisah pengambilan nama tersebut karena Samaenre merupakan satu rangkaian kata — bukan terdiri dari dua suku kata Sama dan Enre. Samaenre diartikan dalam bahasa sehari-hari sebagai \"Sama-sama naik\". Alasan pengambilan nama tersebut karena Samaenre merupakan kampong yang letaknya paling tinggi di antara beberapa kampong yang ada di Desa Samaenre. Nama tersebut dicetuskan oleh P.Sadda.\n\nDesa Samaenre pada masa silam disebut koordinator di bawah wilayah Distrik Camba. Samaenre pada saat itu terdiri dari beberapa kampung, di antaranya Kampung Realolo, Kampung Malempo, Kampung Tanete, Kampung Bentenge, Kampung Reatoa, dan Kampung Uludaya — dipimpin oleh seorang pemangku adat yang bergelar Arung Cempa. Kemudian pada Tahun 1925 dipimpin oleh Andi Hamsah Dg. Pabeta Karaeng Pokko.\n\nDesa Samaenre terbentuk dan untuk pertama kalinya dipimpin oleh Mina Hajje P.Lette yang berkedudukan di Realolo pada Tahun 1961 di bawah wilayah pemerintahan Kecamatan Camba. Kemudian mengalami pemekaran sebanyak dua kali: pada Tahun 1987, Kampung Reatoa, Kampung Bentenge, dan Kampung Tanete berdiri sendiri menjadi Desa Bentenge; dan pada tahun 1992, Kampung Uludaya berpisah menjadi sebuah desa yang saat ini bernama Desa Uludaya.",
+  "former_leaders": [
+    { "name": "Puang Talunru Arung Cempae", "period": "1905" },
+    { "name": "Andi Hamsah Dg.Pabeta Karaeng Pokko", "period": "1925" },
+    { "name": "Mina Hajje Puang Lette", "period": "1961" },
+    { "name": "P.Sadda", "period": "1965" },
+    { "name": "Amirul Yusuf P.Sese", "period": "1980" },
+    { "name": "H.P.Sadda", "period": "1985" },
+    { "name": "A.Saifullah", "period": "1990" },
+    { "name": "H.A.Rifai .S", "period": "2000" },
+    { "name": "Andi Majjalekka", "period": "2013 - Sekarang" }
+  ],
   "contact_info": {
-    "email": "kontak@desacontoh.go.id",
-    "phone": "0812-3456-7890",
-    "address": "Jl. Utama No. 1, Kecamatan X, Kabupaten Y",
-    "maps_url": "https://maps.google.com/..."
+    "email": "desa.samaenre@maroskab.go.id",
+    "phone": "081234567890",
+    "address": "Kantor Desa Samaenre, Kecamatan Mallawa, Kabupaten Maros",
+    "maps_url": ""
+  },
+  "area_size": "N/A",
+  "boundaries": {
+    "north": "-",
+    "south": "-",
+    "east": "-",
+    "west": "-"
   }
 }

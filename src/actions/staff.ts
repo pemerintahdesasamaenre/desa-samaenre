@@ -32,12 +32,18 @@ export async function upsertStaffMember(data: StaffMemberInput, id?: string) {
   return { success: true }
 }
 
-export async function getStaffMembers() {
+export async function getStaffMembers(orgType?: 'pemdes' | 'bpd') {
   const supabase = await createClient()
-  const { data, error } = await supabase
+  let query = supabase
     .from('staff_members')
     .select('*')
     .order('order_index', { ascending: true })
+
+  if (orgType) {
+    query = query.eq('org_type', orgType)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching staff members:', error)

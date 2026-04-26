@@ -34,11 +34,16 @@ export interface FormerLeader {
   period: string;
 }
 
+export interface MissionSection {
+  title: string;
+  items: string[];
+}
+
 export interface VillageInfo {
   id: number;
   name: string;
   vision: string | null;
-  mission: string[];
+  mission: MissionSection[] | string[];
   history: string | null;
   logo_url: string | null;
   contact_info: {
@@ -76,6 +81,7 @@ export interface StaffMember {
   photo_url: string | null;
   parent_id: string | null;
   order_index: number;
+  org_type: 'pemdes' | 'bpd';
   created_at: string;
 }
 

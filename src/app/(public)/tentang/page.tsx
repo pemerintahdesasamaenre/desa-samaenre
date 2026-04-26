@@ -1,15 +1,36 @@
 import { getStaffMembers } from '@/actions/staff';
 import { getVillageInfo } from '@/services/data-service';
 import OrgChartTree from '@/components/modules/village/OrgChartTree';
-import { MapPin, Mail, Phone, Map as MapIcon, Compass, Network } from 'lucide-react';
+import { MapPin, Mail, Phone, Map as MapIcon, Compass, Network, Shield } from 'lucide-react';
 import { Timeline } from '@/components/ui/Timeline';
 import ExpandableHistory from '@/components/modules/village/ExpandableHistory';
-import { FormerLeader } from '@/types';
+import { FormerLeader, MissionSection } from '@/types';
+
+interface MissionRaw {
+  title?: string;
+  items?: string[];
+}
+
+function parseMissions(raw: unknown): MissionSection[] {
+  if (!Array.isArray(raw) || raw.length === 0) return [];
+  if (typeof raw[0] === 'string') {
+    return (raw as string[]).map(s => ({ title: s, items: [] }));
+  }
+  return (raw as MissionRaw[]).map(s => ({
+    title: s.title || '',
+    items: Array.isArray(s.items) ? s.items : [],
+  }));
+}
 
 export default async function TentangPage() {
-  const staff = await getStaffMembers();
-  const villageInfo = await getVillageInfo();
+  const [pemdes, bpd, villageInfo] = await Promise.all([
+    getStaffMembers('pemdes'),
+    getStaffMembers('bpd'),
+    getVillageInfo(),
+  ]);
   const contact = villageInfo?.contact_info || {};
+
+  const missionSections = parseMissions(villageInfo.mission);
 
   const formerLeaders = Array.isArray(villageInfo.former_leaders) 
     ? [...villageInfo.former_leaders].reverse() 
@@ -44,6 +65,9 @@ export default async function TentangPage() {
 
   const { embed: embedUrl, external: externalUrl } = getMapsUrls(contact.maps_url);
 
+  // Section label letters (a, b, c, ...)
+  const sectionLetters = 'abcdefghij'.split('');
+
   return (
     <main className="min-h-screen bg-background pt-32 pb-20 overflow-hidden relative text-foreground font-sans">
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -64,6 +88,7 @@ export default async function TentangPage() {
           </p>
         </section>
 
+        {/* Geography section */}
         <section className="grid lg:grid-cols-3 gap-8 mb-32">
            <div className="lg:col-span-1 bg-emerald-600 p-12 rounded-[3rem] text-white space-y-6 shadow-2xl shadow-emerald-600/20 relative overflow-hidden group border-none">
               <div className="absolute -bottom-10 -right-10 opacity-10 group-hover:scale-110 transition-transform duration-700">
@@ -108,41 +133,67 @@ export default async function TentangPage() {
            </div>
         </section>
 
-        <section className="grid md:grid-cols-2 gap-8 mb-32">
-          <div className="glass p-12 rounded-[3rem] space-y-6 border border-border/50">
-            <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight uppercase">
-               <div className="w-2 h-8 bg-primary rounded-full"></div>
-               Visi
-            </h2>
-            <p className="text-muted-foreground italic text-2xl leading-relaxed">
-              &quot;{villageInfo.vision}&quot;
-            </p>
-          </div>
-          <div className="glass p-12 rounded-[3rem] space-y-6 border border-border/50">
-            <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight uppercase">
-               <div className="w-2 h-8 bg-secondary rounded-full"></div>
-               Misi
-            </h2>
-            <ul className="space-y-5">
-              {(villageInfo.mission || []).map((item: string, index: number) => (
-                <li key={index} className="flex gap-4 text-muted-foreground text-lg leading-snug font-medium">
-                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs shrink-0 mt-1">
-                    {index + 1}
-                  </div>
-                  {item}
-                </li>
-              ))}
-            </ul>
+        {/* Visi & Misi — New Hierarchical Layout */}
+        <section className="mb-32">
+          <div className="grid md:grid-cols-5 gap-8">
+            {/* Visi card */}
+            <div className="md:col-span-2 glass p-10 rounded-[3rem] space-y-6 border border-border/50 flex flex-col">
+              <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight uppercase">
+                 <div className="w-2 h-8 bg-primary rounded-full"></div>
+                 Visi
+              </h2>
+              <p className="text-muted-foreground italic text-xl leading-relaxed flex-1">
+                &quot;{villageInfo.vision}&quot;
+              </p>
+              <div className="pt-4 border-t border-border/50">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Visi RPJMDesa 2026–2027</p>
+              </div>
+            </div>
+
+            {/* Misi card — hierarchical */}
+            <div className="md:col-span-3 glass p-10 rounded-[3rem] space-y-6 border border-border/50">
+              <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight uppercase">
+                 <div className="w-2 h-8 bg-secondary rounded-full"></div>
+                 Misi
+              </h2>
+              {missionSections.length > 0 ? (
+                <ol className="space-y-5">
+                  {missionSections.map((section, idx) => (
+                    <li key={idx} className="space-y-2">
+                      <div className="flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black text-[10px] shrink-0 mt-0.5">
+                          {sectionLetters[idx]?.toUpperCase() || idx + 1}
+                        </span>
+                        <p className="font-black text-foreground text-base leading-snug">{section.title}</p>
+                      </div>
+                      {section.items.length > 0 && (
+                        <ul className="ml-9 space-y-1.5">
+                          {section.items.map((item, itemIdx) => (
+                            <li key={itemIdx} className="flex items-start gap-2.5 text-muted-foreground text-sm leading-snug font-medium">
+                              <span className="text-primary/60 font-black text-xs shrink-0 mt-0.5">{itemIdx + 1}.</span>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p className="text-muted-foreground italic">Misi belum diisi.</p>
+              )}
+            </div>
           </div>
         </section>
 
+        {/* Sejarah Singkat */}
         {villageInfo.history && (
           <ExpandableHistory content={villageInfo.history} />
         )}
 
-        {/* Organizational Chart Section */}
-        <section id="staff" className="scroll-mt-32 mb-32">
-          <div className="text-center mb-16 space-y-6">
+        {/* Struktur Organisasi Pemerintah Desa */}
+        <section id="staff" className="scroll-mt-32 mb-32 -mx-4 sm:-mx-6 lg:-mx-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16 space-y-6">
             <div className="p-4 bg-primary/10 text-primary rounded-3xl inline-block mx-auto mb-2">
               <Network size={40} className="w-10 h-10 md:w-12 md:h-12" />
             </div>
@@ -154,10 +205,39 @@ export default async function TentangPage() {
             </p>
           </div>
           
-          <OrgChartTree staff={staff} />
+          <OrgChartTree 
+            staff={pemdes} 
+            villageName={villageInfo.name} 
+            logoUrl={villageInfo.logo_url} 
+            orgTitle="Pemerintah Desa"
+          />
         </section>
 
-        {/* Former Leaders Timeline Section */}
+        {/* Struktur Organisasi BPD */}
+        {bpd.length > 0 && (
+          <section id="bpd" className="scroll-mt-32 mb-32 -mx-4 sm:-mx-6 lg:-mx-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16 space-y-6">
+              <div className="p-4 bg-blue-500/10 text-blue-600 rounded-3xl inline-block mx-auto mb-2">
+                <Shield size={40} className="w-10 h-10 md:w-12 md:h-12" />
+              </div>
+              <h2 className="text-5xl md:text-7xl font-black tracking-tight text-foreground leading-none uppercase">
+                Struktur <br/><span className="text-blue-600 italic border-b-4 border-blue-500/20">BPD</span>
+              </h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto text-lg md:text-xl font-medium">
+                Badan Permusyawaratan Desa (BPD) Desa {villageInfo.name} Kecamatan Mallawa Kabupaten Maros.
+              </p>
+            </div>
+            
+            <OrgChartTree 
+              staff={bpd} 
+              villageName={villageInfo.name} 
+              logoUrl={villageInfo.logo_url} 
+              orgTitle="BPD"
+            />
+          </section>
+        )}
+
+        {/* Timeline Mantan Kepala Desa */}
         {timelineData.length > 0 && (
           <section className="mb-32 scroll-mt-32">
             <div className="glass-premium rounded-[4rem] border border-border/50 overflow-hidden bg-card/30">
@@ -166,6 +246,7 @@ export default async function TentangPage() {
           </section>
         )}
 
+        {/* Kontak & Peta */}
         <section className="scroll-mt-32">
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1 glass p-10 rounded-[3.5rem] space-y-10 border border-border/50">
