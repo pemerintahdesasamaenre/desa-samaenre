@@ -123,3 +123,21 @@ export interface Post {
     name: string;
   } | null;
 }
+
+export interface GalleryImage {
+  url: string;
+  title: string;
+  source: 'post' | 'branding';
+  date: string;
+  link?: string;
+}
+
+// Re-export validation types for centralization (SoC)
+export type { 
+  StaffMemberInput, 
+  ResidentInput, 
+  PostInput, 
+  FinanceInput, 
+  VillageInfoInput,
+  DemographicInput 
+} from '@/lib/validations';
