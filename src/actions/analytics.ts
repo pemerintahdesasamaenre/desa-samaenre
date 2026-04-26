@@ -56,9 +56,12 @@ export async function logActivity(params: {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
-  if (!user) return;
+  if (!user) {
+    console.warn('logActivity: No user session found. Action not logged:', params.action);
+    return;
+  }
 
-  await supabase.from('activity_logs').insert({
+  const { error } = await supabase.from('activity_logs').insert({
     user_id: user.id,
     user_email: user.email,
     action: params.action,
@@ -66,6 +69,10 @@ export async function logActivity(params: {
     method: params.method,
     details: params.details || {}
   });
+
+  if (error) {
+    console.error('logActivity: Failed to insert log:', error.message);
+  }
 }
 
 /**

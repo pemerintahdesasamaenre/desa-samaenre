@@ -346,4 +346,5 @@ CREATE POLICY "Admins manage residents" ON public.residents FOR ALL USING (publi
 CREATE POLICY "Admins manage posts" ON public.posts FOR ALL USING (public.is_admin());
 CREATE POLICY "Admins manage finances" ON public.finances FOR ALL USING (public.is_admin());
 CREATE POLICY "Admins view logs" ON public.activity_logs FOR SELECT USING (public.is_admin());
+CREATE POLICY "Admins insert logs" ON public.activity_logs FOR INSERT WITH CHECK (public.is_admin());
 CREATE POLICY "Admins view audit" ON public.resident_audit_logs FOR SELECT USING (public.is_admin());
