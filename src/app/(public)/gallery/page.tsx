@@ -5,8 +5,7 @@ import { getGalleryImages } from '@/actions/gallery'
 import { GalleryImage } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Camera, Calendar, Tag, ExternalLink, Loader2, ChevronDown } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Camera, Calendar, ExternalLink, Loader2, ChevronDown } from 'lucide-react'
 
 export default function GalleryPage() {
   const [images, setImages] = useState<GalleryImage[]>([])
@@ -17,8 +16,8 @@ export default function GalleryPage() {
 
   const fetchImages = useCallback(async (pageNum: number) => {
     try {
-      const data = await getGalleryImages(pageNum, 9)
-      if (data.length < 9) {
+      const data = await getGalleryImages(pageNum, 12) // Slightly more per page for grid
+      if (data.length < 12) {
         setHasMore(false)
       }
       
@@ -56,108 +55,104 @@ export default function GalleryPage() {
     return (
       <div className="min-h-screen pt-48 flex flex-col items-center bg-background">
         <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
-        <p className="text-muted-foreground font-medium animate-pulse text-sm uppercase tracking-widest">Memuat Galeri...</p>
+        <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs">Memuat Galeri...</p>
       </div>
     )
   }
 
   return (
     <main className="min-h-screen bg-background pt-32 pb-20 overflow-hidden relative">
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-full h-96 bg-primary/5 skew-y-3 -translate-y-48"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:40px_40px] opacity-10"></div>
+      {/* Background Decor - Simple CSS, no animations */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute top-0 right-0 w-full h-96 bg-primary/5 -rotate-3 -translate-y-48"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <header className="mb-20 text-center space-y-6">
-          <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-sm font-bold uppercase tracking-widest">
+          <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-black uppercase tracking-[0.2em]">
             Dokumentasi Visual
           </div>
-          <h1 className="text-6xl md:text-8xl font-black text-foreground tracking-tighter leading-none">
+          <h1 className="text-6xl md:text-8xl font-black text-foreground tracking-tighter leading-none uppercase">
             Galeri <span className="text-primary italic">Desa</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
-            Koleksi foto kegiatan dan pembangunan yang terhubung langsung dengan warta desa kami.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed italic">
+            &quot;Mengabadikan setiap derap langkah pembangunan dan kehangatan kebersamaan warga Desa Samaenre.&quot;
           </p>
         </header>
 
         {images.length > 0 ? (
-          <div className="space-y-16">
-            {/* Grid Layout - More performant than columns/masonry */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+          <div className="space-y-20">
+            {/* Mechanism: Standard Grid like Articles, but look is "Visual/Image" focused */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {images.map((img, idx) => (
-                <motion.div
-                  key={`${img.url}-${idx}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: (idx % 3) * 0.1 }}
-                  className="group"
-                >
-                  <div className="bg-card rounded-[2.5rem] overflow-hidden flex flex-col h-full hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 border border-border/50">
-                    <div className="relative h-64 sm:h-72 overflow-hidden bg-muted">
+                <div key={`${img.url}-${idx}`} className="group h-full">
+                  <div className="bg-card h-full rounded-[2rem] overflow-hidden border border-border/60 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 flex flex-col">
+                    {/* Image Section */}
+                    <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                       {img.url ? (
                         <Image 
                           src={img.url} 
                           alt={img.title}
                           fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           loading="lazy"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-secondary/20">
-                          <Camera size={40} className="text-muted-foreground/20" />
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Camera className="w-10 h-10 text-muted-foreground/20" />
                         </div>
                       )}
                       
-                      <div className="absolute top-6 left-6 px-4 py-1.5 bg-background/90 backdrop-blur-md border border-border rounded-full text-[9px] font-black uppercase tracking-widest text-primary shadow-lg z-10">
-                        {img.source === 'post' ? 'Berita' : 'Branding'}
+                      {/* Source Badge */}
+                      <div className="absolute top-4 left-4 px-3 py-1 bg-background/90 backdrop-blur-sm border border-border/50 rounded-full text-[8px] font-black uppercase tracking-widest text-primary z-10">
+                        {img.source === 'post' ? 'Warta Desa' : 'Profil Desa'}
                       </div>
-                      
+
+                      {/* Link Overlay - Subtle */}
                       {img.link && (
-                        <Link href={img.link} className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                          <div className="p-4 bg-white/20 backdrop-blur-md rounded-full text-white scale-75 group-hover:scale-100 transition-transform duration-500 border border-white/30 shadow-2xl">
-                            <ExternalLink size={24} />
-                          </div>
+                        <Link href={img.link} className="absolute inset-0 z-20 flex items-center justify-center bg-primary/0 group-hover:bg-primary/10 transition-all duration-300">
+                           <div className="bg-background/90 p-3 rounded-full shadow-xl translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                             <ExternalLink size={18} className="text-primary" />
+                           </div>
                         </Link>
                       )}
                     </div>
-                    
-                    <div className="p-8 flex-1 flex flex-col justify-between space-y-6">
-                      <h3 className="text-xl font-black text-foreground leading-tight group-hover:text-primary transition-colors line-clamp-2">
+
+                    {/* Content Section - Cleaner than articles */}
+                    <div className="p-6 flex flex-col flex-1">
+                      <h3 className="text-base font-black text-foreground leading-tight line-clamp-2 mb-4 group-hover:text-primary transition-colors">
                         {img.title}
                       </h3>
                       
-                      <div className="flex items-center justify-between pt-6 border-t border-border/50">
-                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
-                          <Calendar size={12} className="text-primary" />
+                      <div className="mt-auto pt-4 border-t border-border/40 flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground/70">
+                          <Calendar size={12} className="text-primary/60" />
                           {new Date(img.date).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })}
                         </div>
-                        <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-lg text-[9px] font-black uppercase tracking-widest text-muted-foreground/80">
-                          <Tag size={10} className="text-primary" />
+                        <div className="px-2 py-0.5 bg-muted rounded text-[8px] font-black uppercase tracking-widest text-muted-foreground/50">
                           {img.source}
                         </div>
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
 
             {hasMore && (
-              <div className="flex justify-center pt-10">
+              <div className="flex justify-center">
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="group relative px-12 py-5 bg-primary text-primary-foreground rounded-full font-black text-xs uppercase tracking-[0.3em] transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center gap-3 shadow-xl shadow-primary/20"
+                  className="px-10 py-4 bg-foreground text-background rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all hover:bg-primary hover:text-primary-foreground active:scale-95 disabled:opacity-30 flex items-center gap-3 shadow-lg"
                 >
                   {loadingMore ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <>
-                      Muat Lebih Banyak
-                      <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                      Jelajahi Lebih Banyak
+                      <ChevronDown className="w-4 h-4" />
                     </>
                   )}
                 </button>
@@ -165,14 +160,10 @@ export default function GalleryPage() {
             )}
           </div>
         ) : (
-          <div className="bg-card border border-border/50 rounded-[4rem] p-32 text-center space-y-6 shadow-xl">
-            <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-8">
-              <Camera size={48} className="text-primary/40" />
-            </div>
-            <h3 className="text-3xl font-black text-foreground tracking-tight uppercase">Belum ada koleksi foto.</h3>
-            <p className="text-muted-foreground text-lg font-medium max-w-md mx-auto">
-              Semua foto yang diunggah melalui berita atau profil desa akan muncul secara otomatis di sini.
-            </p>
+          <div className="bg-card border border-dashed border-border rounded-[3rem] p-24 text-center space-y-4">
+            <Camera size={48} className="mx-auto text-muted-foreground/20" />
+            <h3 className="text-2xl font-black text-foreground uppercase tracking-tight">Koleksi Masih Kosong</h3>
+            <p className="text-muted-foreground text-sm font-medium">Foto kegiatan akan muncul di sini segera setelah artikel dipublikasikan.</p>
           </div>
         )}
       </div>

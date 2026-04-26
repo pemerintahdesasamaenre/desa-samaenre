@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { hashNIK, encrypt, decrypt } from '@/lib/crypto';
 import { revalidatePath } from 'next/cache';
 import { residentSchema, type ResidentInput } from '@/lib/validations';
+import { logActivity } from '@/actions/analytics';
 
 export interface ResidentImportData {
   nik: string;
@@ -27,21 +28,6 @@ export interface ResidentDisplayData extends ResidentImportData {
   id: string;
 }
 
-/**
- * Catat aktivitas ke tabel audit_logs
- */
-async function logActivity(action: string, details: Record<string, unknown>) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  await supabase.from('activity_logs').insert({
-    user_id: user?.id,
-    action,
-    entity_type: 'residents',
-    details
-  });
-}
-
 export async function getResidents(params: { 
   page: number, 
   limit: number, 
@@ -58,14 +44,11 @@ export async function getResidents(params: {
       query = query.eq('dusun', dusun);
     }
 
-    // Jika ada pencarian, kita harus memproses di memori karena data terenkripsi
-    // Untuk efisiensi, kita ambil data sesuai filter dusun (jika ada)
     const { data, error } = await query.order('created_at', { ascending: false });
     
     if (error) throw error;
     if (!data) return { data: [], total: 0 };
 
-    // Dekripsi data
     let decryptedData: ResidentDisplayData[] = data.map(item => ({
       id: item.id,
       nik: decrypt(item.nik_enc),
@@ -85,7 +68,6 @@ export async function getResidents(params: {
       data_year: item.data_year
     }));
 
-    // Filter berdasarkan search term
     if (search) {
       const s = search.toLowerCase();
       decryptedData = decryptedData.filter(item => 
@@ -112,7 +94,6 @@ export async function getResidentById(id: string) {
     if (error) throw error;
     if (!data) return null;
 
-    // Decrypt sensitive data for form
     const resident: ResidentDisplayData = {
       id: data.id,
       nik: decrypt(data.nik_enc),
@@ -132,10 +113,7 @@ export async function getResidentById(id: string) {
       data_year: data.data_year
     };
 
-    // Log akses data sensitif saat akan diedit (Non-blocking)
-    logSensitiveView(id, resident.name + ' (FOR EDIT)').catch(err => 
-      console.error('Logging failed:', err)
-    );
+    await logSensitiveView(id, resident.name + ' (Form Edit)');
 
     return resident;
   } catch (e) {
@@ -173,9 +151,11 @@ export async function upsertResident(data: ResidentInput, id?: string) {
 
     if (result.error) throw result.error;
 
-    await logActivity(id ? 'UPDATE_RESIDENT' : 'CREATE_RESIDENT', { 
-      resident_name: name,
-      id: id || 'new'
+    await logActivity({
+      action: id ? `Update data: ${name}` : `Tambah penduduk: ${name}`,
+      entity_type: 'residents',
+      method: id ? 'UPDATE' : 'CREATE',
+      details: { name, id: id || 'new' }
     });
 
     revalidatePath('/admin/residents');
@@ -191,21 +171,26 @@ export async function getDusuns() {
   try {
     const { data, error } = await supabase.from('residents').select('dusun');
     if (error) throw error;
-    
     const uniqueDusuns = Array.from(new Set(data.map(d => d.dusun))).filter(Boolean).sort();
     return uniqueDusuns;
-  } catch {
-    return [];
-  }
+  } catch { return []; }
 }
 
 export async function deleteResident(id: string) {
   const supabase = await createClient();
   try {
+    const { data: resident } = await supabase.from('residents').select('name_enc').eq('id', id).single();
+    const residentName = resident ? decrypt(resident.name_enc) : id;
+
     const { error } = await supabase.from('residents').delete().eq('id', id);
     if (error) throw error;
     
-    await logActivity('DELETE_RESIDENT', { resident_id: id });
+    await logActivity({
+      action: `Hapus penduduk: ${residentName}`,
+      entity_type: 'residents',
+      method: 'DELETE',
+      details: { id, name: residentName }
+    });
     
     revalidatePath('/admin/residents');
     revalidatePath('/admin/statistics');
@@ -216,17 +201,17 @@ export async function deleteResident(id: string) {
 }
 
 export async function logSensitiveView(residentId: string, residentName: string) {
-  await logActivity('VIEW_SENSITIVE_DATA', { 
-    resident_id: residentId, 
-    resident_name: residentName,
-    timestamp: new Date().toISOString()
+  await logActivity({
+    action: `Akses data sensitif: ${residentName}`,
+    entity_type: 'residents',
+    method: 'VIEW',
+    details: { id: residentId, name: residentName }
   });
   return { success: true };
 }
 
 export async function importResidents(data: ResidentImportData[]) {
   if (data.length === 0) return { error: 'Tidak ada data.' };
-
   const supabase = await createClient();
   
   try {
@@ -254,42 +239,35 @@ export async function importResidents(data: ResidentImportData[]) {
       onConflict: 'nik_hash, data_year' 
     });
 
-    if (error) {
-      console.error('Supabase Upsert Error:', error);
-      return { error: error.message || 'Gagal menyimpan ke database.' };
-    }
+    if (error) throw error;
 
-    // CATAT AUDIT
-    await logActivity('IMPORT_RESIDENTS', { 
-      count: formattedData.length,
-      year: data[0].data_year,
-      dusun_list: Array.from(new Set(data.map(d => d.dusun)))
+    await logActivity({
+      action: `Import ${formattedData.length} data penduduk`,
+      entity_type: 'residents',
+      method: 'CREATE',
+      details: { count: formattedData.length, year: data[0].data_year }
     });
 
     revalidatePath('/admin/statistics');
     revalidatePath('/admin/residents');
     return { success: true, count: formattedData.length };
   } catch (e: unknown) {
-    console.error('Import residents exception:', e);
-    // Kembalikan pesan error asli agar bisa didebug di UI
-    const errorMessage = e instanceof Error 
-      ? e.message 
-      : (typeof e === 'object' && e !== null && 'message' in e) 
-        ? String((e as { message: unknown }).message) 
-        : 'Terjadi kesalahan sistem yang tidak diketahui.';
-    return { error: errorMessage };
+    return { error: e instanceof Error ? e.message : 'Gagal import data.' };
   }
 }
 
 export async function deleteAllResidents() {
   const supabase = await createClient();
-  
   try {
     const { error } = await supabase.from('residents').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     if (error) throw error;
 
-    // CATAT AUDIT
-    await logActivity('DELETE_ALL_RESIDENTS', { timestamp: new Date().toISOString() });
+    await logActivity({
+      action: 'Menghapus seluruh data penduduk (Reset Data)',
+      entity_type: 'residents',
+      method: 'DELETE',
+      details: { timestamp: new Date().toISOString() }
+    });
 
     revalidatePath('/admin/statistics');
     return { success: true };
