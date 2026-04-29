@@ -1,17 +1,21 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { ArrowLeft, FileSpreadsheet, Upload, Loader2, BarChart, Trash2, Activity } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { ArrowLeft, FileSpreadsheet, Upload, Loader2, BarChart, Trash2, Activity, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import * as XLSX from 'xlsx';
 import { importResidents, type ResidentImportData } from '@/actions/residents';
 
 export default function StatisticsImportPage() {
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [sheets, setSheets] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentYear = new Date().getFullYear();
@@ -228,9 +232,18 @@ export default function StatisticsImportPage() {
 
       setLogs(prev => [...prev, `IMPORT SELESAI! Total Sukses: ${totalSuccess} data.`]);
       setLoading(false);
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : 'Unknown error';
+      setSuccess(`Berhasil mengimpor ${totalSuccess} data penduduk! Mengalihkan...`);
+
+      // Redirect ke halaman statistik setelah sukses
+      if (totalSuccess > 0) {
+        setTimeout(() => {
+          router.push('/admin/statistics');
+        }, 2000);
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
       setLogs(prev => [...prev, `ERROR FATAL: ${msg}`]);
+      setError(msg);
       setLoading(false);
     }
   };
@@ -265,7 +278,22 @@ export default function StatisticsImportPage() {
           </div>
         </div>
 
-        <div className="p-10 space-y-10">
+        <div className="px-10 pt-10">
+          {error && (
+            <div className="p-6 bg-destructive/10 border border-destructive/20 text-destructive rounded-[2rem] text-sm font-bold flex items-center gap-4 animate-in fade-in slide-in-from-top-2">
+              <ShieldAlert size={24} />
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="p-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 rounded-[2rem] text-sm font-black uppercase tracking-widest flex items-center gap-4 animate-in fade-in slide-in-from-top-2">
+              <CheckCircle2 size={24} />
+              {success}
+            </div>
+          )}
+        </div>
+
+        <div className={`p-10 space-y-10 transition-opacity duration-500 ${success ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
           {!file ? (
             <div 
               onDragOver={handleDragOver}

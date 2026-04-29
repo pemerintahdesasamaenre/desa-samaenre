@@ -9,6 +9,7 @@
     "lint": "eslint",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
+    "key:generate": "node scripts/generate-key.js",
     "ci": "npm run lint && npm run type-check && npm run test && npm run build"
   },
   "dependencies": {

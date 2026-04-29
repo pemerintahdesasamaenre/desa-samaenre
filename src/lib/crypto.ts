@@ -33,7 +33,7 @@ function getEncryptionKeyBuffer(): Buffer {
   return keyBuffer;
 }
 
-const IV_LENGTH = 16; 
+const IV_LENGTH = 12; // GCM standar menggunakan 12 byte IV
 
 /**
  * Hash NIK (Satu Arah dengan Pepper/Secret)
@@ -48,41 +48,61 @@ export function hashNIK(nik: string): string {
 }
 
 /**
- * Enkripsi (Dua Arah - Bisa Diterjemahkan)
+ * Enkripsi (Dua Arah - AES-256-GCM)
  */
 export function encrypt(text: string): string {
   if (!text) return '';
   const key = getEncryptionKeyBuffer();
   
   const iv = crypto.randomBytes(IV_LENGTH);
-  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
-  let encrypted = cipher.update(text);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
   
-  return iv.toString('hex') + ':' + encrypted.toString('hex');
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  
+  const authTag = cipher.getAuthTag().toString('hex');
+  
+  // Format: iv:authTag:ciphertext
+  return `${iv.toString('hex')}:${authTag}:${encrypted}`;
 }
 
 /**
- * Dekripsi (Menerjemahkan Balik)
+ * Dekripsi (Menerjemahkan Balik + Verifikasi Integritas)
  */
 export function decrypt(text: string): string {
   if (!text || !text.includes(':')) return text;
 
   try {
     const key = getEncryptionKeyBuffer();
-    const textParts = text.split(':');
-    const iv = Buffer.from(textParts.shift()!, 'hex');
-    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    const parts = text.split(':');
     
-    return decrypted.toString();
+    // Support format baru (GCM: 3 parts)
+    if (parts.length === 3) {
+      const iv = Buffer.from(parts[0], 'hex');
+      const authTag = Buffer.from(parts[1], 'hex');
+      const encryptedText = parts[2];
+      
+      const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+      decipher.setAuthTag(authTag);
+      
+      let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+      decrypted += decipher.final('utf8');
+      return decrypted;
+    }
+    
+    // Support legacy format (CBC: 2 parts) - Opsional jika ada data lama
+    if (parts.length === 2) {
+      const iv = Buffer.from(parts[0], 'hex');
+      const encryptedText = Buffer.from(parts[1], 'hex');
+      const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+      let decrypted = decipher.update(encryptedText);
+      decrypted = Buffer.concat([decrypted, decipher.final()]);
+      return decrypted.toString();
+    }
+
+    return text;
   } catch (error) {
     console.error('Dekripsi Gagal:', error);
-    if (error instanceof Error && error.message.includes('ENCRYPTION_KEY')) {
-      throw error;
-    }
-    return '*** DATA TERKUNCI ***';
+    return '*** DATA TERKUNCI / TERMANIPULASI ***';
   }
 }
