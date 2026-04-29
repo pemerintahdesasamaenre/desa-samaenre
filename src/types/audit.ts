@@ -5,6 +5,6 @@ export interface AuditLog {
   action: string;
   entity_type: string;
   method: 'CREATE' | 'UPDATE' | 'DELETE' | 'VIEW' | 'AUTH';
-  details: any;
+  details: Record<string, unknown>;
   created_at: string;
 }

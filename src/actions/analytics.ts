@@ -51,7 +51,7 @@ export async function logActivity(params: {
   action: string;
   entity_type: string;
   method?: 'CREATE' | 'UPDATE' | 'DELETE' | 'VIEW' | 'AUTH';
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

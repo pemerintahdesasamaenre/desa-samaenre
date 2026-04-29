@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { upsertResident, deleteResident } from '@/actions/residents';
 import { Save, Loader2, ArrowLeft, User, Contact, MapPin, Calendar, Briefcase, Users, Eye, EyeOff, Trash2, Heart, GraduationCap, Edit3, CheckCircle2, ShieldAlert } from 'lucide-react';
@@ -71,28 +71,19 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Custom Input State
-  const [customDusun, setCustomDusun] = useState(false);
-  const [customEdu, setCustomEdu] = useState(false);
-  const [customOcc, setCustomOcc] = useState(false);
+  const [customDusun, setCustomDusun] = useState(() => 
+    !!initialData?.dusun && !DUSUN_OPTIONS.find(o => o.id === initialData.dusun)
+  );
+  const [customEdu, setCustomEdu] = useState(() => 
+    !!initialData?.education && !EDUCATION_OPTIONS.find(o => o.id === initialData.education)
+  );
+  const [customOcc, setCustomOcc] = useState(() => 
+    !!initialData?.occupation && !OCCUPATION_OPTIONS.find(o => o.id === initialData.occupation)
+  );
 
   const [dusunVal, setDusunVal] = useState(initialData?.dusun || '');
   const [eduVal, setEduVal] = useState(initialData?.education || '');
   const [occVal, setOccVal] = useState(initialData?.occupation || '');
-
-  useEffect(() => {
-    if (initialData?.dusun && !DUSUN_OPTIONS.find(o => o.id === initialData.dusun)) {
-      setCustomDusun(true);
-      setDusunVal(initialData.dusun);
-    }
-    if (initialData?.education && !EDUCATION_OPTIONS.find(o => o.id === initialData.education)) {
-      setCustomEdu(true);
-      setEduVal(initialData.education);
-    }
-    if (initialData?.occupation && !OCCUPATION_OPTIONS.find(o => o.id === initialData.occupation)) {
-      setCustomOcc(true);
-      setOccVal(initialData.occupation);
-    }
-  }, [initialData]);
 
   const TARGET_SAVE_PHRASE = "SAYA BERTANGGUNG JAWAB";
 

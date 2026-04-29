@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { ArrowLeft, FileSpreadsheet, Upload, Loader2, BarChart, Trash2, Activity, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';

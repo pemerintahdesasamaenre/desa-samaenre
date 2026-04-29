@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Plus } from 'lucide-react';
+import { Plus, TrendingUp } from 'lucide-react';
 import { getFinances } from '@/actions/finances';
 import { FinanceTable } from '@/components/modules/finance/FinanceTable';
 
@@ -11,7 +11,7 @@ export default async function AdminFinancesPage() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm">
         <div className="flex items-center gap-4">
           <div className="p-2 sm:p-2.5 bg-muted rounded-xl border border-border flex items-center justify-center text-primary shrink-0">
-             <Plus size={20} className="rotate-45" /> {/* Just placeholder for finance icon if not specific */}
+             <TrendingUp size={20} />
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Transparansi Keuangan</h1>

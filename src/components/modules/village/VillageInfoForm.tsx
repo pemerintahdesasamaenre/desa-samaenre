@@ -185,6 +185,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
       }
     };
 
+    const toastId = toast.loading('Memperbarui informasi desa...');
     try {
       const result = await updateVillageInfo(initialData.id, data);
       if (result.error) {

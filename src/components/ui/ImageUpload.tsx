@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Upload, X, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { uploadImage } from '@/lib/supabase/storage'

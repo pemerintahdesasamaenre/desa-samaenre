@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  BarChart3, 
-  FileText, 
-  Users, 
-  Settings, 
+import {
+  LayoutDashboard,
+  BarChart3,
+  FileText,
+  Users,
+  Settings,
   LogOut,
   ChevronRight,
   Wallet,
@@ -22,6 +22,7 @@ import { logout } from '@/actions/auth';
 
 const menuItems = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Konten Desa', href: '/admin/content', icon: FileText },
   { name: 'Statistik', href: '/admin/statistics', icon: BarChart3 },
   { name: 'Data Penduduk', href: '/admin/residents', icon: Users },
   { name: 'Audit Trails', href: '/admin/audit-logs', icon: ShieldCheck },
@@ -58,7 +59,7 @@ export const Sidebar = () => {
 
       {/* Backdrop for mobile */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-background/60 backdrop-blur-sm z-[50] lg:hidden animate-in fade-in duration-300"
           onClick={() => setIsOpen(false)}
         />
@@ -89,11 +90,10 @@ export const Sidebar = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center justify-between p-3.5 rounded-2xl transition-all group ${
-                  isActive 
-                    ? 'bg-primary text-primary-foreground shadow-xl shadow-primary/20 font-bold' 
+                className={`flex items-center justify-between p-3.5 rounded-2xl transition-all group ${isActive
+                    ? 'bg-primary text-primary-foreground shadow-xl shadow-primary/20 font-bold'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <item.icon size={20} className={isActive ? 'text-primary-foreground' : 'text-primary/60 group-hover:text-primary'} />

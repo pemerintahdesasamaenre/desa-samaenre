@@ -89,27 +89,8 @@ export default function AdminStaffPage() {
            </div>
         </div>
 
-        {loading ? (
-          <div className="p-20 flex flex-col items-center justify-center gap-4 text-muted-foreground">
-            <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-            <p className="font-bold italic">Memuat data...</p>
-          </div>
-        ) : filteredStaff.length > 0 ? (
-          <StaffTable staff={filteredStaff} />
-        ) : (
-          <div className="p-16 sm:p-20 bg-muted/20 border-2 border-dashed border-border rounded-3xl text-center space-y-4">
-            <div className="w-16 h-16 bg-background rounded-2xl flex items-center justify-center mx-auto border border-border text-muted-foreground/30">
-               {activeTab === 'pemdes' ? <Users size={32} /> : <Shield size={32} />}
-            </div>
-            <p className="text-muted-foreground font-bold italic text-base tracking-tight">Belum ada data di kategori ini.</p>
-            <Link 
-              href="/admin/staff/new" 
-              className="inline-flex items-center gap-2 text-primary font-bold uppercase text-xs tracking-widest hover:underline"
-            >
-              <Plus size={14} /> Klik untuk menambah
-            </Link>
-          </div>
-        )}
+        <StaffTable staff={filteredStaff} isLoading={loading} />
+
 
       </div>
     </div>
