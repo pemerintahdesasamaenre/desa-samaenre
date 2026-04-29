@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { StaffMember } from '@/types'
 import { toPng } from 'html-to-image'
 import { Download, Maximize2, Minimize2, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface TreeNode extends StaffMember {
   children: TreeNode[]
@@ -268,9 +269,10 @@ export default function OrgChartTree({
       link.download = `Struktur_Organisasi_${new Date().getTime()}.png`;
       link.href = dataUrl;
       link.click();
+      toast.success('Bagan berhasil diunduh');
     } catch (err) {
       console.error("Gagal mendownload gambar:", err);
-      alert("Terjadi kesalahan saat mengunduh gambar. Silakan coba lagi.");
+      toast.error("Terjadi kesalahan saat mengunduh gambar.");
     } finally {
       // Restore original state
       if (contentRef.current) {

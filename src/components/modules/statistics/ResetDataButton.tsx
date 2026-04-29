@@ -5,6 +5,7 @@ import { ShieldAlert } from 'lucide-react';
 import { deleteAllResidents } from '@/actions/residents';
 import { useRouter } from 'next/navigation';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import { toast } from 'sonner';
 
 export default function ResetDataButton() {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -15,16 +16,18 @@ export default function ResetDataButton() {
 
   const handleReset = async () => {
     setLoading(true);
+    const toastId = toast.loading('Mereset database penduduk...');
     try {
       const result = await deleteAllResidents();
       if (result.success) {
+        toast.success('Database penduduk berhasil dikosongkan', { id: toastId });
         setShowConfirm(false);
         router.refresh();
       } else {
-        alert('Gagal menghapus data: ' + result.error);
+        toast.error('Gagal menghapus data: ' + result.error, { id: toastId });
       }
     } catch {
-      alert('Terjadi kesalahan sistem saat mereset data.');
+      toast.error('Terjadi kesalahan sistem saat mereset data.', { id: toastId });
     } finally {
       setLoading(false);
     }

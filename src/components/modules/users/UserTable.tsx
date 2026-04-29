@@ -18,7 +18,7 @@ export const UserTable = ({ profiles }: UserTableProps) => {
   };
 
   return (
-    <div className="bg-card rounded-2xl sm:rounded-[3rem] shadow-sm border border-border overflow-hidden w-full">
+    <div className="bg-card rounded-2xl sm:rounded-3xl shadow-sm border border-border overflow-hidden w-full">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -27,11 +27,11 @@ export const UserTable = ({ profiles }: UserTableProps) => {
               <th className="md:hidden w-10 px-3 py-4"></th>
               
               {/* Kolom 2: Info Admin */}
-              <th className="px-4 sm:px-10 py-5 text-[9px] sm:text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Administrator</th>
+              <th className="px-4 sm:px-6 py-5 text-xs font-bold text-primary/80 uppercase tracking-wider">Administrator</th>
               
               {/* Kolom Desktop Only */}
-              <th className="hidden md:table-cell px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Role</th>
-              <th className="hidden lg:table-cell px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] text-right">Terakhir</th>
+              <th className="hidden md:table-cell px-4 sm:px-6 py-5 text-xs font-bold text-primary/80 uppercase tracking-wider">Role</th>
+              <th className="hidden lg:table-cell px-4 sm:px-6 py-5 text-xs font-bold text-primary/80 uppercase tracking-wider text-right">Terakhir</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -49,23 +49,23 @@ export const UserTable = ({ profiles }: UserTableProps) => {
                         {expandedRows.includes(profile.id) ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                      </button>
                   </td>
-                  <td className="px-4 sm:px-10 py-5">
+                  <td className="px-4 sm:px-6 py-5">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                         <UserIcon size={18} />
                       </div>
                       <div className="min-w-0">
-                        <div className="font-black text-foreground tracking-tight text-sm sm:text-base leading-none truncate">{profile.full_name || 'Administrator'}</div>
-                        <div className="md:hidden text-[9px] font-black text-primary uppercase mt-1">{profile.role}</div>
+                        <div className="font-bold text-foreground tracking-tight text-sm sm:text-base leading-none truncate">{profile.full_name || 'Administrator'}</div>
+                        <div className="md:hidden text-[9px] font-bold text-primary uppercase mt-1">{profile.role}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="hidden md:table-cell px-10 py-5">
-                    <span className="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase tracking-widest">
+                  <td className="hidden md:table-cell px-4 sm:px-6 py-5">
+                    <span className="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-bold uppercase tracking-widest">
                       {profile.role}
                     </span>
                   </td>
-                  <td className="hidden lg:table-cell px-10 py-5 text-xs font-bold text-muted-foreground text-right tabular-nums">
+                  <td className="hidden lg:table-cell px-4 sm:px-6 py-5 text-xs font-bold text-muted-foreground text-right tabular-nums">
                     {new Date(profile.updated_at).toLocaleDateString('id-ID')}
                   </td>
                 </tr>
@@ -76,14 +76,14 @@ export const UserTable = ({ profiles }: UserTableProps) => {
                      <td colSpan={4} className="px-4 py-4 border-l-2 border-primary">
                         <div className="grid grid-cols-2 gap-4">
                            <div className="space-y-1">
-                              <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Wewenang</p>
+                              <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Wewenang</p>
                               <div className="flex items-center gap-1.5 mt-0.5">
                                  <Shield size={12} className="text-primary" />
-                                 <span className="text-[10px] font-black uppercase text-foreground">{profile.role}</span>
+                                 <span className="text-[10px] font-bold uppercase text-foreground">{profile.role}</span>
                               </div>
                            </div>
                            <div className="space-y-1">
-                              <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Login Terakhir</p>
+                              <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Login Terakhir</p>
                               <div className="flex items-center gap-1.5 mt-0.5">
                                  <Clock size={12} className="text-muted-foreground" />
                                  <span className="text-[10px] font-bold text-foreground">{new Date(profile.updated_at).toLocaleDateString('id-ID')}</span>

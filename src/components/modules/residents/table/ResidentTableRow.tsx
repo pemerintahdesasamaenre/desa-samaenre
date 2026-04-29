@@ -42,8 +42,8 @@ export const ResidentTableRow = ({
         </td>
 
         {/* Kolom 2: Nama & Info Singkat */}
-        <td className="px-4 sm:px-8 py-4">
-          <div className="font-black text-foreground text-sm sm:text-base tracking-tight leading-tight">
+        <td className="px-4 sm:px-6 py-4">
+          <div className="font-bold text-foreground text-sm sm:text-base tracking-tight leading-tight">
             {item.name}
           </div>
           <div className="text-[9px] sm:text-[10px] font-bold text-muted-foreground mt-0.5 uppercase tracking-widest">
@@ -52,7 +52,7 @@ export const ResidentTableRow = ({
         </td>
 
         {/* Kolom Desktop Only */}
-        <td className="hidden md:table-cell px-8 py-4">
+        <td className="hidden md:table-cell px-4 sm:px-6 py-4">
           <div className="flex items-center gap-3">
             <div className="space-y-0.5">
               <div className="text-xs font-mono font-bold text-foreground/80 tracking-widest">
@@ -70,8 +70,8 @@ export const ResidentTableRow = ({
             </button>
           </div>
         </td>
-        <td className="hidden lg:table-cell px-8 py-4">
-          <div className="text-sm font-black text-foreground/80 tracking-tight">
+        <td className="hidden lg:table-cell px-4 sm:px-6 py-4">
+          <div className="text-sm font-bold text-foreground/80 tracking-tight">
             {item.dusun}
           </div>
           <div className="text-[10px] font-bold text-muted-foreground mt-0.5 uppercase tracking-widest">
@@ -80,7 +80,7 @@ export const ResidentTableRow = ({
         </td>
 
         {/* Action Column (Desktop Only) */}
-        <td className="hidden md:table-cell px-8 py-4 text-right">
+        <td className="hidden md:table-cell px-4 sm:px-6 py-4 text-right">
           <div className="flex items-center justify-end gap-1 sm:gap-2">
             <Link
               href={`/admin/residents/edit/${item.id}`}
@@ -101,14 +101,14 @@ export const ResidentTableRow = ({
       
       {isExpanded && (
         <tr className="md:hidden bg-muted/5 animate-in slide-in-from-top-1 duration-200">
-          <td colSpan={5} className="px-4 sm:px-8 py-6 border-l-4 border-primary">
+          <td colSpan={5} className="px-4 sm:px-6 py-6 border-l-4 border-primary">
             <div className="space-y-6">
               <div className="grid grid-cols-1 gap-6">
                 {/* Identitas Mobile */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-1">
                     <User size={14} className="text-primary" />
-                    <p className="text-[10px] font-black text-foreground uppercase tracking-widest">Identitas Resmi</p>
+                    <p className="text-[10px] font-bold text-foreground uppercase tracking-widest">Identitas Resmi</p>
                   </div>
                   <div className="bg-background p-3 rounded-xl border border-border space-y-3">
                     <div>
@@ -117,7 +117,7 @@ export const ResidentTableRow = ({
                         <p className="text-xs font-mono font-bold text-foreground">
                           {isVisible ? item.nik : maskString(item.nik)}
                         </p>
-                        <button onClick={(e) => { e.stopPropagation(); onToggleVisibility(); }} className="text-[9px] font-black uppercase text-primary">
+                        <button onClick={(e) => { e.stopPropagation(); onToggleVisibility(); }} className="text-[9px] font-bold uppercase text-primary">
                           {isVisible ? 'Sembunyi' : 'Lihat'}
                         </button>
                       </div>
@@ -134,18 +134,18 @@ export const ResidentTableRow = ({
 
               {/* Mobile Actions */}
               <div className="flex flex-col gap-2 pt-4 border-t border-border/50">
-                <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">Manajemen Penduduk</p>
+                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Manajemen Penduduk</p>
                 <div className="grid grid-cols-2 gap-2">
                   <Link 
                     href={`/admin/residents/edit/${item.id}`} 
-                    className="flex items-center justify-center gap-2 bg-background border border-border text-foreground py-3 rounded-xl font-black text-[10px] uppercase tracking-widest active:scale-95"
+                    className="flex items-center justify-center gap-2 bg-background border border-border text-foreground py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest active:scale-95"
                   >
                     <Edit size={14} className="text-primary" />
                     Edit Data
                   </Link>
                   <button 
                     onClick={(e) => { e.stopPropagation(); onDelete(); }}
-                    className="flex items-center justify-center gap-2 bg-destructive/5 border border-destructive/10 text-destructive py-3 rounded-xl font-black text-[10px] uppercase tracking-widest active:scale-95"
+                    className="flex items-center justify-center gap-2 bg-destructive/5 border border-destructive/10 text-destructive py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest active:scale-95"
                   >
                     <Trash2 size={14} />
                     Hapus

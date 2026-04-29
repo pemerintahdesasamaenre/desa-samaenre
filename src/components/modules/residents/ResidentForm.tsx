@@ -10,6 +10,7 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Resident } from '@/types';
+import { toast } from 'sonner';
 
 interface ResidentFormProps {
   initialData?: Partial<Resident> & { id?: string };
@@ -132,13 +133,17 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
     // Re-check education mapping from state
     data.education = customEdu ? eduVal : data.education;
 
+    const toastId = toast.loading('Menyimpan data penduduk...');
     try {
       const result = await upsertResident(data, isEditing ? initialData?.id : undefined);
       if (result.error) {
         setError(result.error as string);
+        toast.error('Gagal menyimpan: ' + result.error, { id: toastId });
         setLoading(false);
       } else {
-        setSuccess(isEditing ? 'Data penduduk berhasil diperbarui!' : 'Penduduk baru berhasil ditambahkan!');
+        const successMsg = isEditing ? 'Data penduduk berhasil diperbarui!' : 'Penduduk baru berhasil ditambahkan!';
+        setSuccess(successMsg);
+        toast.success(successMsg, { id: toastId });
         // Delay redirect to show success message
         setTimeout(() => {
           router.push('/admin/residents');
@@ -146,7 +151,9 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         }, 1500);
       }
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Gagal menyimpan data.');
+      const errorMsg = e instanceof Error ? e.message : 'Gagal menyimpan data.';
+      setError(errorMsg);
+      toast.error(errorMsg, { id: toastId });
       setLoading(false);
     }
   }
@@ -155,20 +162,22 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
     if (!initialData?.id) return;
     setIsDeleting(true);
     setShowDeleteConfirm(false);
+    const toastId = toast.loading(`Menghapus data "${initialData.name}"...`);
     try {
       const result = await deleteResident(initialData.id);
       if (result.success) {
+        toast.success(`Data "${initialData.name}" berhasil dihapus`, { id: toastId });
         setSuccess('Data penduduk telah dihapus permanen.');
         setTimeout(() => {
           router.push('/admin/residents');
           router.refresh();
         }, 1500);
       } else {
-        alert('Gagal menghapus: ' + result.error);
+        toast.error('Gagal menghapus: ' + result.error, { id: toastId });
         setIsDeleting(false);
       }
     } catch {
-      alert('Terjadi kesalahan sistem.');
+      toast.error('Terjadi kesalahan sistem.', { id: toastId });
       setIsDeleting(false);
     }
   }

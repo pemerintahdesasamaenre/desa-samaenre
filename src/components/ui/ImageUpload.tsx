@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react'
 import { Upload, X, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { uploadImage } from '@/lib/supabase/storage'
+import { toast } from 'sonner'
 
 interface ImageUploadProps {
   value?: string | null
@@ -21,6 +22,7 @@ export default function ImageUpload({ value, onChange, folder, label = "Gambar" 
     const file = e.target.files?.[0]
     if (!file) return
 
+    const toastId = toast.loading(`Mengunggah ${label}...`)
     const objectUrl = URL.createObjectURL(file)
     setPreview(objectUrl)
     setUploading(true)
@@ -28,9 +30,10 @@ export default function ImageUpload({ value, onChange, folder, label = "Gambar" 
     try {
       const publicUrl = await uploadImage(file, folder)
       onChange(publicUrl)
+      toast.success(`${label} berhasil diunggah`, { id: toastId })
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      alert('Gagal mengunggah gambar: ' + message)
+      toast.error(`Gagal mengunggah gambar: ${message}`, { id: toastId })
       setPreview(value || null)
     } finally {
       setUploading(false)

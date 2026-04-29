@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Mail, UserPlus, ShieldCheck } from 'lucide-react';
 import { inviteAdmin } from '@/actions/auth';
+import { toast } from 'sonner';
 
 export const InviteForm = () => {
   const [inviting, setInviting] = useState(false);
@@ -12,12 +13,13 @@ export const InviteForm = () => {
     setInviting(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
+    const toastId = toast.loading(`Mengirim undangan ke ${email}...`);
     try {
       await inviteAdmin(email);
-      alert('Undangan terkirim!');
+      toast.success(`Undangan berhasil dikirim ke ${email}`, { id: toastId });
       (e.target as HTMLFormElement).reset();
     } catch {
-      alert('Gagal mengirim undangan.');
+      toast.error('Gagal mengirim undangan. Silakan coba lagi.', { id: toastId });
     } finally {
       setInviting(false);
     }

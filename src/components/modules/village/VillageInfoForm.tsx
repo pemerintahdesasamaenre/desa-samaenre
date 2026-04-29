@@ -8,6 +8,7 @@ import ImageUpload from '@/components/ui/ImageUpload';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { type VillageInfoInput } from '@/lib/validations';
+import { toast } from 'sonner';
 
 interface FormerLeader {
   name: string;
@@ -191,9 +192,10 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
           ? result.error 
           : Object.values(result.error).flat().join(', ');
         setError(errorMessages || 'Gagal memvalidasi data.');
+        toast.error('Gagal memperbarui informasi desa.');
       } else {
         router.refresh();
-        alert('Berhasil diperbarui!');
+        toast.success('Informasi desa berhasil diperbarui!');
       }
     } catch {
       setError('Kesalahan koneksi.');

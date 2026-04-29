@@ -28,24 +28,24 @@ export default function AdminPostsPage() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-10 pb-20">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-card p-4 sm:p-8 rounded-2xl sm:rounded-[2.5rem] border border-border shadow-sm">
+    <div className="space-y-4 sm:space-y-8 pb-20">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-card p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm">
         <div>
-          <h1 className="text-xl sm:text-4xl font-black text-foreground tracking-tighter uppercase">Berita & Agenda</h1>
+          <h1 className="text-xl sm:text-4xl font-bold text-foreground tracking-tighter uppercase">Berita & Agenda</h1>
           <p className="text-[10px] sm:text-base text-muted-foreground mt-1 font-medium italic">
             Kelola publikasi informasi dan agenda kegiatan desa.
           </p>
         </div>
         <Link
           href="/admin/posts/new"
-          className="flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-primary hover:opacity-90 text-primary-foreground rounded-lg sm:rounded-full font-black transition-all shadow-xl shadow-primary/25 w-full lg:w-auto uppercase text-[10px] sm:text-xs tracking-widest active:scale-95"
+          className="flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-primary hover:opacity-90 text-primary-foreground rounded-lg sm:rounded-full font-bold transition-all shadow-xl shadow-primary/25 w-full lg:w-auto uppercase text-[10px] sm:text-xs tracking-widest active:scale-95"
         >
           <Plus size={16} />
           Post Baru
         </Link>
       </div>
 
-      <div className="bg-card border border-border rounded-xl sm:rounded-[3rem] overflow-hidden shadow-sm w-full">
+      <div className="bg-card border border-border rounded-xl sm:rounded-3xl overflow-hidden shadow-sm w-full">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -54,15 +54,15 @@ export default function AdminPostsPage() {
                 <th className="md:hidden w-10 px-3 py-4"></th>
                 
                 {/* Kolom 2: Konten (Main) */}
-                <th className="px-3 sm:px-8 py-4 text-[8px] sm:text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Konten</th>
+                <th className="px-3 sm:px-8 py-4 text-xs font-bold text-primary/80 uppercase tracking-wider">Konten</th>
                 
                 {/* Kolom 3-5: Desktop Only */}
-                <th className="hidden md:table-cell px-8 py-4 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] w-32">Kategori</th>
-                <th className="hidden lg:table-cell px-8 py-4 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] w-24 text-center">Views</th>
-                <th className="hidden md:table-cell px-8 py-4 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] w-32">Status</th>
+                <th className="hidden md:table-cell px-8 py-4 text-xs font-bold text-primary/80 uppercase tracking-wider w-32">Kategori</th>
+                <th className="hidden lg:table-cell px-8 py-4 text-xs font-bold text-primary/80 uppercase tracking-wider w-24 text-center">Views</th>
+                <th className="hidden md:table-cell px-8 py-4 text-xs font-bold text-primary/80 uppercase tracking-wider w-32">Status</th>
                 
                 {/* Kolom 6: Aksi (Desktop Only) */}
-                <th className="hidden md:table-cell px-3 sm:px-8 py-4 text-[8px] sm:text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] text-right w-44">Aksi</th>
+                <th className="hidden md:table-cell px-3 sm:px-8 py-4 text-xs font-bold text-primary/80 uppercase tracking-wider text-right w-44">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">

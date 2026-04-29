@@ -5,6 +5,7 @@ import { deleteFinanceEntry } from '@/actions/finances'
 import { Trash2, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import { toast } from 'sonner'
 
 export default function DeleteFinanceButton({ id, category }: { id: string; category: string }) {
   const [loading, setLoading] = useState(false)
@@ -13,16 +14,18 @@ export default function DeleteFinanceButton({ id, category }: { id: string; cate
 
   const handleDelete = async () => {
     setLoading(true)
+    const toastId = toast.loading(`Menghapus data anggaran "${category}"...`)
     try {
       const result = await deleteFinanceEntry(id)
       if (result.error) {
-        alert('Gagal menghapus: ' + result.error)
+        toast.error('Gagal menghapus: ' + result.error, { id: toastId })
       } else {
+        toast.success(`Data "${category}" berhasil dihapus`, { id: toastId })
         setShowConfirm(false)
         router.refresh()
       }
     } catch {
-      alert('Terjadi kesalahan sistem')
+      toast.error('Terjadi kesalahan sistem', { id: toastId })
     } finally {
       setLoading(false)
     }

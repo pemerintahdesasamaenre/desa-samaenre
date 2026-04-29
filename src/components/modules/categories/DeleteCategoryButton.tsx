@@ -5,6 +5,7 @@ import { deleteCategory } from '@/actions/categories'
 import { Trash2, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import { toast } from 'sonner'
 
 export default function DeleteCategoryButton({ id, name }: { id: string; name: string }) {
   const [loading, setLoading] = useState(false)
@@ -13,16 +14,18 @@ export default function DeleteCategoryButton({ id, name }: { id: string; name: s
 
   const handleDelete = async () => {
     setLoading(true)
+    const toastId = toast.loading(`Menghapus kategori "${name}"...`)
     try {
       const result = await deleteCategory(id)
       if (result.error) {
-        alert('Gagal menghapus: ' + result.error)
+        toast.error('Gagal menghapus: ' + result.error, { id: toastId })
       } else {
+        toast.success(`Kategori "${name}" berhasil dihapus`, { id: toastId })
         setShowConfirm(false)
         router.refresh()
       }
     } catch {
-      alert('Terjadi kesalahan sistem')
+      toast.error('Terjadi kesalahan sistem', { id: toastId })
     } finally {
       setLoading(false)
     }

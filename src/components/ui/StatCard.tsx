@@ -62,26 +62,26 @@ export const StatCard: React.FC<StatCardProps> = ({ label, value: rawValue, unit
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
       whileHover={{ y: -5 }}
-      className="stat-card-surface p-8 rounded-[3rem] group relative overflow-hidden flex flex-col justify-between h-full shadow-lg border border-white/10"
+      className="stat-card-surface p-6 rounded-3xl group relative overflow-hidden flex flex-col justify-between h-full shadow-lg border border-white/10"
     >
-      <div className="flex justify-between items-start mb-8">
-        <div className="p-4 bg-primary/10 text-primary rounded-2xl group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-500 shadow-inner">
+      <div className="flex justify-between items-start mb-6">
+        <div className="p-3 bg-primary/10 text-primary rounded-xl group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-500 shadow-inner">
           {icon}
         </div>
-        <div className="h-2 w-2 rounded-full bg-primary/40 group-hover:bg-primary animate-pulse" />
+        <div className="h-1.5 w-1.5 rounded-full bg-primary/40 group-hover:bg-primary animate-pulse" />
       </div>
 
       <div className="space-y-1">
-        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground group-hover:text-primary transition-colors">
+        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground group-hover:text-primary transition-colors">
           {label}
         </p>
         <div className="flex items-baseline gap-2">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground tracking-tighter flex items-baseline gap-1">
-            {prefix && <span className="text-xl md:text-2xl opacity-50 font-bold">{prefix}</span>}
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground tracking-tighter flex items-baseline gap-1">
+            {prefix && <span className="text-lg md:text-xl opacity-50 font-bold">{prefix}</span>}
             {isNumeric ? <NumberTicker value={numericValue as number} /> : (value || "0")}
           </h2>
           {unit && (
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{unit}</span>
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{unit}</span>
           )}
         </div>
       </div>

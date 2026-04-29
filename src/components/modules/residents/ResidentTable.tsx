@@ -7,6 +7,7 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { ResidentTableHeader } from './table/ResidentTableHeader';
 import { ResidentTableRow } from './table/ResidentTableRow';
 import { ResidentPagination } from './table/ResidentPagination';
+import { toast } from 'sonner';
 
 export default function ResidentTable() {
   const [data, setData] = useState<ResidentDisplayData[]>([]);
@@ -85,12 +86,14 @@ export default function ResidentTable() {
   const handleDelete = async () => {
     if (!deleteConfirm) return;
     setIsDeleting(deleteConfirm.id);
+    const toastId = toast.loading(`Menghapus data "${deleteConfirm.name}"...`);
     const result = await deleteResident(deleteConfirm.id);
     if (result.success) {
+      toast.success(`Data "${deleteConfirm.name}" berhasil dihapus`, { id: toastId });
       setDeleteConfirm(null);
       fetchData();
     } else {
-      alert('Gagal menghapus: ' + result.error);
+      toast.error('Gagal menghapus: ' + result.error, { id: toastId });
     }
     setIsDeleting(null);
   };
@@ -107,7 +110,7 @@ export default function ResidentTable() {
         dusuns={dusuns}
       />
 
-      <div className="bg-card rounded-2xl sm:rounded-[2.5rem] border border-border shadow-sm overflow-hidden w-full">
+      <div className="bg-card rounded-2xl sm:rounded-3xl border border-border shadow-sm overflow-hidden w-full">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -116,14 +119,14 @@ export default function ResidentTable() {
                 <th className="md:hidden w-10 px-3 py-4"></th>
                 
                 {/* Kolom 2: Nama/Konten Utama */}
-                <th className="px-4 sm:px-8 py-4 text-[9px] sm:text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Penduduk</th>
+                <th className="px-4 sm:px-6 py-4 text-xs font-bold text-primary/80 uppercase tracking-wider">Penduduk</th>
                 
                 {/* Kolom Desktop Only */}
-                <th className="hidden md:table-cell px-8 py-4 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] w-1/3">Identitas</th>
-                <th className="hidden lg:table-cell px-8 py-4 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] w-1/4">Wilayah</th>
+                <th className="hidden md:table-cell px-4 sm:px-6 py-4 text-xs font-bold text-primary/80 uppercase tracking-wider w-1/3">Identitas</th>
+                <th className="hidden lg:table-cell px-4 sm:px-6 py-4 text-xs font-bold text-primary/80 uppercase tracking-wider w-1/4">Wilayah</th>
                 
                 {/* Kolom Aksi (Desktop Only) */}
-                <th className="hidden md:table-cell px-8 py-4 text-[9px] sm:text-[10px] font-black text-primary/80 uppercase tracking-[0.2em] text-right w-32">Aksi</th>
+                <th className="hidden md:table-cell px-4 sm:px-6 py-4 text-xs font-bold text-primary/80 uppercase tracking-wider text-right w-32">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
