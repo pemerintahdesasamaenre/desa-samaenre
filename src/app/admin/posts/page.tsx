@@ -28,17 +28,20 @@ export default function AdminPostsPage() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-8 pb-20">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-card p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm">
-        <div>
-          <h1 className="text-xl sm:text-4xl font-bold text-foreground tracking-tighter uppercase">Berita & Agenda</h1>
-          <p className="text-[10px] sm:text-base text-muted-foreground mt-1 font-medium italic">
-            Kelola publikasi informasi dan agenda kegiatan desa.
-          </p>
+    <div className="space-y-6 sm:space-y-8 pb-20">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm">
+        <div className="flex items-center gap-4">
+          <div className="p-2 sm:p-2.5 bg-muted rounded-xl border border-border flex items-center justify-center text-primary shrink-0">
+             <Plus size={20} /> {/* Should be FileText or similar but for now consistency in layout */}
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Berita & Agenda</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 font-medium">Kelola publikasi informasi dan agenda kegiatan desa.</p>
+          </div>
         </div>
         <Link
           href="/admin/posts/new"
-          className="flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-primary hover:opacity-90 text-primary-foreground rounded-lg sm:rounded-full font-bold transition-all shadow-xl shadow-primary/25 w-full lg:w-auto uppercase text-[10px] sm:text-xs tracking-widest active:scale-95"
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:opacity-90 text-primary-foreground rounded-xl sm:rounded-full transition-all shadow-lg shadow-primary/20 font-bold uppercase text-[10px] sm:text-xs tracking-widest active:scale-95 w-full lg:w-auto"
         >
           <Plus size={16} />
           Post Baru

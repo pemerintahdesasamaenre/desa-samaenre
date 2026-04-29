@@ -32,7 +32,7 @@ export default function ExpandableHistory({ content }: ExpandableHistoryProps) {
             <div className="p-4 bg-primary/10 text-primary rounded-3xl mb-2">
               <History size={40} />
             </div>
-            <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-foreground text-center leading-none">
+            <h2 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter text-foreground text-center leading-none">
               Sejarah <br/><span className="text-primary italic border-b-4 border-primary/20">Singkat Desa</span>
             </h2>
           </div>
@@ -56,7 +56,7 @@ export default function ExpandableHistory({ content }: ExpandableHistoryProps) {
             {hasMore ? (
               <button
                 onClick={() => setExpandLevel(prev => prev + 1)}
-                className="group flex items-center gap-3 bg-primary text-primary-foreground px-12 py-6 rounded-full font-black hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-primary/40 uppercase tracking-widest text-xs"
+                className="group flex items-center gap-3 bg-primary text-primary-foreground px-12 py-6 rounded-full font-bold hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-primary/40 uppercase tracking-widest text-xs"
               >
                 <BookOpen size={18} />
                 {expandLevel === 0 ? 'Lanjutkan Membaca' : 'Buka Selengkapnya'}
@@ -65,7 +65,7 @@ export default function ExpandableHistory({ content }: ExpandableHistoryProps) {
             ) : expandLevel > 0 ? (
               <button
                 onClick={() => setExpandLevel(0)}
-                className="group flex items-center gap-3 bg-muted text-muted-foreground px-10 py-5 rounded-full font-black hover:bg-muted/80 transition-all uppercase tracking-widest text-xs"
+                className="group flex items-center gap-3 bg-muted text-muted-foreground px-10 py-5 rounded-full font-bold hover:bg-muted/80 transition-all uppercase tracking-widest text-xs"
               >
                 Tutup Sejarah
               </button>

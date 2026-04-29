@@ -43,7 +43,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center pt-24">
           <div className="space-y-8">
             <div className="space-y-4">
-              <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight uppercase italic">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight uppercase italic">
                 Membangun Masa Depan <br/>
                 <span className="text-primary tracking-tighter">Bersama Masyarakat</span>
               </h2>
@@ -54,12 +54,12 @@ export default async function HomePage() {
             
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <p className="text-3xl font-black text-primary tracking-tighter uppercase italic">24/7</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground border-l-2 border-primary/20 pl-3">Layanan Informasi<br/>Publik Online</p>
+                <p className="text-3xl font-bold text-primary tracking-tighter uppercase italic">24/7</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground border-l-2 border-primary/20 pl-3">Layanan Informasi<br/>Publik Online</p>
               </div>
               <div className="space-y-2">
-                <p className="text-3xl font-black text-emerald-600 tracking-tighter uppercase italic">100%</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground border-l-2 border-emerald-600/20 pl-3">Transparansi<br/>Anggaran Desa</p>
+                <p className="text-3xl font-bold text-emerald-600 tracking-tighter uppercase italic">100%</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground border-l-2 border-emerald-600/20 pl-3">Transparansi<br/>Anggaran Desa</p>
               </div>
             </div>
           </div>
@@ -81,7 +81,7 @@ export default async function HomePage() {
                 </div>
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 flex items-center justify-center">
-                   <span className="text-primary/20 font-black text-4xl rotate-12 tracking-widest uppercase">LOGO DESA</span>
+                   <span className="text-primary/20 font-bold text-4xl rotate-12 tracking-widest uppercase">LOGO DESA</span>
                 </div>
               )}
             </div>

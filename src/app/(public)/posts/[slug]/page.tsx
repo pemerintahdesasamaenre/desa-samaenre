@@ -76,7 +76,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
             <div className="p-10 md:p-20 space-y-10">
               <div className="space-y-6">
                 <div className="flex flex-wrap gap-4 items-center">
-                  <span className="px-4 py-1.5 bg-primary/10 text-primary rounded-xl text-xs font-black uppercase tracking-widest">
+                  <span className="px-4 py-1.5 bg-primary/10 text-primary rounded-xl text-xs font-bold uppercase tracking-widest">
                     {post.categories?.name || 'Berita'}
                   </span>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground font-bold">
@@ -95,16 +95,16 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
                   </div>
                 </div>
 
-                <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-tight text-gradient">
+                <h1 className="text-4xl md:text-6xl font-bold text-foreground tracking-tighter leading-tight text-gradient">
                   {post.title}
                 </h1>
 
                 <div className="flex items-center gap-4 py-8 border-y border-white/10">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-2xl shadow-inner">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl shadow-inner">
                     A
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">Penulis</p>
+                    <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Penulis</p>
                     <p className="font-bold text-foreground text-lg">Administrator Desa</p>
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
               </div>
 
               {/* Body Content */}
-              <div className="prose prose-xl prose-slate dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:font-light prose-headings:font-black prose-p:text-muted-foreground">
+              <div className="prose prose-xl prose-slate dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:font-light prose-headings:font-bold prose-p:text-muted-foreground">
                 {post.content.split('\n').map((para: string, i: number) => (
                   para ? <p key={i} className="mb-8">{para}</p> : <br key={i} />
                 ))}

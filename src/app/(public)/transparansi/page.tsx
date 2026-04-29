@@ -13,7 +13,7 @@ export const metadata = {
 // Wrapper component to allow Suspense
 async function TransparencyPageContent({ searchParams }: PageProps) {
   return (
-    <Suspense fallback={<div className="text-center p-24 font-black tracking-widest text-primary animate-pulse">MEMUAT DATA KEUANGAN...</div>}>
+    <Suspense fallback={<div className="text-center p-24 font-bold tracking-widest text-primary animate-pulse">MEMUAT DATA KEUANGAN...</div>}>
       <PageContent searchParams={searchParams} />
     </Suspense>
   )
@@ -58,7 +58,7 @@ async function PageContent({ searchParams }: PageProps) {
             <div className="inline-block px-4 py-2 bg-secondary/10 text-secondary rounded-xl text-sm font-bold uppercase tracking-widest">
               Keuangan Desa
             </div>
-            <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter leading-none">
+            <h1 className="text-5xl md:text-7xl font-bold text-foreground tracking-tighter leading-none">
               Transparansi <span className="text-secondary text-gradient">Anggaran</span>
             </h1>
             <p className="text-xl text-muted-foreground mt-2 font-light max-w-2xl">
@@ -99,7 +99,7 @@ async function PageContent({ searchParams }: PageProps) {
             
             <div className="glass rounded-[3.5rem] shadow-2xl border-white/5 overflow-hidden">
               <div className="p-10 border-b border-white/10 flex items-center justify-between bg-white/5">
-                <h3 className="text-2xl font-black tracking-tight">Detail Alokasi Anggaran</h3>
+                <h3 className="text-2xl font-bold tracking-tight">Detail Alokasi Anggaran</h3>
                 <div className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
                   Tahun Anggaran {selectedYear}
                 </div>
@@ -108,10 +108,10 @@ async function PageContent({ searchParams }: PageProps) {
                 <table className="w-full text-left border-collapse">
                   <thead className="bg-muted/30">
                     <tr>
-                      <th className="px-10 py-6 text-xs font-black text-muted-foreground uppercase tracking-widest">Kategori</th>
-                      <th className="px-10 py-6 text-xs font-black text-muted-foreground uppercase tracking-widest">Jenis</th>
-                      <th className="px-10 py-6 text-xs font-black text-muted-foreground uppercase tracking-widest text-right">Jumlah</th>
-                      <th className="px-10 py-6 text-xs font-black text-muted-foreground uppercase tracking-widest">Catatan</th>
+                      <th className="px-10 py-6 text-xs font-bold text-muted-foreground uppercase tracking-widest">Kategori</th>
+                      <th className="px-10 py-6 text-xs font-bold text-muted-foreground uppercase tracking-widest">Jenis</th>
+                      <th className="px-10 py-6 text-xs font-bold text-muted-foreground uppercase tracking-widest text-right">Jumlah</th>
+                      <th className="px-10 py-6 text-xs font-bold text-muted-foreground uppercase tracking-widest">Catatan</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -119,7 +119,7 @@ async function PageContent({ searchParams }: PageProps) {
                       <tr key={item.id} className="hover:bg-primary/5 transition-all duration-300 group">
                         <td className="px-10 py-8 text-lg font-bold text-foreground">{item.category_name}</td>
                         <td className="px-10 py-8">
-                          <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-sm ${
+                          <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm ${
                             item.type === 'income' 
                               ? 'bg-emerald-500/10 text-emerald-500' 
                               : item.type === 'expense'
@@ -129,7 +129,7 @@ async function PageContent({ searchParams }: PageProps) {
                             {item.type === 'income' ? 'Pendapatan' : item.type === 'expense' ? 'Pengeluaran' : 'Pembiayaan'}
                           </span>
                         </td>
-                        <td className="px-10 py-8 text-xl font-black text-foreground text-right tabular-nums">
+                        <td className="px-10 py-8 text-xl font-bold text-foreground text-right tabular-nums">
                           {formatCurrency(item.amount)}
                         </td>
                         <td className="px-10 py-8 text-sm text-muted-foreground italic font-light">

@@ -192,13 +192,14 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
           ? result.error 
           : Object.values(result.error).flat().join(', ');
         setError(errorMessages || 'Gagal memvalidasi data.');
-        toast.error('Gagal memperbarui informasi desa.');
+        toast.error('Gagal memperbarui informasi desa.', { id: toastId });
       } else {
+        toast.success('Informasi desa berhasil diperbarui!', { id: toastId });
         router.refresh();
-        toast.success('Informasi desa berhasil diperbarui!');
       }
     } catch {
       setError('Kesalahan koneksi.');
+      toast.error('Kesalahan koneksi ke server', { id: toastId });
     } finally {
       setLoading(false);
     }
@@ -219,7 +220,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
              <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg sm:rounded-xl">
                <Globe size={20} />
              </div>
-             <h2 className="text-sm sm:text-xl font-black uppercase tracking-tight text-foreground">Identitas & Kontak</h2>
+             <h2 className="text-sm sm:text-xl font-bold uppercase tracking-tight text-foreground">Identitas & Kontak</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
@@ -265,7 +266,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
              <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                <MapIcon size={20} />
              </div>
-             <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em]">Geografis & Batas</h3>
+             <h3 className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em]">Geografis & Batas</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
              <div className="space-y-2">
@@ -287,7 +288,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
              <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                <Info size={20} />
              </div>
-             <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em]">Visi & Misi</h3>
+             <h3 className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em]">Visi & Misi</h3>
           </div>
           <div className="space-y-6">
              <div className="space-y-2">
@@ -302,7 +303,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
                    <button
                      type="button"
                      onClick={addSection}
-                     className="flex items-center gap-1.5 text-[10px] bg-primary text-primary-foreground px-4 py-1.5 rounded-full font-black uppercase tracking-widest active:scale-95 hover:opacity-90"
+                     className="flex items-center gap-1.5 text-[10px] bg-primary text-primary-foreground px-4 py-1.5 rounded-full font-bold uppercase tracking-widest active:scale-95 hover:opacity-90"
                    >
                      <Plus size={12} /> Tambah Seksi Misi
                    </button>
@@ -313,7 +314,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
                     <div key={secIdx} className="rounded-2xl border border-border bg-muted/20 overflow-hidden">
                       {/* Section Header */}
                       <div className="flex items-center gap-2 p-3 bg-muted/40">
-                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-[10px] font-black flex items-center justify-center shrink-0">
+                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center shrink-0">
                           {secIdx + 1}
                         </span>
                         <Input
@@ -362,7 +363,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
                           <button
                             type="button"
                             onClick={() => addItem(secIdx)}
-                            className="ml-6 flex items-center gap-1.5 text-[10px] text-primary font-black uppercase tracking-widest hover:underline py-1"
+                            className="ml-6 flex items-center gap-1.5 text-[10px] text-primary font-bold uppercase tracking-widest hover:underline py-1"
                           >
                             <Plus size={11} /> Tambah Sub-Item
                           </button>
@@ -381,7 +382,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
              <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                <History size={20} />
              </div>
-             <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em]">Sejarah & Kepemimpinan</h3>
+             <h3 className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em]">Sejarah & Kepemimpinan</h3>
           </div>
           <div className="space-y-6">
              <div className="space-y-2">
@@ -391,7 +392,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
              <div className="space-y-4">
                 <div className="flex items-center justify-between">
                    <Label>Mantan Kepala Desa</Label>
-                   <button type="button" onClick={addLeader} className="text-[10px] bg-muted text-foreground px-4 py-1.5 rounded-full font-black uppercase tracking-widest active:scale-95 border border-border">Tambah Tokoh</button>
+                   <button type="button" onClick={addLeader} className="text-[10px] bg-muted text-foreground px-4 py-1.5 rounded-full font-bold uppercase tracking-widest active:scale-95 border border-border">Tambah Tokoh</button>
                 </div>
                 {formerLeaders.map((l, i) => (
                   <div key={i} className="grid grid-cols-1 sm:grid-cols-12 gap-2 p-3 bg-muted/30 rounded-xl border border-border">
@@ -411,7 +412,7 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
         </section>
 
         <div className="pt-6 sm:pt-10 border-t border-border flex justify-end">
-          <button type="submit" disabled={loading} className="w-full sm:w-auto bg-primary text-primary-foreground px-10 py-4 rounded-full font-black flex items-center justify-center gap-3 hover:opacity-90 disabled:opacity-50 transition-all shadow-lg text-[10px] sm:text-sm tracking-widest uppercase active:scale-95">
+          <button type="submit" disabled={loading} className="w-full sm:w-auto bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold flex items-center justify-center gap-3 hover:opacity-90 disabled:opacity-50 transition-all shadow-lg text-[10px] sm:text-sm tracking-widest uppercase active:scale-95">
             {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
             Simpan Seluruh Perubahan
           </button>

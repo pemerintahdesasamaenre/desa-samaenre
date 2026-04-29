@@ -45,9 +45,9 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
   if (active && payload && payload.length) {
     return (
       <div className="glass-premium p-4 rounded-2xl shadow-2xl border border-white/20 dark:border-white/5 min-w-[120px]">
-        <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-1">{label || payload[0].name}</p>
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">{label || payload[0].name}</p>
         <div className="flex items-baseline gap-2">
-          <span className="text-xl font-black text-primary tabular-nums">
+          <span className="text-xl font-bold text-primary tabular-nums">
             {payload[0].value.toLocaleString()}
           </span>
           <span className="text-[10px] font-bold text-foreground/50 uppercase tracking-wider">Jiwa</span>
@@ -85,7 +85,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
         {/* Gender Distribution */}
         <div className="space-y-4">
           <div className="flex items-center gap-3 border-l-4 border-primary pl-4">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Proporsi Jenis Kelamin</h3>
+            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground/70">Proporsi Jenis Kelamin</h3>
           </div>
           <div className="h-[300px] w-full min-h-[300px] relative">
             <ResponsiveContainer width="100%" height="100%">
@@ -110,7 +110,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
         {/* Age Groups */}
         <div className="space-y-4">
           <div className="flex items-center gap-3 border-l-4 border-indigo-500 pl-4">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Kelompok Usia</h3>
+            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground/70">Kelompok Usia</h3>
           </div>
           <div className="h-[300px] w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -131,7 +131,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
         {/* Education Level */}
         <div className="space-y-6">
           <div className="flex items-center gap-3 border-l-4 border-emerald-500 pl-4">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Tingkat Pendidikan</h3>
+            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground/70">Tingkat Pendidikan</h3>
           </div>
           <div className="h-[320px] w-full min-h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -157,7 +157,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
         {/* Marital Status */}
         <div className="space-y-6">
           <div className="flex items-center gap-3 border-l-4 border-amber-500 pl-4">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Status Perkawinan</h3>
+            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground/70">Status Perkawinan</h3>
           </div>
           <div className="h-[320px] w-full min-h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -178,7 +178,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
         {/* Hamlet Distribution */}
         <div className="space-y-6">
           <div className="flex items-center gap-3 border-l-4 border-blue-500 pl-4">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">Wilayah Dusun</h3>
+            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground/70">Wilayah Dusun</h3>
           </div>
           <div className="h-[300px] w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -196,7 +196,7 @@ export const DemographicCharts = ({ data }: ChartProps) => {
         {/* Top 5 Occupations */}
         <div className="space-y-6">
           <div className="flex items-center gap-3 border-l-4 border-rose-500 pl-4">
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/70">5 Besar Pekerjaan</h3>
+            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground/70">5 Besar Pekerjaan</h3>
           </div>
           <div className="h-[300px] w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">

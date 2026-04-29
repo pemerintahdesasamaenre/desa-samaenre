@@ -40,7 +40,7 @@ export default async function TentangPage() {
     title: leader.period,
     content: (
       <div key={`leader-${idx}`} className="space-y-4">
-        <h4 className="text-3xl md:text-5xl font-black text-foreground tracking-tighter uppercase leading-none">
+        <h4 className="text-3xl md:text-5xl font-bold text-foreground tracking-tighter uppercase leading-none">
           {leader.name}
         </h4>
         <p className="text-muted-foreground text-sm md:text-lg font-medium leading-relaxed max-w-2xl">
@@ -48,7 +48,7 @@ export default async function TentangPage() {
         </p>
         <div className="flex items-center gap-3">
            <div className="h-px w-10 bg-primary/30" />
-           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Aparatur Berjasa</span>
+           <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">Aparatur Berjasa</span>
         </div>
       </div>
     )
@@ -80,7 +80,7 @@ export default async function TentangPage() {
           <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-sm font-bold uppercase tracking-widest">
             Profil Resmi
           </div>
-          <h1 className="text-6xl md:text-9xl font-black text-foreground tracking-tighter leading-none">
+          <h1 className="text-6xl md:text-9xl font-bold text-foreground tracking-tighter leading-none">
             Tentang <span className="text-primary italic">{villageInfo.name}</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium">
@@ -96,8 +96,8 @@ export default async function TentangPage() {
               </div>
               <MapIcon size={40} className="opacity-50 relative z-10" />
               <div className="relative z-10">
-                <h3 className="text-sm font-black uppercase tracking-[0.2em] opacity-80 mb-2">Luas Wilayah</h3>
-                <p className="text-5xl font-black tracking-tighter">{villageInfo.area_size || 'N/A'}</p>
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em] opacity-80 mb-2">Luas Wilayah</h3>
+                <p className="text-5xl font-bold tracking-tighter">{villageInfo.area_size || 'N/A'}</p>
               </div>
               <p className="text-emerald-50/70 font-medium leading-relaxed relative z-10">
                 Total cakupan wilayah administratif Desa {villageInfo.name} yang terdiri dari beberapa dusun dan area produktif.
@@ -108,7 +108,7 @@ export default async function TentangPage() {
               <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:rotate-12 transition-transform duration-1000">
                  <Compass size={200} />
               </div>
-              <h3 className="text-xl font-black mb-10 flex items-center gap-3 uppercase tracking-tighter">
+              <h3 className="text-xl font-bold mb-10 flex items-center gap-3 uppercase tracking-tighter">
                  <Compass className="text-primary" />
                  Batas-batas Wilayah
               </h3>
@@ -120,11 +120,11 @@ export default async function TentangPage() {
                    { label: 'Barat', value: villageInfo.boundaries?.west, icon: 'W' },
                  ].map((boundary) => (
                    <div key={boundary.label} className="flex items-center gap-5">
-                      <div className="w-14 h-14 rounded-2xl bg-muted border border-border flex items-center justify-center font-black text-primary shadow-inner">
+                      <div className="w-14 h-14 rounded-2xl bg-muted border border-border flex items-center justify-center font-bold text-primary shadow-inner">
                         {boundary.icon}
                       </div>
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">{boundary.label}</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{boundary.label}</p>
                         <p className="font-bold text-xl leading-tight">{boundary.value || '-'}</p>
                       </div>
                    </div>
@@ -138,7 +138,7 @@ export default async function TentangPage() {
           <div className="grid md:grid-cols-5 gap-8">
             {/* Visi card */}
             <div className="md:col-span-2 glass p-10 rounded-[3rem] space-y-6 border border-border/50 flex flex-col">
-              <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight uppercase">
+              <h2 className="text-3xl font-bold flex items-center gap-3 tracking-tight uppercase">
                  <div className="w-2 h-8 bg-primary rounded-full"></div>
                  Visi
               </h2>
@@ -146,13 +146,13 @@ export default async function TentangPage() {
                 &quot;{villageInfo.vision}&quot;
               </p>
               <div className="pt-4 border-t border-border/50">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Visi RPJMDesa 2026–2027</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Visi RPJMDesa 2026–2027</p>
               </div>
             </div>
 
             {/* Misi card — hierarchical */}
             <div className="md:col-span-3 glass p-10 rounded-[3rem] space-y-6 border border-border/50">
-              <h2 className="text-3xl font-black flex items-center gap-3 tracking-tight uppercase">
+              <h2 className="text-3xl font-bold flex items-center gap-3 tracking-tight uppercase">
                  <div className="w-2 h-8 bg-secondary rounded-full"></div>
                  Misi
               </h2>
@@ -161,16 +161,16 @@ export default async function TentangPage() {
                   {missionSections.map((section, idx) => (
                     <li key={idx} className="space-y-2">
                       <div className="flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-black text-[10px] shrink-0 mt-0.5">
+                        <span className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-[10px] shrink-0 mt-0.5">
                           {sectionLetters[idx]?.toUpperCase() || idx + 1}
                         </span>
-                        <p className="font-black text-foreground text-base leading-snug">{section.title}</p>
+                        <p className="font-bold text-foreground text-base leading-snug">{section.title}</p>
                       </div>
                       {section.items.length > 0 && (
                         <ul className="ml-9 space-y-1.5">
                           {section.items.map((item, itemIdx) => (
                             <li key={itemIdx} className="flex items-start gap-2.5 text-muted-foreground text-sm leading-snug font-medium">
-                              <span className="text-primary/60 font-black text-xs shrink-0 mt-0.5">{itemIdx + 1}.</span>
+                              <span className="text-primary/60 font-bold text-xs shrink-0 mt-0.5">{itemIdx + 1}.</span>
                               {item}
                             </li>
                           ))}
@@ -197,7 +197,7 @@ export default async function TentangPage() {
             <div className="p-4 bg-primary/10 text-primary rounded-3xl inline-block mx-auto mb-2">
               <Network size={40} className="w-10 h-10 md:w-12 md:h-12" />
             </div>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tight text-foreground leading-none uppercase">
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-none uppercase">
               Struktur <br/><span className="text-primary italic border-b-4 border-primary/20">Pemerintahan</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg md:text-xl font-medium">
@@ -220,7 +220,7 @@ export default async function TentangPage() {
               <div className="p-4 bg-blue-500/10 text-blue-600 rounded-3xl inline-block mx-auto mb-2">
                 <Shield size={40} className="w-10 h-10 md:w-12 md:h-12" />
               </div>
-              <h2 className="text-5xl md:text-7xl font-black tracking-tight text-foreground leading-none uppercase">
+              <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-none uppercase">
                 Struktur <br/><span className="text-blue-600 italic border-b-4 border-blue-500/20">BPD</span>
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto text-lg md:text-xl font-medium">
@@ -250,7 +250,7 @@ export default async function TentangPage() {
         <section className="scroll-mt-32">
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1 glass p-10 rounded-[3.5rem] space-y-10 border border-border/50">
-              <h2 className="text-3xl font-black mb-4 leading-none uppercase tracking-tighter">Kontak <br/><span className="text-primary italic">Resmi Kami</span></h2>
+              <h2 className="text-3xl font-bold mb-4 leading-none uppercase tracking-tighter">Kontak <br/><span className="text-primary italic">Resmi Kami</span></h2>
               
               <div className="space-y-8">
                 <div className="flex gap-5">
@@ -258,7 +258,7 @@ export default async function TentangPage() {
                     <MapPin size={28} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Alamat</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Alamat</h4>
                     <p className="font-bold leading-relaxed">{contact.address || 'Alamat Kantor Desa'}</p>
                   </div>
                 </div>
@@ -268,7 +268,7 @@ export default async function TentangPage() {
                     <Phone size={28} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Telepon</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Telepon</h4>
                     <p className="font-bold leading-relaxed">{contact.phone || '-'}</p>
                   </div>
                 </div>
@@ -278,7 +278,7 @@ export default async function TentangPage() {
                     <Mail size={28} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Email</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Email</h4>
                     <p className="font-bold leading-relaxed break-all">{contact.email || '-'}</p>
                   </div>
                 </div>
@@ -287,7 +287,7 @@ export default async function TentangPage() {
               <a 
                 href={externalUrl} 
                 target="_blank" 
-                className="w-full flex items-center justify-center gap-3 bg-primary text-primary-foreground py-5 rounded-[2rem] font-black hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-primary/30 uppercase tracking-widest text-xs"
+                className="w-full flex items-center justify-center gap-3 bg-primary text-primary-foreground py-5 rounded-[2rem] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-primary/30 uppercase tracking-widest text-xs"
               >
                 <MapPin size={20} />
                 Buka di Google Maps
@@ -303,7 +303,7 @@ export default async function TentangPage() {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               ></iframe>
-              <div className="absolute top-8 right-8 px-5 py-2.5 bg-background/90 backdrop-blur-md rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-primary shadow-xl border border-border">
+              <div className="absolute top-8 right-8 px-5 py-2.5 bg-background/90 backdrop-blur-md rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] text-primary shadow-xl border border-border">
                 Peta Wilayah Desa
               </div>
             </div>

@@ -75,7 +75,7 @@ export default function ConfirmDialog({
             <div className={`p-2.5 rounded-xl ${iconStyles[variant]}`}>
               {variant === 'danger' ? <ShieldAlert size={24} /> : <AlertTriangle size={24} />}
             </div>
-            <h3 className="text-lg font-black tracking-tight text-foreground uppercase">{title}</h3>
+            <h3 className="text-lg font-bold tracking-tight text-foreground uppercase">{title}</h3>
           </div>
           <button onClick={handleClose} className="p-2 text-muted-foreground hover:text-foreground transition-colors">
             <X size={20} />
@@ -91,8 +91,8 @@ export default function ConfirmDialog({
             {requirePhrase && (
               <div className="space-y-2">
                 <div className="p-4 bg-muted/50 rounded-2xl border border-border">
-                  <p className="text-[10px] font-black text-primary/80 mb-1 uppercase tracking-[0.2em] text-center">{phraseLabel}</p>
-                  <p className="text-sm font-black text-foreground select-none text-center italic">
+                  <p className="text-[10px] font-bold text-primary/80 mb-1 uppercase tracking-[0.2em] text-center">{phraseLabel}</p>
+                  <p className="text-sm font-bold text-foreground select-none text-center italic">
                     &quot;{requirePhrase}&quot;
                   </p>
                 </div>
@@ -110,8 +110,8 @@ export default function ConfirmDialog({
             {requirePhrase2 && (
               <div className="space-y-2">
                 <div className="p-4 bg-muted/50 rounded-2xl border border-border">
-                  <p className="text-[10px] font-black text-primary/80 mb-1 uppercase tracking-[0.2em] text-center">{phraseLabel2}</p>
-                  <p className="text-sm font-black text-foreground select-none text-center italic">
+                  <p className="text-[10px] font-bold text-primary/80 mb-1 uppercase tracking-[0.2em] text-center">{phraseLabel2}</p>
+                  <p className="text-sm font-bold text-foreground select-none text-center italic">
                     &quot;{requirePhrase2}&quot;
                   </p>
                 </div>
@@ -130,7 +130,7 @@ export default function ConfirmDialog({
             <button
               onClick={handleConfirm}
               disabled={!isConfirmed || loading}
-              className={`w-full font-black py-4 rounded-2xl transition-all shadow-xl flex items-center justify-center gap-3 ${variantStyles[variant]} disabled:opacity-30 disabled:grayscale`}
+              className={`w-full font-bold py-4 rounded-2xl transition-all shadow-xl flex items-center justify-center gap-3 ${variantStyles[variant]} disabled:opacity-30 disabled:grayscale`}
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : null}
               {confirmLabel.toUpperCase()}

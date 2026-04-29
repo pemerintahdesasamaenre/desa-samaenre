@@ -33,7 +33,7 @@ export default async function EditStaffPage({ params }: { params: { id: string }
           <ChevronLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
         </Link>
         <div>
-          <h1 className="text-4xl font-black tracking-tight text-foreground tracking-tighter">Edit Aparatur</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground tracking-tighter">Edit Aparatur</h1>
           <p className="text-muted-foreground font-medium italic mt-1">Perbarui profil, jabatan, dan posisi hirarki perangkat desa.</p>
         </div>
       </div>

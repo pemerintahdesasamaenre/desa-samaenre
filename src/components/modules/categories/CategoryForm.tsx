@@ -7,6 +7,7 @@ import { Save, Loader2, ArrowLeft, Layers } from 'lucide-react'
 import Link from 'next/link'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
 
 interface CategoryFormProps {
   initialData?: CategoryInput & { id?: string }
@@ -39,6 +40,7 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
     e.preventDefault()
     setLoading(true)
     setError(null)
+    const toastId = toast.loading(isEditing ? 'Menyimpan kategori...' : 'Menambahkan kategori...')
 
     try {
       const result = isEditing && initialData?.id
@@ -46,17 +48,21 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
         : await createCategory(formData)
 
       if (result.error) {
-        if (typeof result.error === 'object') {
-          setError(Object.values(result.error).flat().join(', '))
-        } else {
-          setError(result.error)
-        }
+        const msg = typeof result.error === 'object' 
+          ? Object.values(result.error).flat().join(', ') 
+          : result.error
+        setError(msg)
+        toast.error('Gagal: ' + msg, { id: toastId })
       } else {
-        router.push('/admin/categories')
-        router.refresh()
+        toast.success(isEditing ? 'Kategori diperbarui!' : 'Kategori berhasil ditambahkan!', { id: toastId })
+        setTimeout(() => {
+          router.push('/admin/categories')
+          router.refresh()
+        }, 1500)
       }
     } catch {
       setError('Terjadi kesalahan sistem')
+      toast.error('Terjadi kesalahan sistem', { id: toastId })
     } finally {
       setLoading(false)
     }
@@ -74,26 +80,26 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
         </Link>
       </div>
 
-      <div className="bg-card rounded-[3rem] border border-border shadow-sm overflow-hidden">
-        <div className="p-10 border-b border-border bg-muted/30">
-          <h2 className="text-3xl font-black text-foreground tracking-tighter">
+      <div className="bg-card rounded-2xl sm:rounded-3xl border border-border shadow-sm overflow-hidden">
+        <div className="p-6 sm:p-10 border-b border-border bg-muted/30">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight uppercase">
             {isEditing ? 'Edit Kategori' : 'Tambah Kategori Baru'}
           </h2>
-          <p className="text-muted-foreground mt-2 font-medium">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">
             Kategori membantu mengelompokkan konten berita, demografi, atau galeri.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-10 space-y-8">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-8">
           {error && (
             <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
               {error}
             </div>
           )}
 
-          <div className="space-y-10">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          <div className="space-y-8 sm:space-y-10">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-xl">
                 <Layers size={18} />
               </div>
               Detail Kategori
@@ -124,7 +130,7 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CategoryInput['type'] }))}
-                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold hover:border-primary/50"
+                  className="w-full h-12 px-5 rounded-xl border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold hover:border-primary/50 text-sm"
                 >
                   <option value="post">Berita & Agenda (Post)</option>
                   <option value="demographic">Data Statistik (Demographic)</option>
@@ -139,7 +145,7 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
                   rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium hover:border-primary/50"
+                  className="w-full p-5 rounded-2xl border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium hover:border-primary/50 text-sm"
                   placeholder="Penjelasan singkat mengenai kategori ini..."
                 />
               </div>
@@ -150,7 +156,7 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
             <button
               type="submit"
               disabled={loading}
-              className="bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
+              className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-4 rounded-full font-bold flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl shadow-primary/30 active:scale-95 text-xs sm:text-sm tracking-widest uppercase"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
               {isEditing ? 'Simpan Perubahan' : 'Tambah Kategori'}

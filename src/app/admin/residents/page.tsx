@@ -5,19 +5,17 @@ import ResetDataButton from '@/components/modules/statistics/ResetDataButton';
 export default function AdminResidentsPage() {
   return (
     <div className="space-y-6 sm:space-y-8 pb-20">
-      <div className="bg-card p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-3 sm:gap-4 mb-2">
-            <div className="p-2 sm:p-3 bg-primary/10 text-primary rounded-xl sm:rounded-2xl border border-primary/10">
-              <Users size={24} className="sm:w-7 sm:h-7" />
-            </div>
-            <h1 className="text-2xl sm:text-4xl font-bold text-foreground tracking-tighter">Master Data Penduduk</h1>
+      <div className="bg-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="p-2 sm:p-2.5 bg-muted rounded-xl border border-border flex items-center justify-center text-primary shrink-0">
+            <Users size={20} />
           </div>
-          <p className="text-xs sm:text-base text-muted-foreground font-medium italic">
-            Kelola data individual penduduk desa, termasuk pencarian detail, audit log, dan filter wilayah.
-          </p>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Master Data Penduduk</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 font-medium">Kelola data individual penduduk desa, audit log, dan filter wilayah.</p>
+          </div>
         </div>
-        <div className="shrink-0">
+        <div className="shrink-0 w-full lg:w-auto">
           <ResetDataButton />
         </div>
       </div>

@@ -56,7 +56,7 @@ export const UserTable = ({ profiles }: UserTableProps) => {
                       </div>
                       <div className="min-w-0">
                         <div className="font-bold text-foreground tracking-tight text-sm sm:text-base leading-none truncate">{profile.full_name || 'Administrator'}</div>
-                        <div className="md:hidden text-[9px] font-bold text-primary uppercase mt-1">{profile.role}</div>
+                        <div className="md:hidden text-[10px] font-bold text-primary uppercase mt-1">{profile.role}</div>
                       </div>
                     </div>
                   </td>

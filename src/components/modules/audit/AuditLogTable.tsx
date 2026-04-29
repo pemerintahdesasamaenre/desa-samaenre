@@ -81,7 +81,7 @@ export const AuditLogTable = () => {
     };
     
     return (
-      <span className={`px-2 py-0.5 border rounded-full text-[9px] font-black uppercase tracking-widest ${styles[method] || 'bg-slate-500/10 text-slate-600 border-slate-500/20'}`}>
+      <span className={`px-2 py-0.5 border rounded-full text-[9px] font-bold uppercase tracking-widest ${styles[method] || 'bg-slate-500/10 text-slate-600 border-slate-500/20'}`}>
         {method}
       </span>
     );
@@ -89,14 +89,14 @@ export const AuditLogTable = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-card rounded-2xl sm:rounded-[3rem] shadow-sm border border-border overflow-hidden w-full">
+      <div className="bg-card rounded-2xl sm:rounded-3xl shadow-sm border border-border overflow-hidden w-full">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-muted/30 border-b border-border">
-                <th className="px-6 sm:px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Waktu & Aktivitas</th>
-                <th className="hidden md:table-cell px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Aktor</th>
-                <th className="hidden lg:table-cell px-10 py-5 text-[10px] font-black text-primary/80 uppercase tracking-[0.2em]">Metode</th>
+                <th className="px-6 sm:px-10 py-5 text-xs font-bold text-primary/80 uppercase tracking-wider">Waktu & Aktivitas</th>
+                <th className="hidden md:table-cell px-10 py-5 text-xs font-bold text-primary/80 uppercase tracking-wider">Aktor</th>
+                <th className="hidden lg:table-cell px-10 py-5 text-xs font-bold text-primary/80 uppercase tracking-wider">Metode</th>
                 <th className="w-10 px-6 py-5"></th>
               </tr>
             </thead>
@@ -117,7 +117,7 @@ export const AuditLogTable = () => {
                           <Activity size={18} />
                         </div>
                         <div className="min-w-0">
-                          <div className="font-black text-foreground tracking-tight text-sm sm:text-base leading-none truncate mb-1.5">
+                          <div className="font-bold text-foreground tracking-tight text-sm sm:text-base leading-none truncate mb-1.5">
                             {log.action}
                           </div>
                           <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
@@ -158,24 +158,24 @@ export const AuditLogTable = () => {
                         <div className="space-y-4">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div className="space-y-1">
-                              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em]">Entity Type</p>
-                              <p className="text-xs font-black text-foreground uppercase tracking-widest flex items-center gap-2 mt-1">
+                              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Entity Type</p>
+                              <p className="text-xs font-bold text-foreground uppercase tracking-widest flex items-center gap-2 mt-1">
                                 <Database size={14} className="text-primary" />
                                 {log.entity_type}
                               </p>
                             </div>
                             <div className="space-y-1">
-                              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em]">User ID</p>
+                              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">User ID</p>
                               <p className="text-[10px] font-mono font-bold text-foreground break-all mt-1">{log.user_id || '-'}</p>
                             </div>
                             <div className="space-y-1">
-                              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em]">Full Timestamp</p>
+                              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Full Timestamp</p>
                               <p className="text-xs font-bold text-foreground mt-1">{new Date(log.created_at).toLocaleString('id-ID')}</p>
                             </div>
                           </div>
                           
                           <div className="p-4 bg-background/50 rounded-2xl border border-border/50">
-                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">Payload Details</p>
+                            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Payload Details</p>
                             <pre className="text-[10px] font-mono text-primary overflow-x-auto whitespace-pre-wrap leading-relaxed">
                               {JSON.stringify(log.details, null, 2)}
                             </pre>
@@ -192,7 +192,7 @@ export const AuditLogTable = () => {
                   <td colSpan={4} className="py-20 text-center">
                     <div className="flex flex-col items-center gap-3">
                        <ShieldAlert size={40} className="text-muted-foreground/30" />
-                       <p className="text-sm font-black text-muted-foreground uppercase tracking-widest">Belum ada rekaman aktivitas</p>
+                       <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Belum ada rekaman aktivitas</p>
                     </div>
                   </td>
                 </tr>
@@ -207,11 +207,11 @@ export const AuditLogTable = () => {
         {loading && (
           <div className="flex items-center gap-3 px-6 py-3 bg-card border border-border rounded-full shadow-sm">
             <Loader2 className="w-4 h-4 text-primary animate-spin" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Memuat data aktivitas...</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Memuat data aktivitas...</span>
           </div>
         )}
         {!hasMore && logs.length > 0 && (
-          <p className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.2em]">Akhir dari rekaman aktivitas (2 Bulan Terakhir)</p>
+          <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">Akhir dari rekaman aktivitas (2 Bulan Terakhir)</p>
         )}
       </div>
     </div>

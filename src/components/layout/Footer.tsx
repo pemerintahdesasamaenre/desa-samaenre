@@ -72,12 +72,12 @@ export const Footer = () => {
                     style={{ height: 'auto' }}
                   />
                 ) : (
-                  <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-black text-xl shadow-lg shadow-primary/20">
+                  <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold text-xl shadow-lg shadow-primary/20">
                     {villageInfo?.name?.[0] || 'S'}
                   </div>
                 )}
               </div>
-              <h2 className="text-foreground-secondary text-2xl font-black tracking-tighter">Desa {villageInfo?.name || 'Samaenre'}</h2>
+              <h2 className="text-foreground-secondary text-2xl font-bold tracking-tighter">Desa {villageInfo?.name || 'Samaenre'}</h2>
             </div>
             <p className="text-sm leading-relaxed opacity-70 font-medium">
               {villageInfo?.vision || 'Mewujudkan tata kelola desa yang transparan, inovatif, dan mandiri demi kesejahteraan seluruh masyarakat.'}
@@ -88,15 +88,15 @@ export const Footer = () => {
               <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-2xl border border-white/10 backdrop-blur-sm">
                 <TrendingUp size={16} className="text-primary" />
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest opacity-50 whitespace-nowrap">Hari Ini</span>
-                  <span className="text-sm font-black tabular-nums">{todayViews.toLocaleString()}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest opacity-50 whitespace-nowrap">Hari Ini</span>
+                  <span className="text-sm font-bold tabular-nums">{todayViews.toLocaleString()}</span>
                 </div>
               </div>
               <div className="inline-flex items-center gap-2 bg-white/5 px-4 py-2 rounded-2xl border border-white/10 backdrop-blur-sm">
                 <Eye size={16} className="text-primary" />
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest opacity-50 whitespace-nowrap">Total</span>
-                  <span className="text-sm font-black tabular-nums">{totalViews.toLocaleString()}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest opacity-50 whitespace-nowrap">Total</span>
+                  <span className="text-sm font-bold tabular-nums">{totalViews.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -104,7 +104,7 @@ export const Footer = () => {
 
           {/* Navigation */}
           <div>
-            <h3 className="font-black mb-8 uppercase tracking-[0.2em] text-[10px] opacity-50">Navigasi Utama</h3>
+            <h3 className="font-bold mb-8 uppercase tracking-[0.2em] text-[10px] opacity-50">Navigasi Utama</h3>
             <ul className="space-y-4 text-sm font-bold">
               <li><Link href="/" className="hover:text-primary transition-colors">Beranda</Link></li>
               <li><Link href="/posts" className="hover:text-primary transition-colors">Kabar Desa</Link></li>
@@ -116,7 +116,7 @@ export const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="font-black mb-8 uppercase tracking-[0.2em] text-[10px] opacity-50">Kontak Resmi</h3>
+            <h3 className="font-bold mb-8 uppercase tracking-[0.2em] text-[10px] opacity-50">Kontak Resmi</h3>
             <ul className="space-y-4 text-sm font-medium">
               <li className="flex items-start gap-4">
                 <div className="p-2 bg-white/10 rounded-lg text-primary">
@@ -141,7 +141,7 @@ export const Footer = () => {
 
           {/* Social Media & Maps Link */}
           <div>
-            <h3 className="font-black mb-8 uppercase tracking-[0.2em] text-[10px] opacity-50">Media Sosial</h3>
+            <h3 className="font-bold mb-8 uppercase tracking-[0.2em] text-[10px] opacity-50">Media Sosial</h3>
             <div className="flex gap-4 mb-8">
               <a href="#" aria-label="Kunjungi Website Resmi" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all shadow-xl">
                 <Globe size={20} />
@@ -159,7 +159,7 @@ export const Footer = () => {
               <a
                 href={contact.maps_url}
                 target="_blank"
-                className="inline-flex items-center gap-2 text-[10px] font-black tracking-widest text-primary bg-primary/10 px-5 py-2.5 rounded-xl hover:bg-primary/20 transition-all uppercase"
+                className="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest text-primary bg-primary/10 px-5 py-2.5 rounded-xl hover:bg-primary/20 transition-all uppercase"
               >
                 <MapPin size={14} />
                 LIHAT PETA LOKASI

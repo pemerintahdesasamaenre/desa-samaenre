@@ -10,6 +10,7 @@ import CustomSelect from '@/components/ui/CustomSelect'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import ImageUpload from '@/components/ui/ImageUpload'
+import { toast } from 'sonner'
 
 interface Category {
   id: string
@@ -63,6 +64,7 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
     
     setLoading(true)
     setError(null)
+    const toastId = toast.loading(isEditing ? 'Memperbarui postingan...' : 'Mempublikasikan konten...')
 
     try {
       const result = isEditing && initialData?.id
@@ -70,17 +72,21 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
         : await createPost(formData)
 
       if (result.error) {
-        if (typeof result.error === 'object') {
-          setError(Object.values(result.error).flat().join(', '))
-        } else {
-          setError(result.error)
-        }
+        const msg = typeof result.error === 'object' 
+          ? Object.values(result.error).flat().join(', ') 
+          : result.error
+        setError(msg)
+        toast.error('Gagal menyimpan: ' + msg, { id: toastId })
       } else {
-        router.push('/admin/posts')
-        router.refresh()
+        toast.success(isEditing ? 'Postingan diperbarui!' : 'Konten berhasil diterbitkan!', { id: toastId })
+        setTimeout(() => {
+          router.push('/admin/posts')
+          router.refresh()
+        }, 1500)
       }
     } catch {
       setError('Terjadi kesalahan sistem')
+      toast.error('Kesalahan sistem tak terduga', { id: toastId })
     } finally {
       setLoading(false)
     }
@@ -98,32 +104,32 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
         </Link>
       </div>
 
-      <div className="bg-card rounded-[3rem] border border-border shadow-sm overflow-hidden">
-        <div className="p-10 border-b border-border bg-muted/30">
-          <h2 className="text-3xl font-black text-foreground tracking-tighter">
+      <div className="bg-card rounded-2xl sm:rounded-3xl border border-border shadow-sm overflow-hidden">
+        <div className="p-6 sm:p-10 border-b border-border bg-muted/30">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight uppercase">
             {isEditing ? 'Edit Postingan' : 'Buat Postingan Baru'}
           </h2>
-          <p className="text-muted-foreground mt-2 font-medium">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">
             {isEditing ? 'Perbarui informasi yang sudah dipublikasikan.' : 'Isi detail di bawah untuk membagikan informasi desa.'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-10 space-y-10">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-8 sm:space-y-10">
           {error && (
             <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
               {error}
             </div>
           )}
 
-          <div className="space-y-10">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          <div className="space-y-8 sm:space-y-10">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-xl">
                 <FileText size={18} />
               </div>
               Detail Informasi
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
               <div className="md:col-span-2 space-y-2">
                 <Label>Judul Konten</Label>
                 <Input
@@ -204,18 +210,18 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
                   rows={12}
                   value={formData.content}
                   onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                  className="w-full p-8 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed hover:border-primary/50"
+                  className="w-full p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed hover:border-primary/50 text-sm sm:text-base"
                   placeholder="Tulis isi berita atau detail agenda di sini..."
                 />
               </div>
             </div>
           </div>
 
-          <div className="pt-10 border-t border-border flex justify-end">
+          <div className="pt-8 border-t border-border flex justify-end">
             <button
               type="submit"
               disabled={loading}
-              className="bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
+              className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-4 rounded-full font-bold flex items-center justify-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl shadow-primary/30 active:scale-95 text-xs sm:text-sm tracking-widest uppercase"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
               {isEditing ? 'Simpan Perubahan' : 'Publikasikan Konten'}

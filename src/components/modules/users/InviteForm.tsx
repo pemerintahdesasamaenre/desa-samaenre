@@ -28,7 +28,7 @@ export const InviteForm = () => {
   return (
     <div className="bg-card rounded-2xl sm:rounded-[3rem] shadow-sm border border-border overflow-hidden lg:sticky lg:top-8">
       <div className="p-5 sm:p-8 border-b border-border bg-muted/30">
-        <h2 className="text-lg sm:text-xl font-black text-foreground tracking-tight uppercase">Undang Admin</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-foreground tracking-tight uppercase">Undang Admin</h2>
       </div>
       <div className="p-5 sm:p-8 space-y-6 sm:space-y-8">
         <div className="flex items-center gap-3 p-4 bg-primary/5 rounded-2xl border border-primary/10 text-primary">
@@ -38,7 +38,7 @@ export const InviteForm = () => {
 
         <form onSubmit={handleInvite} className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
-            <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1">Email Calon Admin</label>
+            <label className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-primary/80 ml-1">Email Calon Admin</label>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
               <input 
@@ -54,7 +54,7 @@ export const InviteForm = () => {
           <button 
             type="submit" 
             disabled={inviting}
-            className="w-full bg-primary text-primary-foreground h-12 rounded-full font-black flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-primary/30 uppercase text-[10px] tracking-widest active:scale-95 disabled:opacity-50"
+            className="w-full bg-primary text-primary-foreground h-12 rounded-full font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-primary/30 uppercase text-[10px] tracking-widest active:scale-95 disabled:opacity-50"
           >
             {inviting ? 'Mengirim...' : <><UserPlus size={18} /> Kirim Undangan</>}
           </button>

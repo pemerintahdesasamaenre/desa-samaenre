@@ -73,10 +73,10 @@ export const Sidebar = () => {
         {/* Brand */}
         <div className="p-6 flex items-center gap-3 border-b border-border">
           <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
-            <span className="font-black text-xl">D</span>
+            <span className="font-bold text-xl">D</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-black text-lg text-foreground tracking-tighter leading-none">AdminDesa</span>
+            <span className="font-bold text-lg text-foreground tracking-tighter leading-none">AdminDesa</span>
             <span className="text-[10px] text-primary font-bold uppercase tracking-widest mt-1">Control Panel</span>
           </div>
         </div>
@@ -91,7 +91,7 @@ export const Sidebar = () => {
                 href={item.href}
                 className={`flex items-center justify-between p-3.5 rounded-2xl transition-all group ${
                   isActive 
-                    ? 'bg-primary text-primary-foreground shadow-xl shadow-primary/20 font-black' 
+                    ? 'bg-primary text-primary-foreground shadow-xl shadow-primary/20 font-bold' 
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >

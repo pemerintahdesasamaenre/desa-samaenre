@@ -25,7 +25,7 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
           <div className="space-y-6">
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-none">
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-foreground leading-none">
               Kabar <br/>
               <span className="text-gradient">Terbaru Desa</span>
             </h2>
@@ -35,7 +35,7 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
           </div>
           <Link 
             href="/posts" 
-            className="group flex items-center gap-3 bg-secondary/10 dark:bg-primary/10 border border-secondary/20 dark:border-primary/20 px-8 py-4 rounded-2xl font-black hover:bg-primary hover:text-primary-foreground transition-all duration-500 shadow-xl"
+            className="group flex items-center gap-3 bg-secondary/10 dark:bg-primary/10 border border-secondary/20 dark:border-primary/20 px-8 py-4 rounded-2xl font-bold hover:bg-primary hover:text-primary-foreground transition-all duration-500 shadow-xl"
           >
             Lihat Semua Berita
             <ChevronRight size={24} className="group-hover:translate-x-2 transition-transform" />
@@ -66,7 +66,7 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
 
                   
                   <div className="flex flex-row items-center space-x-4 z-10">
-                    <div className="h-10 px-4 bg-primary text-primary-foreground flex items-center justify-center rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">
+                    <div className="h-10 px-4 bg-primary text-primary-foreground flex items-center justify-center rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">
                       {post.categories?.name || 'Berita'}
                     </div>
                   </div>
@@ -76,13 +76,13 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
                       <Calendar size={14} />
                       {new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                     </div>
-                    <h3 className="font-black text-2xl md:text-3xl text-gray-50 relative leading-tight tracking-tight">
+                    <h3 className="font-bold text-2xl md:text-3xl text-gray-50 relative leading-tight tracking-tight">
                       {post.title}
                     </h3>
                     <p className="font-medium text-sm text-gray-200 relative my-4 line-clamp-2 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
                       Baca selengkapnya mengenai kontribusi dan dampak dari berita ini bagi warga desa...
                     </p>
-                    <div className="flex items-center gap-2 text-primary font-black uppercase text-xs tracking-widest">
+                    <div className="flex items-center gap-2 text-primary font-bold uppercase text-xs tracking-widest">
                       Selengkapnya <ChevronRight size={16} />
                     </div>
                   </div>

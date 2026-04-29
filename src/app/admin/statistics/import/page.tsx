@@ -263,7 +263,7 @@ export default function StatisticsImportPage() {
       <div className="bg-card rounded-[3rem] border border-border shadow-2xl overflow-hidden">
         <div className="p-10 border-b border-border bg-muted/30 flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div className="space-y-2">
-            <h1 className="text-3xl font-black text-foreground flex items-center gap-4 tracking-tighter uppercase">
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-4 tracking-tighter uppercase">
               <div className="p-3 bg-primary/10 text-primary rounded-2xl">
                 <FileSpreadsheet size={28} />
               </div>
@@ -273,8 +273,8 @@ export default function StatisticsImportPage() {
           </div>
           
           <div className="bg-background p-5 rounded-[2rem] border border-border shadow-sm text-center min-w-[140px]">
-            <span className="block text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">Tahun Data</span>
-            <span className="text-2xl font-black text-foreground tracking-tighter">{currentYear}</span>
+            <span className="block text-[10px] font-bold text-primary/60 uppercase tracking-widest mb-1">Tahun Data</span>
+            <span className="text-2xl font-bold text-foreground tracking-tighter">{currentYear}</span>
           </div>
         </div>
 
@@ -286,7 +286,7 @@ export default function StatisticsImportPage() {
             </div>
           )}
           {success && (
-            <div className="p-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 rounded-[2rem] text-sm font-black uppercase tracking-widest flex items-center gap-4 animate-in fade-in slide-in-from-top-2">
+            <div className="p-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 rounded-[2rem] text-sm font-bold uppercase tracking-widest flex items-center gap-4 animate-in fade-in slide-in-from-top-2">
               <CheckCircle2 size={24} />
               {success}
             </div>
@@ -308,7 +308,7 @@ export default function StatisticsImportPage() {
               <div className="w-24 h-24 bg-background rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-xl group-hover:scale-110 transition-transform border border-border">
                 <FileSpreadsheet size={48} className="text-primary/40 group-hover:text-primary transition-colors" />
               </div>
-              <p className="text-xl font-black text-foreground tracking-tight hover:text-primary transition-colors">Unggah File Desa (.xlsx)</p>
+              <p className="text-xl font-bold text-foreground tracking-tight hover:text-primary transition-colors">Unggah File Desa (.xlsx)</p>
               <p className="text-muted-foreground mt-2 font-medium">Nomor KK yang kosong otomatis mengikuti baris di atasnya.</p>
             </div>
           ) : (
@@ -319,8 +319,8 @@ export default function StatisticsImportPage() {
                     <FileSpreadsheet size={32} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-foreground tracking-tight">{file.name}</h3>
-                    <p className="text-primary text-[10px] font-black uppercase tracking-widest mt-1">{(file.size / 1024).toFixed(1)} KB • Siap Import</p>
+                    <h3 className="text-xl font-bold text-foreground tracking-tight">{file.name}</h3>
+                    <p className="text-primary text-[10px] font-bold uppercase tracking-widest mt-1">{(file.size / 1024).toFixed(1)} KB • Siap Import</p>
                   </div>
                 </div>
                 <button 
@@ -334,7 +334,7 @@ export default function StatisticsImportPage() {
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
                   <div className="w-1 h-6 bg-primary rounded-full" />
-                  <h3 className="text-sm font-black text-foreground uppercase tracking-widest">Daftar Dusun:</h3>
+                  <h3 className="text-sm font-bold text-foreground uppercase tracking-widest">Daftar Dusun:</h3>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -344,7 +344,7 @@ export default function StatisticsImportPage() {
                         <div className="w-10 h-10 bg-background rounded-xl flex items-center justify-center text-primary/60 group-hover:text-primary border border-border transition-colors">
                           <BarChart size={20} />
                         </div>
-                        <span className="font-black text-foreground uppercase text-sm tracking-tight">{sheetName}</span>
+                        <span className="font-bold text-foreground uppercase text-sm tracking-tight">{sheetName}</span>
                       </div>
                     </div>
                   ))}
@@ -354,7 +354,7 @@ export default function StatisticsImportPage() {
               <div className="p-8 bg-background border border-border rounded-[2.5rem] shadow-inner">
                 <div className="flex items-center gap-3 mb-4">
                   <Activity size={18} className="text-primary" />
-                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Proses Log:</span>
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Proses Log:</span>
                 </div>
                 <div className="p-6 bg-muted/30 text-primary/80 rounded-2xl font-mono text-xs border border-border leading-relaxed max-h-60 overflow-y-auto">
                   {logs.length > 0 ? logs.map((log, i) => <div key={i} className="mb-1">{`> ${log}`}</div>) : '> Menunggu perintah...'}
@@ -368,7 +368,7 @@ export default function StatisticsImportPage() {
           <button
             onClick={handleUpload}
             disabled={!file || loading || sheets.length === 0}
-            className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center justify-center gap-4 hover:opacity-90 disabled:opacity-30 disabled:grayscale transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
+            className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-5 rounded-full font-bold flex items-center justify-center gap-4 hover:opacity-90 disabled:opacity-30 disabled:grayscale transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
           >
             {loading ? <Loader2 className="animate-spin" size={24} /> : <Upload size={24} />}
             {loading ? 'Mengirim Data...' : 'Mulai Import Akhir'}

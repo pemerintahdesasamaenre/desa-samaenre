@@ -27,7 +27,7 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-none"
+            className="text-5xl md:text-7xl font-bold tracking-tighter text-foreground leading-none"
           >
             Aparatur <br/> <span className="text-gradient">Struktur Desa</span>
           </motion.h2>
@@ -74,8 +74,8 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
                 )}
               </motion.div>
               <div className="mt-8 space-y-2 text-center">
-                <h3 className="text-2xl font-black text-foreground group-hover:text-primary transition-colors">{member.name}</h3>
-                <p className="text-primary font-black text-[10px] uppercase tracking-[0.2em] bg-primary/10 dark:bg-primary/20 py-2 px-4 rounded-full inline-block">
+                <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">{member.name}</h3>
+                <p className="text-primary font-bold text-[10px] uppercase tracking-[0.2em] bg-primary/10 dark:bg-primary/20 py-2 px-4 rounded-full inline-block">
                   {member.position}
                 </p>
               </div>
@@ -86,7 +86,7 @@ export default function VillageApparatus({ staff }: VillageApparatusProps) {
         <div className="mt-24">
           <Link 
             href="/tentang" 
-            className="inline-flex items-center gap-4 px-12 py-5 bg-secondary text-secondary-foreground rounded-2xl font-black text-lg hover-lift hover:bg-primary transition-all duration-500 shadow-xl shadow-secondary/20"
+            className="inline-flex items-center gap-4 px-12 py-5 bg-secondary text-secondary-foreground rounded-2xl font-bold text-lg hover-lift hover:bg-primary transition-all duration-500 shadow-xl shadow-secondary/20"
           >
             Lihat Struktur Lengkap
           </Link>

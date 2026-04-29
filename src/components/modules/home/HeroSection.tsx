@@ -51,7 +51,7 @@ export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps
         </div>
 
         <div className="space-y-4">
-          <h1 className="text-6xl md:text-9xl font-black tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-[0.85] animate-slide-up">
+          <h1 className="text-6xl md:text-9xl font-bold tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-[0.85] animate-slide-up">
             Desa <br/>
             <span className="text-gradient drop-shadow-2xl">
               {villageName}
@@ -60,21 +60,21 @@ export default function HeroSection({ villageName, bannerUrl }: HeroSectionProps
         </div>
         
         <p className={`text-xl md:text-2xl font-medium max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-500 drop-shadow-lg ${bannerUrl ? 'text-white/90' : 'text-foreground'}`}>
-          Mewujudkan tata kelola desa yang <span className="text-primary font-black border-b-2 border-primary/40 text-glow">transparan</span>, 
-          <span className="text-primary font-black border-b-2 border-primary/40 text-glow"> inovatif</span>, dan 
-          <span className="text-primary font-black border-b-2 border-primary/40 text-glow"> mandiri</span> demi kesejahteraan seluruh masyarakat.
+          Mewujudkan tata kelola desa yang <span className="text-primary font-bold border-b-2 border-primary/40 text-glow">transparan</span>, 
+          <span className="text-primary font-bold border-b-2 border-primary/40 text-glow"> inovatif</span>, dan 
+          <span className="text-primary font-bold border-b-2 border-primary/40 text-glow"> mandiri</span> demi kesejahteraan seluruh masyarakat.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8 animate-fade-in animation-delay-700">
           <Link 
             href="/tentang" 
-            className="w-full sm:w-auto px-12 py-5 bg-primary text-primary-foreground rounded-[2rem] font-black text-lg hover:scale-105 transition-all shadow-xl shadow-primary/20"
+            className="w-full sm:w-auto px-12 py-5 bg-primary text-primary-foreground rounded-[2rem] font-bold text-lg hover:scale-105 transition-all shadow-xl shadow-primary/20"
           >
             Jelajahi Profil
           </Link>
           <Link 
             href="/transparansi" 
-            className="w-full sm:w-auto px-12 py-5 glass-premium text-white dark:text-foreground rounded-[2rem] font-black text-lg hover:bg-white/10 transition-all border border-white/20 shadow-xl"
+            className="w-full sm:w-auto px-12 py-5 glass-premium text-white dark:text-foreground rounded-[2rem] font-bold text-lg hover:bg-white/10 transition-all border border-white/20 shadow-xl"
           >
             Lihat Anggaran
           </Link>

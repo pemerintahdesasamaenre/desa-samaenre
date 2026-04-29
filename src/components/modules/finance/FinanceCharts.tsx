@@ -69,7 +69,7 @@ export default function FinanceCharts({ data }: FinanceChartsProps) {
     <div className="space-y-12">
       <div className="glass-premium p-10 rounded-[3.5rem] shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10"></div>
-        <h3 className="text-2xl font-black mb-10 tracking-tight text-foreground">Ringkasan Anggaran</h3>
+        <h3 className="text-2xl font-bold mb-10 tracking-tight text-foreground">Ringkasan Anggaran</h3>
         <div className="h-96 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={summaryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -116,7 +116,7 @@ export default function FinanceCharts({ data }: FinanceChartsProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div className="glass-premium p-10 rounded-[3.5rem] shadow-2xl relative overflow-hidden">
-          <h3 className="text-xl font-black mb-8 tracking-tight text-foreground">Pendapatan Per Kategori</h3>
+          <h3 className="text-xl font-bold mb-8 tracking-tight text-foreground">Pendapatan Per Kategori</h3>
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -154,7 +154,7 @@ export default function FinanceCharts({ data }: FinanceChartsProps) {
         </div>
 
         <div className="glass-premium p-10 rounded-[3.5rem] shadow-2xl relative overflow-hidden">
-          <h3 className="text-xl font-black mb-8 tracking-tight text-foreground">Pengeluarana Per Kategori</h3>
+          <h3 className="text-xl font-bold mb-8 tracking-tight text-foreground">Pengeluarana Per Kategori</h3>
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>

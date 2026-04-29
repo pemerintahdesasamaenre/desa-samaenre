@@ -401,7 +401,7 @@ export default function OrgChartTree({
                 </div>
               )}
               <div className="space-y-1">
-                <h2 className="text-3xl font-black uppercase tracking-tighter text-foreground">
+                <h2 className="text-3xl font-bold uppercase tracking-tighter text-foreground">
                   Struktur Organisasi {orgTitle}
                 </h2>
                 <h3 className="text-xl font-bold text-primary uppercase tracking-widest">

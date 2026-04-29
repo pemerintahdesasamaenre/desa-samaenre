@@ -37,7 +37,7 @@ export default function PublicPostsPage() {
             <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-sm font-bold uppercase tracking-widest">
               Warta Desa
             </div>
-            <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter">
+            <h1 className="text-5xl md:text-7xl font-bold text-foreground tracking-tighter">
               Kabar <span className="text-primary italic">Terkini</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
@@ -65,7 +65,7 @@ export default function PublicPostsPage() {
                       </div>
                       
                       <div className="flex flex-row items-center space-x-4 z-10">
-                        <div className="h-10 px-5 bg-primary text-primary-foreground flex items-center justify-center rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 shadow-lg">
+                        <div className="h-10 px-5 bg-primary text-primary-foreground flex items-center justify-center rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20 shadow-lg">
                           {post.categories?.name || 'Berita'}
                         </div>
                       </div>
@@ -75,13 +75,13 @@ export default function PublicPostsPage() {
                           <Calendar size={14} className="text-primary" />
                           {new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                         </div>
-                        <h2 className="font-black text-2xl md:text-3xl text-gray-50 relative leading-[1.1] tracking-tight">
+                        <h2 className="font-bold text-2xl md:text-3xl text-gray-50 relative leading-[1.1] tracking-tight">
                           {post.title}
                         </h2>
                         <p className="font-medium text-sm text-gray-200 relative my-4 line-clamp-2 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
                           {post.excerpt || 'Baca selengkapnya mengenai berita ini untuk mendapatkan rincian lebih lanjut bagi warga desa...'}
                         </p>
-                        <div className="flex items-center gap-2 text-primary font-black uppercase text-xs tracking-widest pt-2">
+                        <div className="flex items-center gap-2 text-primary font-bold uppercase text-xs tracking-widest pt-2">
                           Baca Selengkapnya <ChevronRight size={16} />
                         </div>
                       </div>
@@ -92,7 +92,7 @@ export default function PublicPostsPage() {
             </div>
           ) : (
             <div className="bg-card border border-border/50 rounded-[4rem] p-32 text-center space-y-6 shadow-xl">
-              <h3 className="text-3xl font-black text-foreground uppercase tracking-tighter">Belum ada berita.</h3>
+              <h3 className="text-3xl font-bold text-foreground uppercase tracking-tighter">Belum ada berita.</h3>
               <p className="text-muted-foreground text-lg font-medium">Silakan kembali lagi nanti untuk informasi terbaru.</p>
             </div>
           )}

@@ -37,7 +37,7 @@ export default function ResetDataButton() {
     <>
       <button
         onClick={() => setShowConfirm(true)}
-        className="flex items-center justify-center gap-2 text-destructive hover:bg-destructive/10 px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border border-destructive/20 shadow-sm active:scale-95"
+        className="flex items-center justify-center gap-2 text-destructive hover:bg-destructive/10 px-6 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border border-destructive/20 shadow-sm active:scale-95"
       >
         <ShieldAlert size={16} />
         Reset Database

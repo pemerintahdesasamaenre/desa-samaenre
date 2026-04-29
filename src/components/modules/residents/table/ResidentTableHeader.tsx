@@ -36,7 +36,7 @@ export const ResidentTableHeader = ({
         <div className="flex items-center gap-3 shrink-0">
           <Link
             href="/admin/statistics/import"
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-card border border-border text-foreground px-6 h-12 sm:h-14 rounded-2xl transition-all hover:bg-muted font-black shadow-sm uppercase text-[10px] tracking-widest"
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-card border border-border text-foreground px-6 h-12 sm:h-14 rounded-2xl transition-all hover:bg-muted font-bold shadow-sm uppercase text-[10px] tracking-widest"
           >
             <FileSpreadsheet size={16} className="text-emerald-600" />
             <span>Import</span>
@@ -44,7 +44,7 @@ export const ResidentTableHeader = ({
 
           <Link
             href="/admin/residents/new"
-            className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-foreground text-background px-8 h-12 sm:h-14 rounded-2xl transition-all hover:bg-primary hover:text-primary-foreground shadow-xl shadow-primary/10 font-black uppercase text-[10px] tracking-widest active:scale-95"
+            className="flex-1 md:flex-none flex items-center justify-center gap-3 bg-foreground text-background px-8 h-12 sm:h-14 rounded-2xl transition-all hover:bg-primary hover:text-primary-foreground shadow-xl shadow-primary/10 font-bold uppercase text-[10px] tracking-widest active:scale-95"
           >
             <UserPlus size={16} />
             <span>Tambah</span>
@@ -56,7 +56,7 @@ export const ResidentTableHeader = ({
       <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-hide no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
         <button
           onClick={() => onDusunChange('SEMUA')}
-          className={`px-8 h-11 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${
+          className={`px-8 h-11 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${
             dusun === 'SEMUA' 
             ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105 z-10' 
             : 'bg-card text-muted-foreground border-border hover:border-primary/50'
@@ -70,7 +70,7 @@ export const ResidentTableHeader = ({
           <button
             key={d}
             onClick={() => onDusunChange(d)}
-            className={`px-8 h-11 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${
+            className={`px-8 h-11 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${
               dusun === d 
               ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105 z-10' 
               : 'bg-card text-muted-foreground border-border hover:border-primary/50'

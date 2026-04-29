@@ -8,18 +8,21 @@ export default async function CategoriesPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-20">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-card p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm">
-        <div>
-          <h1 className="text-2xl sm:text-4xl font-bold text-foreground tracking-tighter uppercase">Kategori Konten</h1>
-          <p className="text-[10px] sm:text-base text-muted-foreground mt-1 font-medium italic">
-            Kelola pengelompokan berita, statistik, dan galeri.
-          </p>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm">
+        <div className="flex items-center gap-4">
+          <div className="p-2 sm:p-2.5 bg-muted rounded-xl border border-border flex items-center justify-center text-primary shrink-0">
+             <Folder size={20} />
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Kategori Konten</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 font-medium">Kelola pengelompokan berita, statistik, dan galeri.</p>
+          </div>
         </div>
         <Link
           href="/admin/categories/new"
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl sm:rounded-full font-bold transition-all shadow-xl shadow-primary/25 w-full lg:w-auto uppercase text-[10px] sm:text-xs tracking-widest hover:opacity-90 active:scale-95"
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl sm:rounded-full font-bold transition-all shadow-lg shadow-primary/25 w-full lg:w-auto uppercase text-[10px] sm:text-xs tracking-widest hover:opacity-90 active:scale-95"
         >
-          <Plus size={18} />
+          <Plus size={16} />
           Tambah Kategori
         </Link>
       </div>

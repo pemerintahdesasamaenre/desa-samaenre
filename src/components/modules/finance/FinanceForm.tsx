@@ -8,6 +8,7 @@ import { Save, Loader2, ArrowLeft, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
 
 export default function FinanceForm() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function FinanceForm() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    const toastId = toast.loading('Menyimpan data anggaran...');
 
     const formData = new FormData(e.currentTarget);
     
@@ -29,16 +31,25 @@ export default function FinanceForm() {
       note: formData.get('note') as string,
     };
 
-    const result = await addFinanceEntry(data);
-    
-    if (result.error) {
-      setError(typeof result.error === 'string' ? result.error : 'Validation failed');
+    try {
+      const result = await addFinanceEntry(data);
+      
+      if (result.error) {
+        const msg = typeof result.error === 'string' ? result.error : 'Gagal validasi data';
+        setError(msg);
+        toast.error('Gagal: ' + msg, { id: toastId });
+        setLoading(false);
+      } else {
+        toast.success('Data anggaran berhasil disimpan!', { id: toastId });
+        setTimeout(() => {
+          router.push('/admin/finances');
+          router.refresh();
+        }, 1500);
+      }
+    } catch {
+      toast.error('Terjadi kesalahan sistem', { id: toastId });
       setLoading(false);
-      return;
     }
-
-    router.push('/admin/finances');
-    router.refresh();
   }
 
   return (
@@ -53,32 +64,32 @@ export default function FinanceForm() {
         </Link>
       </div>
 
-      <div className="bg-card rounded-[3rem] border border-border shadow-sm overflow-hidden">
-        <div className="p-10 border-b border-border bg-muted/30">
-          <h2 className="text-3xl font-black text-foreground tracking-tighter">
+      <div className="bg-card rounded-2xl sm:rounded-3xl border border-border shadow-sm overflow-hidden">
+        <div className="p-6 sm:p-10 border-b border-border bg-muted/30">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
             Tambah Data Anggaran
           </h2>
-          <p className="text-muted-foreground mt-2 font-medium">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">
             Catat pemasukan atau pengeluaran desa secara transparan untuk dipublikasikan.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-10 space-y-10">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-10 space-y-8 sm:space-y-10">
           {error && (
             <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl text-sm font-bold">
               {error}
             </div>
           )}
           
-          <div className="space-y-10">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          <div className="space-y-6 sm:space-y-10">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-xl">
                 <TrendingUp size={18} />
               </div>
               Rincian Anggaran
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
               <div className="space-y-2">
                 <Label>Tahun Anggaran</Label>
                 <Input 
@@ -127,25 +138,25 @@ export default function FinanceForm() {
                 <textarea 
                   name="note" 
                   rows={4} 
-                  className="w-full p-6 rounded-[2rem] border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium hover:border-primary/50"
+                  className="w-full p-5 rounded-2xl border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium hover:border-primary/50 text-sm"
                   placeholder="Penjelasan tambahan mengenai anggaran ini..."
                 ></textarea>
               </div>
             </div>
           </div>
 
-          <div className="pt-10 border-t border-border flex justify-end gap-4">
+          <div className="pt-8 border-t border-border flex justify-end gap-4">
             <button 
               type="button" 
               onClick={() => router.back()} 
-              className="px-8 py-5 rounded-full text-xs font-black uppercase tracking-widest text-muted-foreground hover:bg-muted transition-all"
+              className="px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest text-muted-foreground hover:bg-muted transition-all"
             >
               Batal
             </button>
             <button 
               type="submit" 
               disabled={loading} 
-              className="bg-primary text-primary-foreground px-12 py-5 rounded-full font-black flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
+              className="bg-primary text-primary-foreground px-12 py-4 rounded-full font-bold flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl shadow-primary/30 active:scale-95 text-xs sm:text-sm tracking-widest uppercase"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
               Simpan Data

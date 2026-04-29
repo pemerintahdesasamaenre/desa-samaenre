@@ -24,7 +24,7 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
   return (
     <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-10">
       <div className="flex items-center gap-6">
-        <span className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Bagikan</span>
+        <span className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em]">Bagikan</span>
         <div className="flex gap-4">
           <button 
             onClick={shareWA}

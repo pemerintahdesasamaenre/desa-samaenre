@@ -16,7 +16,7 @@ export default async function NewStaffPage() {
           <ChevronLeft size={24} className="group-hover:-translate-x-1 transition-transform" />
         </Link>
         <div>
-          <h1 className="text-4xl font-black tracking-tight text-foreground tracking-tighter">Tambah Aparatur</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground tracking-tighter">Tambah Aparatur</h1>
           <p className="text-muted-foreground font-medium italic mt-1">Daftarkan anggota perangkat desa atau staf baru ke dalam sistem.</p>
         </div>
       </div>

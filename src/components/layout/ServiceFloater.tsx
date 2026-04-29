@@ -101,7 +101,7 @@ Terima kasih.`;
           
           <div className="shadow-input relative w-full sm:w-[500px] max-h-[90vh] overflow-y-auto bg-card p-8 sm:p-10 rounded-[2.5rem] z-10 border border-border animate-in zoom-in-95 duration-300">
             <div className="flex justify-between items-start mb-2">
-              <h2 className="text-3xl font-black text-foreground uppercase tracking-tighter italic">
+              <h2 className="text-3xl font-bold text-foreground uppercase tracking-tighter italic">
                 Layanan Mandiri
               </h2>
               <button 
@@ -181,7 +181,7 @@ Terima kasih.`;
               </LabelInputContainer>
 
               <button
-                className="group/btn relative block h-12 w-full rounded-xl bg-primary hover:bg-primary/90 font-black text-primary-foreground shadow-xl shadow-primary/20 uppercase tracking-widest text-xs mt-6 transition-all active:scale-[0.98]"
+                className="group/btn relative block h-12 w-full rounded-xl bg-primary hover:bg-primary/90 font-bold text-primary-foreground shadow-xl shadow-primary/20 uppercase tracking-widest text-xs mt-6 transition-all active:scale-[0.98]"
                 type="submit"
               >
                 Kirim ke WhatsApp &rarr;

@@ -67,7 +67,7 @@ export default function CustomSelect({
   return (
     <div className="space-y-2.5" ref={containerRef}>
       {label && (
-        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 ml-1 flex items-center gap-2">
+        <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/80 ml-1 flex items-center gap-2">
           {label}
           {required && <span className="text-destructive">*</span>}
         </label>
@@ -114,7 +114,7 @@ export default function CustomSelect({
                   onClick={() => handleSelect(opt.id)}
                   className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-sm transition-all ${
                     selectedId === opt.id 
-                      ? 'bg-primary text-primary-foreground font-black shadow-lg shadow-primary/30' 
+                      ? 'bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/30' 
                       : 'text-foreground hover:bg-muted hover:translate-x-1'
                   }`}
                 >

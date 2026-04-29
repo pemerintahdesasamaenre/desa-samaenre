@@ -31,7 +31,7 @@ export const ResidentPagination = ({
         </button>
         
         <div className="flex items-center gap-1">
-          <span className="text-[10px] font-black px-2 py-1 bg-primary text-primary-foreground rounded-md shadow-sm">
+          <span className="text-[10px] font-bold px-2 py-1 bg-primary text-primary-foreground rounded-md shadow-sm">
             {page}
           </span>
           <span className="text-[10px] font-bold text-muted-foreground">/</span>

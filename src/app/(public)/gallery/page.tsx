@@ -69,10 +69,10 @@ export default function GalleryPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <header className="mb-20 text-center space-y-6">
-          <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-black uppercase tracking-[0.2em]">
+          <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold uppercase tracking-[0.2em]">
             Dokumentasi Visual
           </div>
-          <h1 className="text-6xl md:text-8xl font-black text-foreground tracking-tighter leading-none uppercase">
+          <h1 className="text-6xl md:text-8xl font-bold text-foreground tracking-tighter leading-none uppercase">
             Galeri <span className="text-primary italic">Desa</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed italic">
@@ -105,7 +105,7 @@ export default function GalleryPage() {
                       )}
                       
                       {/* Source Badge */}
-                      <div className="absolute top-4 left-4 px-3 py-1 bg-background/90 backdrop-blur-sm border border-border/50 rounded-full text-[8px] font-black uppercase tracking-widest text-primary z-10">
+                      <div className="absolute top-4 left-4 px-3 py-1 bg-background/90 backdrop-blur-sm border border-border/50 rounded-full text-[8px] font-bold uppercase tracking-widest text-primary z-10">
                         {img.source === 'post' ? 'Warta Desa' : 'Profil Desa'}
                       </div>
 
@@ -121,7 +121,7 @@ export default function GalleryPage() {
 
                     {/* Content Section - Cleaner than articles */}
                     <div className="p-6 flex flex-col flex-1">
-                      <h3 className="text-base font-black text-foreground leading-tight line-clamp-2 mb-4 group-hover:text-primary transition-colors">
+                      <h3 className="text-base font-bold text-foreground leading-tight line-clamp-2 mb-4 group-hover:text-primary transition-colors">
                         {img.title}
                       </h3>
                       
@@ -130,7 +130,7 @@ export default function GalleryPage() {
                           <Calendar size={12} className="text-primary/60" />
                           {new Date(img.date).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })}
                         </div>
-                        <div className="px-2 py-0.5 bg-muted rounded text-[8px] font-black uppercase tracking-widest text-muted-foreground/50">
+                        <div className="px-2 py-0.5 bg-muted rounded text-[8px] font-bold uppercase tracking-widest text-muted-foreground/50">
                           {img.source}
                         </div>
                       </div>
@@ -145,7 +145,7 @@ export default function GalleryPage() {
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="px-10 py-4 bg-foreground text-background rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all hover:bg-primary hover:text-primary-foreground active:scale-95 disabled:opacity-30 flex items-center gap-3 shadow-lg"
+                  className="px-10 py-4 bg-foreground text-background rounded-full font-bold text-xs uppercase tracking-[0.2em] transition-all hover:bg-primary hover:text-primary-foreground active:scale-95 disabled:opacity-30 flex items-center gap-3 shadow-lg"
                 >
                   {loadingMore ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -162,7 +162,7 @@ export default function GalleryPage() {
         ) : (
           <div className="bg-card border border-dashed border-border rounded-[3rem] p-24 text-center space-y-4">
             <Camera size={48} className="mx-auto text-muted-foreground/20" />
-            <h3 className="text-2xl font-black text-foreground uppercase tracking-tight">Koleksi Masih Kosong</h3>
+            <h3 className="text-2xl font-bold text-foreground uppercase tracking-tight">Koleksi Masih Kosong</h3>
             <p className="text-muted-foreground text-sm font-medium">Foto kegiatan akan muncul di sini segera setelah artikel dipublikasikan.</p>
           </div>
         )}

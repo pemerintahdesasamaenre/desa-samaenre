@@ -28,15 +28,20 @@ export default async function AdminStatisticsPage() {
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-20">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 bg-card p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm">
-        <div>
-          <h1 className="text-2xl sm:text-4xl font-bold text-foreground tracking-tighter uppercase">Statistik Desa</h1>
-          <p className="text-xs sm:text-base text-muted-foreground mt-1 font-medium italic">Update otomatis dari basis data kependudukan.</p>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm">
+        <div className="flex items-center gap-4">
+          <div className="p-2 sm:p-2.5 bg-muted rounded-xl border border-border flex items-center justify-center text-primary shrink-0">
+             <BarChart size={20} />
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Statistik Desa</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 font-medium">Update otomatis dari basis data kependudukan.</p>
+          </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Link 
             href="/admin/residents" 
-            className="flex items-center justify-center gap-2 bg-primary hover:opacity-90 text-primary-foreground px-6 py-3 sm:px-8 sm:py-4 rounded-xl sm:rounded-full transition-all shadow-xl shadow-primary/20 font-bold uppercase text-[10px] tracking-widest w-full sm:w-auto active:scale-95"
+            className="flex items-center justify-center gap-2 bg-primary hover:opacity-90 text-primary-foreground px-6 py-3 rounded-xl sm:rounded-full transition-all shadow-lg shadow-primary/20 font-bold uppercase text-[10px] sm:text-xs tracking-widest w-full sm:w-auto active:scale-95"
           >
             <Users size={16} />
             Data Penduduk

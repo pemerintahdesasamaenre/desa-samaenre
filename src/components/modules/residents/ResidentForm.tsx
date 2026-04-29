@@ -141,10 +141,11 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         toast.error('Gagal menyimpan: ' + result.error, { id: toastId });
         setLoading(false);
       } else {
-        const successMsg = isEditing ? 'Data penduduk berhasil diperbarui!' : 'Penduduk baru berhasil ditambahkan!';
+        const successMsg = isEditing ? 'Data penduduk diperbarui!' : 'Penduduk baru ditambahkan!';
         setSuccess(successMsg);
         toast.success(successMsg, { id: toastId });
-        // Delay redirect to show success message
+        
+        // Use a slightly longer delay to ensure the user sees the toast
         setTimeout(() => {
           router.push('/admin/residents');
           router.refresh();
@@ -197,7 +198,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
-            className="flex items-center gap-2 text-destructive hover:bg-destructive/10 font-black text-[9px] sm:text-[10px] uppercase tracking-widest bg-destructive/5 px-4 py-2 sm:px-6 sm:py-3 rounded-full border border-destructive/20 active:scale-95"
+            className="flex items-center gap-2 text-destructive hover:bg-destructive/10 font-bold text-[9px] sm:text-[10px] uppercase tracking-widest bg-destructive/5 px-4 py-2 sm:px-6 sm:py-3 rounded-full border border-destructive/20 active:scale-95"
           >
             <Trash2 size={14} />
             Hapus Record
@@ -205,12 +206,12 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
         )}
       </div>
 
-      <div className="bg-card rounded-2xl sm:rounded-[3rem] border border-border shadow-sm overflow-hidden">
-        <div className="p-6 sm:p-10 border-b border-border bg-muted/30">
-          <h2 className="text-xl sm:text-3xl font-black text-foreground tracking-tighter uppercase">
+      <div className="bg-card rounded-2xl sm:rounded-3xl border border-border shadow-sm overflow-hidden">
+        <div className="p-6 sm:p-8 border-b border-border bg-muted/30">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight uppercase">
             {isEditing ? 'Update Data Penduduk' : 'Input Penduduk Baru'}
           </h2>
-          <p className="text-[10px] sm:text-base text-muted-foreground mt-1 font-medium italic">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium italic">
             Seluruh perubahan akan tervalidasi dan tercatat dalam sistem audit desa.
           </p>
         </div>
@@ -223,7 +224,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             </div>
           )}
           {success && (
-            <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 rounded-2xl text-xs sm:text-sm font-black uppercase tracking-widest flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+            <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 rounded-2xl text-xs sm:text-sm font-bold uppercase tracking-widest flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
               <CheckCircle2 size={18} />
               {success}
             </div>
@@ -237,7 +238,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                 <Contact size={18} />
               </div>
-              <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Identitas Utama</h3>
+              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-foreground">Identitas Utama</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
@@ -282,7 +283,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
                   defaultValue={initialData?.name || ''}
                   required
                   placeholder="NAMA LENGKAP"
-                  className="uppercase font-black h-11 sm:h-12 tracking-tight text-sm"
+                  className="uppercase font-bold h-11 sm:h-12 tracking-tight text-sm"
                 />
               </div>
             </div>
@@ -294,7 +295,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                 <Calendar size={18} />
               </div>
-              <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Kelahiran & Gender</h3>
+              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-foreground">Kelahiran & Gender</h3>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-8">
@@ -325,7 +326,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                 <MapPin size={18} />
               </div>
-              <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Domisili (Alamat)</h3>
+              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-foreground">Domisili (Alamat)</h3>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
@@ -334,14 +335,14 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
                   <div className="space-y-2 animate-in slide-in-from-left-1">
                     <div className="flex justify-between items-center">
                       <Label>Nama Dusun (Manual)</Label>
-                      <button type="button" onClick={() => setCustomDusun(false)} className="text-[9px] font-black text-primary uppercase">Kembali ke List</button>
+                      <button type="button" onClick={() => setCustomDusun(false)} className="text-[9px] font-bold text-primary uppercase">Kembali ke List</button>
                     </div>
                     <div className="relative">
                       <Input
                         value={dusunVal}
                         onChange={(e) => setDusunVal(e.target.value.toUpperCase())}
                         placeholder="INPUT NAMA DUSUN"
-                        className="uppercase h-11 sm:h-12 pl-10 text-sm font-black text-primary border-primary/30"
+                        className="uppercase h-11 sm:h-12 pl-10 text-sm font-bold text-primary border-primary/30"
                         autoFocus
                       />
                       <Edit3 size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
@@ -376,7 +377,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                 <Briefcase size={18} />
               </div>
-              <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Sosial & Ekonomi</h3>
+              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-foreground">Sosial & Ekonomi</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
@@ -385,14 +386,14 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
                   <div className="space-y-2 animate-in slide-in-from-left-1">
                     <div className="flex justify-between items-center">
                       <Label>Pendidikan (Manual)</Label>
-                      <button type="button" onClick={() => setCustomEdu(false)} className="text-[9px] font-black text-primary uppercase">Kembali ke List</button>
+                      <button type="button" onClick={() => setCustomEdu(false)} className="text-[9px] font-bold text-primary uppercase">Kembali ke List</button>
                     </div>
                     <div className="relative">
                       <Input
                         value={eduVal}
                         onChange={(e) => setEduVal(e.target.value.toUpperCase())}
                         placeholder="INPUT PENDIDIKAN"
-                        className="uppercase h-11 sm:h-12 pl-10 text-sm font-black text-primary border-primary/30"
+                        className="uppercase h-11 sm:h-12 pl-10 text-sm font-bold text-primary border-primary/30"
                         autoFocus
                       />
                       <GraduationCap size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
@@ -415,14 +416,14 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
                   <div className="space-y-2 animate-in slide-in-from-left-1">
                     <div className="flex justify-between items-center">
                       <Label>Pekerjaan (Manual)</Label>
-                      <button type="button" onClick={() => setCustomOcc(false)} className="text-[9px] font-black text-primary uppercase">Kembali ke List</button>
+                      <button type="button" onClick={() => setCustomOcc(false)} className="text-[9px] font-bold text-primary uppercase">Kembali ke List</button>
                     </div>
                     <div className="relative">
                       <Input
                         value={occVal}
                         onChange={(e) => setOccVal(e.target.value.toUpperCase())}
                         placeholder="INPUT PEKERJAAN"
-                        className="uppercase h-11 sm:h-12 pl-10 text-sm font-black text-primary border-primary/30"
+                        className="uppercase h-11 sm:h-12 pl-10 text-sm font-bold text-primary border-primary/30"
                         autoFocus
                       />
                       <Briefcase size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-primary" />
@@ -463,7 +464,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
               <div className="p-1.5 sm:p-2 bg-primary/10 text-primary rounded-lg">
                 <Users size={18} />
               </div>
-              <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-foreground">Data Orang Tua</h3>
+              <h3 className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-foreground">Data Orang Tua</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
@@ -482,7 +483,7 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
             <button
               type="submit"
               disabled={loading || !!success}
-              className="w-full sm:w-auto bg-primary text-primary-foreground px-10 py-4 sm:px-12 sm:py-5 rounded-full font-black flex items-center justify-center gap-3 hover:opacity-90 disabled:opacity-50 transition-all shadow-xl shadow-primary/20 text-[10px] sm:text-xs tracking-widest uppercase active:scale-95"
+              className="w-full sm:w-auto bg-primary text-primary-foreground px-10 py-4 sm:px-12 sm:py-5 rounded-full font-bold flex items-center justify-center gap-3 hover:opacity-90 disabled:opacity-50 transition-all shadow-xl shadow-primary/20 text-[10px] sm:text-xs tracking-widest uppercase active:scale-95"
             >
               {loading && !success ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
               {isEditing ? 'Simpan Seluruh Perubahan' : 'Simpan Data Penduduk'}
