@@ -200,6 +200,29 @@ export async function deleteResident(id: string) {
   }
 }
 
+export async function verifyResidentNIK(nik: string) {
+  const supabase = await createClient();
+  try {
+    const hashedNIK = hashNIK(nik);
+    const { data, error } = await supabase
+      .from('residents')
+      .select('name_enc')
+      .eq('nik_hash', hashedNIK)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) return { success: false, error: 'NIK tidak ditemukan dalam database penduduk.' };
+
+    return { 
+      success: true, 
+      name: decrypt(data.name_enc)
+    };
+  } catch (e) {
+    console.error('ERROR in verifyResidentNIK:', e);
+    return { success: false, error: 'Terjadi kesalahan saat verifikasi NIK.' };
+  }
+}
+
 export async function logSensitiveView(residentId: string, residentName: string) {
   await logActivity({
     action: `Akses data sensitif: ${residentName}`,

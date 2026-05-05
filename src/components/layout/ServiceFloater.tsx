@@ -3,9 +3,10 @@ import { useState, useEffect } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
-import { MessageCircle, X, ClipboardList } from 'lucide-react';
+import { MessageCircle, X, ClipboardList, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import CustomSelect from '@/components/ui/CustomSelect';
+import { verifyResidentNIK } from "@/actions/residents";
 
 const SERVICES = [
   { id: 'sktm', name: 'Surat Keterangan Tidak Mampu (SKTM)' },
@@ -19,6 +20,9 @@ const SERVICES = [
 export default function ServiceFloater() {
   const [isOpen, setIsOpen] = useState(false);
   const [villageInfo, setVillageInfo] = useState<{name: string, contact_info: {phone: string}} | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [verificationError, setVerificationError] = useState("");
   const [formData, setFormData] = useState({
     name: '',
     nik: '',
@@ -47,8 +51,33 @@ export default function ServiceFloater() {
     };
   }, [isOpen]);
 
+  const handleVerify = async () => {
+    if (formData.nik.length !== 16) {
+      setVerificationError("NIK harus 16 digit.");
+      return;
+    }
+
+    setIsVerifying(true);
+    setVerificationError("");
+    
+    try {
+      const result = await verifyResidentNIK(formData.nik);
+      if (result.success) {
+        setIsVerified(true);
+        setFormData(prev => ({ ...prev, name: result.name || "" }));
+      } else {
+        setVerificationError(result.error || "NIK tidak terdaftar.");
+      }
+    } catch {
+      setVerificationError("Terjadi kesalahan sistem.");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isVerified) return;
     
     let phoneNumber = villageInfo?.contact_info?.phone || '';
     phoneNumber = phoneNumber.replace(/[^0-9]/g, '');
@@ -79,6 +108,7 @@ Terima kasih.`;
     const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank');
     setIsOpen(false);
+    setIsVerified(false);
     setFormData({ name: '', nik: '', service: '', manualService: '', notes: '' });
   };
 
@@ -115,78 +145,118 @@ Terima kasih.`;
               Ajukan permohonan surat atau pengaduan langsung ke WhatsApp Sekretariat Desa {villageInfo?.name}.
             </p>
 
-            <form className="mt-8 space-y-4 pb-4" onSubmit={handleSubmit}>
-              <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                <LabelInputContainer>
-                  <Label htmlFor="name">Nama Lengkap</Label>
-                  <Input 
-                    id="name" 
-                    placeholder="Contoh: Budi Santoso" 
-                    type="text" 
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  />
-                </LabelInputContainer>
-                <LabelInputContainer>
-                  <Label htmlFor="nik">NIK (16 Digit)</Label>
-                  <Input 
-                    id="nik" 
-                    placeholder="73xxxxxxxxxxxxxx" 
-                    type="text" 
-                    maxLength={16}
-                    required
-                    value={formData.nik}
-                    onChange={(e) => setFormData({...formData, nik: e.target.value.replace(/\D/g, '')})}
-                  />
-                </LabelInputContainer>
-              </div>
+            <div className="mt-8 space-y-6">
+              {!isVerified ? (
+                <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <LabelInputContainer>
+                    <Label htmlFor="nik" className="text-base">Masukkan NIK Anda untuk Verifikasi</Label>
+                    <div className="relative">
+                      <Input 
+                        id="nik" 
+                        placeholder="73xxxxxxxxxxxxxx" 
+                        type="text" 
+                        maxLength={16}
+                        className={cn(
+                          "h-14 text-lg tracking-[0.2em] font-mono",
+                          verificationError && "border-destructive focus-visible:ring-destructive"
+                        )}
+                        value={formData.nik}
+                        onChange={(e) => {
+                          setFormData({...formData, nik: e.target.value.replace(/\D/g, '')});
+                          setVerificationError("");
+                        }}
+                      />
+                      {isVerifying && (
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                          <Loader2 className="animate-spin text-primary" size={20} />
+                        </div>
+                      )}
+                    </div>
+                    {verificationError && (
+                      <p className="text-xs text-destructive flex items-center gap-1 font-medium">
+                        <AlertCircle size={14} /> {verificationError}
+                      </p>
+                    )}
+                  </LabelInputContainer>
 
-              <LabelInputContainer>
-                <CustomSelect
-                  label="Jenis Layanan"
-                  options={SERVICES.map(s => ({ id: s.id, name: s.name }))}
-                  value={formData.service}
-                  onChange={(val) => setFormData({...formData, service: val})}
-                  icon={ClipboardList}
-                  placeholder="Pilih layanan..."
-                  required
-                />
-              </LabelInputContainer>
+                  <button
+                    onClick={handleVerify}
+                    disabled={isVerifying || formData.nik.length !== 16}
+                    className="group/btn relative block h-14 w-full rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-bold text-primary-foreground shadow-xl shadow-primary/20 uppercase tracking-widest text-sm transition-all active:scale-[0.98]"
+                  >
+                    {isVerifying ? "Memverifikasi..." : "Verifikasi NIK & Lanjutkan"}
+                  </button>
 
-              {formData.service === 'lainnya' && (
-                <LabelInputContainer className="animate-in slide-in-from-top-2">
-                  <Label htmlFor="manualService">Nama Layanan</Label>
-                  <Input 
-                    id="manualService" 
-                    placeholder="Sebutkan layanan lainnya" 
-                    type="text" 
-                    required
-                    value={formData.manualService}
-                    onChange={(e) => setFormData({...formData, manualService: e.target.value})}
-                  />
-                </LabelInputContainer>
+                  <p className="text-[10px] text-center text-muted-foreground uppercase tracking-wider font-bold">
+                    Hanya penduduk terdaftar yang dapat menggunakan layanan ini
+                  </p>
+                </div>
+              ) : (
+                <form className="space-y-4 animate-in fade-in zoom-in-95 duration-500" onSubmit={handleSubmit}>
+                  <div className="bg-primary/5 border border-primary/10 rounded-2xl p-4 flex items-center gap-4 mb-2">
+                    <div className="bg-primary/10 p-2 rounded-full">
+                      <CheckCircle2 className="text-primary" size={24} />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Penduduk Terverifikasi</p>
+                      <p className="text-lg font-bold text-foreground">{formData.name}</p>
+                    </div>
+                    <button 
+                      type="button"
+                      onClick={() => setIsVerified(false)}
+                      className="ml-auto text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-destructive transition-colors"
+                    >
+                      Ganti NIK
+                    </button>
+                  </div>
+
+                  <LabelInputContainer>
+                    <CustomSelect
+                      label="Jenis Layanan"
+                      options={SERVICES.map(s => ({ id: s.id, name: s.name }))}
+                      value={formData.service}
+                      onChange={(val) => setFormData({...formData, service: val})}
+                      icon={ClipboardList}
+                      placeholder="Pilih layanan..."
+                      required
+                    />
+                  </LabelInputContainer>
+
+                  {formData.service === 'lainnya' && (
+                    <LabelInputContainer className="animate-in slide-in-from-top-2">
+                      <Label htmlFor="manualService">Nama Layanan</Label>
+                      <Input 
+                        id="manualService" 
+                        placeholder="Sebutkan layanan lainnya" 
+                        type="text" 
+                        required
+                        value={formData.manualService}
+                        onChange={(e) => setFormData({...formData, manualService: e.target.value})}
+                      />
+                    </LabelInputContainer>
+                  )}
+
+                  <LabelInputContainer>
+                    <Label htmlFor="notes">Detail Keperluan</Label>
+                    <textarea
+                      id="notes"
+                      placeholder="Tuliskan alasan atau rincian permohonan..."
+                      className="flex w-full border border-border bg-background text-foreground shadow-sm rounded-xl px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-[2px] focus-visible:ring-primary transition duration-400 min-h-[100px] resize-none"
+                      required
+                      value={formData.notes}
+                      onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                    />
+                  </LabelInputContainer>
+
+                  <button
+                    className="group/btn relative block h-14 w-full rounded-xl bg-primary hover:bg-primary/90 font-bold text-primary-foreground shadow-xl shadow-primary/20 uppercase tracking-widest text-sm mt-6 transition-all active:scale-[0.98]"
+                    type="submit"
+                  >
+                    Kirim ke WhatsApp &rarr;
+                  </button>
+                </form>
               )}
-
-              <LabelInputContainer>
-                <Label htmlFor="notes">Detail Keperluan</Label>
-                <textarea
-                  id="notes"
-                  placeholder="Tuliskan alasan atau rincian permohonan..."
-                  className="flex w-full border border-border bg-background text-foreground shadow-sm rounded-md px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-[2px] focus-visible:ring-primary transition duration-400 min-h-[80px] resize-none"
-                  required
-                  value={formData.notes}
-                  onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                />
-              </LabelInputContainer>
-
-              <button
-                className="group/btn relative block h-12 w-full rounded-xl bg-primary hover:bg-primary/90 font-bold text-primary-foreground shadow-xl shadow-primary/20 uppercase tracking-widest text-xs mt-6 transition-all active:scale-[0.98]"
-                type="submit"
-              >
-                Kirim ke WhatsApp &rarr;
-              </button>
-            </form>
+            </div>
           </div>
         </div>
       )}
