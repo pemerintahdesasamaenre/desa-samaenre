@@ -8,6 +8,7 @@ export interface DemographicData {
   occupations: { label: string; value: number }[];
   education: { label: string; value: number }[];
   marital_status: { label: string; value: number }[];
+  family_relationship: { label: string; value: number }[];
   age_groups: { label: string; value: number }[];
 }
 

@@ -122,9 +122,10 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
       birth_place: formData.get('birth_place') as string || '',
       birth_date: formData.get('birth_date') as string || null,
       gender: formData.get('gender') as 'L' | 'P',
-      education: customEdu ? dusunVal : (formData.get('education') as string), // Fix: should be eduVal, logic corrected below
+      education: customEdu ? eduVal : (formData.get('education') as string),
       occupation: customOcc ? occVal : (formData.get('occupation') as string),
       marital_status: formData.get('marital_status') as string,
+      family_relationship: formData.get('family_relationship') as string,
       father_name: formData.get('father_name') as string || '',
       mother_name: formData.get('mother_name') as string || '',
       dusun: customDusun ? dusunVal : (formData.get('dusun') as string),
