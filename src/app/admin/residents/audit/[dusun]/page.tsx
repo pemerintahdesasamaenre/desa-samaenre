@@ -16,6 +16,7 @@ const FIELD_LABELS: Record<string, string> = {
   education: 'Pendidikan',
   occupation: 'Pekerjaan',
   marital_status: 'Status Perkawinan',
+  family_relationship: 'Hubungan Keluarga',
   father_name: 'Nama Ayah',
   mother_name: 'Nama Ibu',
   dusun: 'Dusun',

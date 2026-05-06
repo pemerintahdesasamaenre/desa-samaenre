@@ -22,6 +22,7 @@ export default async function AdminStatisticsPage() {
     if (lowerName.includes('pekerjaan')) return <Briefcase size={18} className="text-amber-500" />;
     if (lowerName.includes('dusun')) return <MapPin size={18} className="text-emerald-500" />;
     if (lowerName.includes('perkawinan')) return <Heart size={18} className="text-rose-500" />;
+    if (lowerName.includes('keluarga') || lowerName.includes('hubungan')) return <Users size={18} className="text-orange-500" />;
     if (lowerName.includes('usia')) return <Baby size={18} className="text-indigo-500" />;
     return <Layers size={18} className="text-muted-foreground" />;
   };

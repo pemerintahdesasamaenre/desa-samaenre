@@ -16,6 +16,7 @@ export interface ResidentImportData {
   education: string;
   occupation: string;
   marital_status: string;
+  family_relationship: string;
   father_name: string;
   mother_name: string;
   dusun: string;
@@ -60,6 +61,7 @@ export async function getResidents(params: {
       education: item.education,
       occupation: item.occupation,
       marital_status: item.marital_status,
+      family_relationship: item.family_relationship,
       father_name: item.father_name,
       mother_name: item.mother_name,
       dusun: item.dusun,
@@ -105,6 +107,7 @@ export async function getResidentById(id: string) {
       education: data.education,
       occupation: data.occupation,
       marital_status: data.marital_status,
+      family_relationship: data.family_relationship,
       father_name: data.father_name,
       mother_name: data.mother_name,
       dusun: data.dusun,
@@ -251,6 +254,7 @@ export async function importResidents(data: ResidentImportData[]) {
       education: item.education,
       occupation: item.occupation,
       marital_status: item.marital_status,
+      family_relationship: item.family_relationship,
       father_name: item.father_name,
       mother_name: item.mother_name,
       dusun: item.dusun,
@@ -311,7 +315,7 @@ export interface IncompleteResidentDetail extends ResidentDisplayData {
 const CHECK_FIELDS = [
   'nik', 'kk', 'name', 'birth_place', 'birth_date', 
   'gender', 'education', 'occupation', 'marital_status', 
-  'father_name', 'mother_name', 'dusun'
+  'family_relationship', 'father_name', 'mother_name', 'dusun'
 ];
 
 function getMissingFields(resident: ResidentDisplayData): string[] {
@@ -343,6 +347,7 @@ export async function getIncompleteStats() {
       education: item.education,
       occupation: item.occupation,
       marital_status: item.marital_status,
+      family_relationship: item.family_relationship,
       father_name: item.father_name,
       mother_name: item.mother_name,
       dusun: item.dusun,
@@ -395,6 +400,7 @@ export async function getIncompleteResidents(dusun?: string) {
         education: item.education,
         occupation: item.occupation,
         marital_status: item.marital_status,
+        family_relationship: item.family_relationship,
         father_name: item.father_name,
         mother_name: item.mother_name,
         dusun: item.dusun,

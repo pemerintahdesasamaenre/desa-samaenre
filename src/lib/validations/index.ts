@@ -92,6 +92,7 @@ export const residentSchema = z.object({
   education: z.string().min(1, "Pendidikan wajib diisi"),
   occupation: z.string().min(1, "Pekerjaan wajib diisi"),
   marital_status: z.string().min(1, "Status perkawinan wajib diisi"),
+  family_relationship: z.string().min(1, "Hubungan keluarga wajib diisi"),
   father_name: z.string().optional().or(z.literal('')),
   mother_name: z.string().optional().or(z.literal('')),
   dusun: z.string().optional().or(z.literal('')),

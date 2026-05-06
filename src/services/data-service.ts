@@ -28,7 +28,7 @@ export async function getDemographics(): Promise<DemographicData> {
 
     const result: DemographicData = {
       population: { total: 0, households: 0, male: 0, female: 0 },
-      hamlets: [], occupations: [], education: [], marital_status: [], age_groups: []
+      hamlets: [], occupations: [], education: [], marital_status: [], family_relationship: [], age_groups: []
     };
 
     data.forEach((item) => {
@@ -44,6 +44,7 @@ export async function getDemographics(): Promise<DemographicData> {
       else if (cat === 'occupations') result.occupations.push({ label: item.label, value: item.value });
       else if (cat === 'education') result.education.push({ label: item.label, value: item.value });
       else if (cat === 'marital_status') result.marital_status.push({ label: item.label, value: item.value });
+      else if (cat === 'family_relationship') result.family_relationship.push({ label: item.label, value: item.value });
       else if (cat === 'age_groups') result.age_groups.push({ label: item.label, value: item.value });
     });
 

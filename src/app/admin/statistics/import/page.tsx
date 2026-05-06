@@ -169,6 +169,25 @@ export default function StatisticsImportPage() {
 
           // ORTU LOGIC
           const statusIdx = getIdx(['STATUS'], true);
+          let statusValue = statusIdx !== -1 ? String(row[statusIdx] || '').trim().toUpperCase() : '';
+          
+          // NORMALISASI STATUS (Hubungan Keluarga)
+          const statusMap: Record<string, string> = {
+            'KP KELUARGA': 'KEPALA KELUARGA',
+            'KP. KELUARGA': 'KEPALA KELUARGA',
+            'KEP.': 'KEPALA KELUARGA',
+            'ISTERI': 'ISTRI',
+            'K KELUARGA': 'KEPALA KELUARGA',
+          };
+          
+          statusValue = statusMap[statusValue] || statusValue;
+
+          // Inferred Marital Status
+          let inferredMarital = 'Belum Kawin';
+          if (['SUAMI', 'ISTRI', 'KEPALA KELUARGA', 'KP KELUARGA', 'ISTERI'].includes(statusValue)) {
+            inferredMarital = 'Kawin';
+          }
+
           const ayah = statusIdx !== -1 ? String(row[statusIdx + 1] || '').trim() : '';
           const ibu = statusIdx !== -1 ? String(row[statusIdx + 2] || '').trim() : '';
 
@@ -181,7 +200,8 @@ export default function StatisticsImportPage() {
             gender,
             education: String(row[getIdx(['PENDIDIKAN'], true)] || '').trim(),
             occupation: String(row[getIdx(['PEKERJAAN'], true)] || '').trim(),
-            marital_status: String(row[statusIdx] || '').trim(),
+            marital_status: inferredMarital,
+            family_relationship: statusValue,
             father_name: ayah,
             mother_name: ibu,
             dusun: sheetName.replace('DATA PENDUDUK DUSUN ', '').trim(),

@@ -57,6 +57,18 @@ const MARITAL_OPTIONS = [
   { id: 'Cerai Mati', name: 'Cerai Mati' },
 ];
 
+const RELATIONSHIP_OPTIONS = [
+  { id: 'KEPALA KELUARGA', name: 'KEPALA KELUARGA' },
+  { id: 'SUAMI', name: 'SUAMI' },
+  { id: 'ISTRI', name: 'ISTRI' },
+  { id: 'ANAK', name: 'ANAK' },
+  { id: 'ORANG TUA', name: 'ORANG TUA' },
+  { id: 'MERTUA', name: 'MERTUA' },
+  { id: 'CUCU', name: 'CUCU' },
+  { id: 'MENANTU', name: 'MENANTU' },
+  { id: 'LAINNYA', name: 'LAINNYA' },
+];
+
 export default function ResidentForm({ initialData, isEditing }: ResidentFormProps) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
@@ -439,6 +451,16 @@ export default function ResidentForm({ initialData, isEditing }: ResidentFormPro
                   options={MARITAL_OPTIONS}
                   defaultValue={initialData?.marital_status || ''}
                   icon={Heart}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <CustomSelect
+                  label="Hubungan Keluarga"
+                  name="family_relationship"
+                  options={RELATIONSHIP_OPTIONS}
+                  defaultValue={initialData?.family_relationship || ''}
+                  icon={Users}
                   required
                 />
               </div>

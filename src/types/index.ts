@@ -97,6 +97,7 @@ export interface Resident {
   education: string | null;
   occupation: string | null;
   marital_status: string | null;
+  family_relationship: string | null;
   father_name: string | null;
   mother_name: string | null;
   dusun: string | null;
