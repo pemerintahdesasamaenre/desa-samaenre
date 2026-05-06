@@ -113,7 +113,7 @@ export default function StatisticsImportPage() {
         // Logika Forward Fill untuk KK
         let lastValidKK = '';
         
-        const sheetProcessedData = dataRows.map((row) => {
+        const sheetProcessedData = dataRows.map((row): ResidentInput | null => {
           const getIdx = (targets: string[], exact = false) => {
             return headers.findIndex(h => {
               if (exact) return targets.includes(h);
@@ -189,8 +189,10 @@ export default function StatisticsImportPage() {
             inferredMarital = 'Kawin';
           }
 
-          const ayah = statusIdx !== -1 ? String(row[statusIdx + 1] || '').trim() : '';
-          const ibu = statusIdx !== -1 ? String(row[statusIdx + 2] || '').trim() : '';
+          const ayahIdx = statusIdx !== -1 ? statusIdx + 1 : -1;
+          const ibuIdx = statusIdx !== -1 ? statusIdx + 2 : -1;
+          const ayah = ayahIdx !== -1 ? String(row[ayahIdx] || '').trim() : '';
+          const ibu = ibuIdx !== -1 ? String(row[ibuIdx] || '').trim() : '';
 
           return {
             nik: (nik.length >= 15) ? nik : '0000000000000000',
