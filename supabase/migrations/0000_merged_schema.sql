@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS public.residents (
     education TEXT,
     occupation TEXT,
     marital_status TEXT,
+    family_relationship TEXT,
     father_name TEXT,
     mother_name TEXT,
     dusun TEXT,
@@ -256,9 +257,11 @@ WITH normalized_data AS (
         END as clean_occupation,
         CASE 
             WHEN marital_status ILIKE '%BELUM%' THEN 'Belum Kawin'
-            WHEN marital_status ILIKE '%KAWIN%' OR marital_status ILIKE '%SUAMI%' OR marital_status ILIKE '%ISTRI%' OR marital_status ILIKE '%MENIKAH%' OR marital_status ILIKE '%KEPALA%KELUARGA%' THEN 'Kawin'
+            WHEN marital_status ILIKE '%KAWIN%' OR marital_status ILIKE '%SUAMI%' OR marital_status ILIKE '%ISTRI%' OR marital_status ILIKE '%MENIKAH%' OR marital_status ILIKE '%KEPALA%KELUARGA%' OR
+                 family_relationship ILIKE '%SUAMI%' OR family_relationship ILIKE '%ISTRI%' OR family_relationship ILIKE '%KEPALA%KELUARGA%' THEN 'Kawin'
             WHEN marital_status ILIKE '%CERAI%HIDUP%' THEN 'Cerai Hidup'
             WHEN marital_status ILIKE '%CERAI%MATI%' OR marital_status ILIKE '%JANDA%' OR marital_status ILIKE '%DUDA%' THEN 'Cerai Mati'
+            WHEN family_relationship ILIKE '%ANAK%' AND (marital_status IS NULL OR marital_status = '') THEN 'Belum Kawin'
             ELSE 'Lainnya'
         END as clean_marital_status
     FROM public.residents
@@ -277,6 +280,8 @@ aggregated_stats AS (
     SELECT data_year, 'marital_status', clean_marital_status, COUNT(*), 0 FROM normalized_data GROUP BY data_year, clean_marital_status
     UNION ALL
     SELECT data_year, 'hamlets', clean_dusun, COUNT(*), 0 FROM normalized_data WHERE clean_dusun IS NOT NULL AND clean_dusun != '' GROUP BY data_year, clean_dusun
+    UNION ALL
+    SELECT data_year, 'family_relationship', family_relationship, COUNT(*), 0 FROM public.residents WHERE family_relationship IS NOT NULL AND family_relationship != '' GROUP BY data_year, family_relationship
     UNION ALL
     SELECT 
         data_year, 'age_groups',

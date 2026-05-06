@@ -36,6 +36,12 @@
     { "label": "Cerai Hidup", "value": 39 },
     { "label": "Kawin Tidak Tercatat", "value": 3 }
   ],
+  "family_relationship": [
+    { "label": "KEPALA KELUARGA", "value": 659 },
+    { "label": "ISTRI", "value": 612 },
+    { "label": "ANAK", "value": 700 },
+    { "label": "LAINNYA", "value": 54 }
+  ],
   "religion": [
     { "label": "Islam", "value": 2025 },
     { "label": "Kristen", "value": 0 },
