@@ -1,14 +1,18 @@
 import { getHomepageData } from '@/services/data-service';
 import { StatCard } from '@/components/ui/StatCard';
-import { Activity, Bell, Users, Wallet, FileText, ShieldCheck, Clock } from 'lucide-react';
+import { Activity, Bell, Users, Wallet, FileText, ShieldCheck, Clock, AlertCircle } from 'lucide-react';
 import { getAuditLogs } from '@/actions/analytics';
+import { getIncompleteStats } from '@/actions/residents';
 import Link from 'next/link';
 
 export default async function AdminDashboard() {
-  const [data, auditLogs] = await Promise.all([
+  const [data, auditLogs, incompleteStats] = await Promise.all([
     getHomepageData(),
-    getAuditLogs(1, 5)
+    getAuditLogs(1, 5),
+    getIncompleteStats()
   ]);
+
+  const totalIncomplete = incompleteStats.reduce((acc, curr) => acc + curr.count, 0);
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-20">
@@ -19,37 +23,37 @@ export default async function AdminDashboard() {
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">Selamat datang di sistem manajemen dashboard {data.villageName}.</p>
         </div>
         <div className="flex items-center gap-2">
-           <div className="p-2 sm:p-2.5 bg-muted rounded-xl sm:rounded-2xl border border-border flex items-center justify-center text-primary">
-              <Activity size={18} className="sm:w-5 sm:h-5" />
-           </div>
-           <div className="p-2 sm:p-2.5 bg-muted rounded-xl sm:rounded-2xl border border-border flex items-center justify-center text-muted-foreground">
-              <Bell size={18} className="sm:w-5 sm:h-5" />
-           </div>
+          <div className="p-2 sm:p-2.5 bg-muted rounded-xl sm:rounded-2xl border border-border flex items-center justify-center text-primary">
+            <Activity size={18} className="sm:w-5 sm:h-5" />
+          </div>
+          <div className="p-2 sm:p-2.5 bg-muted rounded-xl sm:rounded-2xl border border-border flex items-center justify-center text-muted-foreground">
+            <Bell size={18} className="sm:w-5 sm:h-5" />
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard 
-          label="Total Penduduk" 
-          value={data.population} 
-          icon={<Users size={20} />} 
+        <StatCard
+          label="Total Penduduk"
+          value={data.population}
+          icon={<Users size={20} />}
           unit="Jiwa"
         />
-        <StatCard 
-          label="Anggaran Desa" 
-          value={data.budget} 
-          icon={<Wallet size={20} />} 
+        <StatCard
+          label="Anggaran Desa"
+          value={data.budget}
+          icon={<Wallet size={20} />}
           prefix="Rp"
         />
-        <StatCard 
-          label="Berita & Agenda" 
-          value={data.posts.length} 
-          icon={<FileText size={20} />} 
+        <StatCard
+          label="Berita & Agenda"
+          value={data.posts.length}
+          icon={<FileText size={20} />}
         />
-        <StatCard 
-          label="Aparatur Desa" 
-          value={data.staffCount} 
-          icon={<Activity size={20} />} 
+        <StatCard
+          label="Aparatur Desa"
+          value={data.staffCount}
+          icon={<Activity size={20} />}
         />
       </div>
 
@@ -65,11 +69,10 @@ export default async function AdminDashboard() {
           <div className="space-y-3 flex-1">
             {auditLogs.data.length > 0 ? auditLogs.data.map((log) => (
               <div key={log.id} className="flex items-start gap-3 p-3 rounded-xl sm:rounded-2xl hover:bg-muted/50 transition-colors border border-transparent hover:border-border group">
-                <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 ${
-                  log.method === 'DELETE' ? 'bg-red-500/10 text-red-600' : 
-                  log.method === 'CREATE' ? 'bg-emerald-500/10 text-emerald-600' :
-                  'bg-primary/10 text-primary'
-                }`}>
+                <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 ${log.method === 'DELETE' ? 'bg-red-500/10 text-red-600' :
+                    log.method === 'CREATE' ? 'bg-emerald-500/10 text-emerald-600' :
+                      'bg-primary/10 text-primary'
+                  }`}>
                   <Activity size={14} className="sm:w-4 sm:h-4" />
                 </div>
                 <div className="min-w-0">
@@ -78,23 +81,23 @@ export default async function AdminDashboard() {
                     <p className="text-[9px] sm:text-[10px] text-muted-foreground font-medium truncate max-w-[120px]">{log.user_email || 'System'}</p>
                     <span className="w-1 h-1 rounded-full bg-border" />
                     <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-muted-foreground italic">
-                       <Clock size={10} />
-                       {new Date(log.created_at).toLocaleDateString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                      <Clock size={10} />
+                      {new Date(log.created_at).toLocaleDateString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
                 </div>
               </div>
             )) : (
               <div className="flex-1 flex flex-col items-center justify-center py-10 opacity-30">
-                 <ShieldCheck size={40} className="mb-2" />
-                 <p className="text-xs font-bold uppercase tracking-widest">Belum ada aktivitas</p>
+                <ShieldCheck size={40} className="mb-2" />
+                <p className="text-xs font-bold uppercase tracking-widest">Belum ada aktivitas</p>
               </div>
             )}
           </div>
           <div className="mt-6 pt-4 border-t border-border">
-             <Link href="/admin/audit-logs" className="text-xs font-bold uppercase tracking-widest text-primary hover:tracking-wider transition-all">
-                Lihat Seluruh Audit Trail &rarr;
-             </Link>
+            <Link href="/admin/audit-logs" className="text-xs font-bold uppercase tracking-widest text-primary hover:tracking-wider transition-all">
+              Lihat Seluruh Audit Trail &rarr;
+            </Link>
           </div>
         </div>
 
@@ -111,9 +114,20 @@ export default async function AdminDashboard() {
             </div>
             <div className="p-4 rounded-xl sm:rounded-2xl bg-muted/30 border border-border">
               <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Peringatan</p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed italic">
-                &quot;Data Visi & Misi belum lengkap di pengaturan. Segera lengkapi untuk profil website.&quot;
-              </p>
+              {totalIncomplete > 0 ? (
+                <Link href="/admin/residents/audit" className="group block">
+                  <div className="flex items-start gap-2 text-amber-600 group-hover:text-amber-700 transition-colors">
+                    <AlertCircle size={14} className="shrink-0 mt-0.5" />
+                    <p className="text-[10px] sm:text-xs font-bold leading-relaxed">
+                      Terdapat {totalIncomplete} data penduduk yang belum lengkap. Segera lakukan audit data.
+                    </p>
+                  </div>
+                </Link>
+              ) : (
+                <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed italic">
+                  Semua data penduduk telah lengkap dan tervalidasi.
+                </p>
+              )}
             </div>
           </div>
         </div>
