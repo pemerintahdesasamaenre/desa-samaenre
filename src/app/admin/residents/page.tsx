@@ -1,6 +1,7 @@
 import ResidentTable from '@/components/modules/residents/ResidentTable';
-import { Users } from 'lucide-react';
+import { Users, ClipboardCheck } from 'lucide-react';
 import ResetDataButton from '@/components/modules/statistics/ResetDataButton';
+import Link from 'next/link';
 
 export default function AdminResidentsPage() {
   return (
@@ -15,8 +16,17 @@ export default function AdminResidentsPage() {
             <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 font-medium">Kelola data individual penduduk desa, audit log, dan filter wilayah.</p>
           </div>
         </div>
-        <div className="shrink-0 w-full lg:w-auto">
-          <ResetDataButton />
+        <div className="flex items-center gap-3 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
+          <Link 
+            href="/admin/residents/audit"
+            className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 text-primary border border-primary/20 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-primary/20 transition-all shrink-0"
+          >
+            <ClipboardCheck size={16} />
+            Lengkapi Data
+          </Link>
+          <div className="shrink-0">
+            <ResetDataButton />
+          </div>
         </div>
       </div>
 

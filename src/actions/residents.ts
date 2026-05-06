@@ -298,3 +298,123 @@ export async function deleteAllResidents() {
     return { error: e instanceof Error ? e.message : 'Gagal menghapus data.' };
   }
 }
+
+export interface IncompleteDusunStat {
+  dusun: string;
+  count: number;
+}
+
+export interface IncompleteResidentDetail extends ResidentDisplayData {
+  missing_fields: string[];
+}
+
+const CHECK_FIELDS = [
+  'nik', 'kk', 'name', 'birth_place', 'birth_date', 
+  'gender', 'education', 'occupation', 'marital_status', 
+  'father_name', 'mother_name', 'dusun'
+];
+
+function getMissingFields(resident: ResidentDisplayData): string[] {
+  const missing: string[] = [];
+  CHECK_FIELDS.forEach(field => {
+    const val = (resident as any)[field];
+    if (val === null || val === undefined || val === '' || val === '-' || (typeof val === 'string' && val.toLowerCase() === 'belum diisi')) {
+      missing.push(field);
+    }
+  });
+  return missing;
+}
+
+export async function getIncompleteStats() {
+  const supabase = await createClient();
+  try {
+    const { data, error } = await supabase.from('residents').select('*');
+    if (error) throw error;
+    if (!data) return [];
+
+    const residents: ResidentDisplayData[] = data.map(item => ({
+      id: item.id,
+      nik: decrypt(item.nik_enc),
+      kk: decrypt(item.kk_enc),
+      name: decrypt(item.name_enc),
+      birth_place: item.birth_place,
+      birth_date: item.birth_date,
+      gender: item.gender,
+      education: item.education,
+      occupation: item.occupation,
+      marital_status: item.marital_status,
+      father_name: item.father_name,
+      mother_name: item.mother_name,
+      dusun: item.dusun,
+      rt: item.rt,
+      rw: item.rw,
+      data_year: item.data_year
+    }));
+
+    const statsMap: Record<string, number> = {};
+    residents.forEach(r => {
+      const missing = getMissingFields(r);
+      if (missing.length > 0) {
+        const dusunName = r.dusun || 'TIDAK ADA DUSUN';
+        statsMap[dusunName] = (statsMap[dusunName] || 0) + 1;
+      }
+    });
+
+    return Object.entries(statsMap).map(([dusun, count]) => ({
+      dusun,
+      count
+    })).sort((a, b) => b.count - a.count);
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
+
+export async function getIncompleteResidents(dusun?: string) {
+  const supabase = await createClient();
+  try {
+    let query = supabase.from('residents').select('*');
+    if (dusun && dusun !== 'SEMUA') {
+      query = query.eq('dusun', dusun);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    if (!data) return [];
+
+    const result: IncompleteResidentDetail[] = [];
+    data.forEach(item => {
+      const resident: ResidentDisplayData = {
+        id: item.id,
+        nik: decrypt(item.nik_enc),
+        kk: decrypt(item.kk_enc),
+        name: decrypt(item.name_enc),
+        birth_place: item.birth_place,
+        birth_date: item.birth_date,
+        gender: item.gender,
+        education: item.education,
+        occupation: item.occupation,
+        marital_status: item.marital_status,
+        father_name: item.father_name,
+        mother_name: item.mother_name,
+        dusun: item.dusun,
+        rt: item.rt,
+        rw: item.rw,
+        data_year: item.data_year
+      };
+
+      const missing = getMissingFields(resident);
+      if (missing.length > 0) {
+        result.push({
+          ...resident,
+          missing_fields: missing
+        });
+      }
+    });
+
+    return result;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
