@@ -8,19 +8,17 @@ import { Mail, Phone, MapPin, Globe, MessageCircle, Share2, Eye, TrendingUp } fr
 import { createClient } from '@/lib/supabase/client';
 import { VillageInfo } from '@/types';
 
-export const Footer = () => {
+interface FooterProps {
+  initialData?: VillageInfo | null;
+}
+
+export const Footer = ({ initialData }: FooterProps) => {
   const pathname = usePathname();
-  const [villageInfo, setVillageInfo] = useState<VillageInfo | null>(null);
+  const villageInfo = initialData || null;
   const [totalViews, setTotalViews] = useState<number>(0);
   const [todayViews, setTodayViews] = useState<number>(0);
 
   useEffect(() => {
-    const fetchInfo = async () => {
-      const supabase = createClient();
-      const { data } = await supabase.from('village_info').select('*').single();
-      if (data) setVillageInfo(data);
-    };
-
     const fetchAnalytics = async () => {
       const supabase = createClient();
 
@@ -44,7 +42,6 @@ export const Footer = () => {
       }
     };
 
-    fetchInfo();
     fetchAnalytics();
   }, []);
 

@@ -1,29 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
 import Image from 'next/image';
 
-export const Header = () => {
+interface HeaderProps {
+  initialData?: {
+    name: string;
+    logo_url: string | null;
+  } | null;
+}
+
+export const Header = ({ initialData }: HeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [villageName, setVillageName] = useState('Desa Kami');
-  const [logoUrl, setLogoUrl] = useState('/logo.png');
+  const villageName = initialData?.name || 'Desa Kami';
+  const logoUrl = initialData?.logo_url || '/logo.png';
   const pathname = usePathname();
 
-  useEffect(() => {
-    const fetchInfo = async () => {
-      const supabase = createClient();
-      const { data } = await supabase.from('village_info').select('name, logo_url').single();
-      if (data) {
-        if (data.name) setVillageName(data.name);
-        if (data.logo_url) setLogoUrl(data.logo_url);
-      }
-    };
-    fetchInfo();
-  }, []);
+  // Jangan tampilkan header di halaman admin atau login
 
   // ... rest of the component
 

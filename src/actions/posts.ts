@@ -3,89 +3,69 @@
 import { createClient } from '../lib/supabase/server'
 import { postSchema, type PostInput } from '../lib/validations'
 import { revalidatePost } from '@/lib/utils/revalidate'
-import { deleteImage } from '../lib/supabase/storage'
-
-async function getAuthUser() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  return user
-}
+import { handleImageUpdate, deleteImage } from '../lib/supabase/storage'
+import { protectedAction } from '@/lib/utils/action-handler'
 
 export async function createPost(data: PostInput) {
-  const user = await getAuthUser()
-  if (!user) return { error: 'Unauthorized' }
+  return protectedAction(async (user) => {
+    const validated = postSchema.safeParse(data)
+    if (!validated.success) return { error: validated.error.flatten().fieldErrors }
 
-  const validated = postSchema.safeParse(data)
-  if (!validated.success) {
-    return { error: validated.error.flatten().fieldErrors }
-  }
+    const postData = {
+      ...validated.data,
+      author_id: user.id,
+      category_id: validated.data.category_id || null,
+      event_date: validated.data.event_date || null
+    }
 
-  const postData = {
-    ...validated.data,
-    author_id: user.id,
-    category_id: validated.data.category_id || null,
-    event_date: validated.data.event_date || null
-  }
+    const supabase = await createClient()
+    const { error } = await supabase.from('posts').insert(postData)
+    if (error) return { error: error.message }
 
-  const supabase = await createClient()
-  const { error } = await supabase.from('posts').insert(postData)
-
-  if (error) return { error: error.message }
-
-  revalidatePost()
-  return { success: true }
+    revalidatePost()
+    return { success: true }
+  })
 }
 
 export async function updatePost(id: string, data: PostInput) {
-  const user = await getAuthUser()
-  if (!user) return { error: 'Unauthorized' }
+  return protectedAction(async () => {
+    const validated = postSchema.safeParse(data)
+    if (!validated.success) return { error: validated.error.flatten().fieldErrors }
 
-  const supabase = await createClient()
-  // 1. Get current post data to check for old image
-  const { data: currentPost } = await supabase.from('posts').select('image_url').eq('id', id).single()
+    const supabase = await createClient()
+    
+    // Cleanup old image
+    const { data: current } = await supabase.from('posts').select('image_url').eq('id', id).single()
+    await handleImageUpdate(current?.image_url, validated.data.image_url)
 
-  const validated = postSchema.safeParse(data)
-  if (!validated.success) {
-    return { error: validated.error.flatten().fieldErrors }
-  }
+    const postData = {
+      ...validated.data,
+      category_id: validated.data.category_id || null,
+      event_date: validated.data.event_date || null
+    }
 
-  // 2. Delete old image if URL is changing
-  if (currentPost?.image_url && currentPost.image_url !== validated.data.image_url) {
-    await deleteImage(currentPost.image_url)
-  }
+    const { error } = await supabase.from('posts').update(postData).eq('id', id)
+    if (error) return { error: error.message }
 
-  const postData = {
-    ...validated.data,
-    category_id: validated.data.category_id || null,
-    event_date: validated.data.event_date || null
-  }
-
-  const { error } = await supabase.from('posts').update(postData).eq('id', id)
-
-  if (error) return { error: error.message }
-
-  revalidatePost()
-  return { success: true }
+    revalidatePost()
+    return { success: true }
+  })
 }
 
 export async function deletePost(id: string) {
-  const user = await getAuthUser()
-  if (!user) return { error: 'Unauthorized' }
+  return protectedAction(async () => {
+    const supabase = await createClient()
+    
+    // Cleanup image from storage
+    const { data: post } = await supabase.from('posts').select('image_url').eq('id', id).single()
+    if (post?.image_url) await deleteImage(post.image_url)
 
-  const supabase = await createClient()
-  // 1. Delete image from storage first
-  const { data: post } = await supabase.from('posts').select('image_url').eq('id', id).single()
-  if (post?.image_url) {
-    await deleteImage(post.image_url)
-  }
+    const { error } = await supabase.from('posts').delete().eq('id', id)
+    if (error) return { error: error.message }
 
-  // 2. Delete from DB
-  const { error } = await supabase.from('posts').delete().eq('id', id)
-
-  if (error) return { error: error.message }
-
-  revalidatePost()
-  return { success: true }
+    revalidatePost()
+    return { success: true }
+  })
 }
 
 export async function getCategories() {

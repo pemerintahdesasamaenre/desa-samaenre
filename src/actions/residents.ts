@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { residentSchema, type ResidentInput } from '@/lib/validations';
 import { logActivity } from '@/actions/analytics';
 import { mapResidentToDisplay } from '@/lib/utils/resident';
+import { getAuthUser } from '@/lib/utils/auth';
 
 export interface ResidentImportData {
   nik: string;
@@ -36,6 +37,9 @@ export async function getResidents(params: {
   search?: string, 
   dusun?: string 
 }) {
+  const user = await getAuthUser();
+  if (!user) return { data: [], total: 0, error: 'Unauthorized' };
+
   const { page, limit, search, dusun } = params;
   const supabase = await createClient();
   
@@ -73,6 +77,9 @@ export async function getResidents(params: {
 }
 
 export async function getResidentById(id: string) {
+  const user = await getAuthUser();
+  if (!user) return null;
+
   const supabase = await createClient();
   try {
     const { data, error } = await supabase.from('residents').select('*').eq('id', id).single();
@@ -91,14 +98,15 @@ export async function getResidentById(id: string) {
 }
 
 export async function upsertResident(data: ResidentInput, id?: string) {
-  const supabase = await createClient();
+  const user = await getAuthUser();
+  if (!user) return { error: 'Unauthorized' };
+
+  const { nik, kk, name, ...rest } = data; // Note: assuming data is already validated by caller or handled here
   
   const validated = residentSchema.safeParse(data);
   if (!validated.success) {
     return { error: validated.error.flatten().fieldErrors };
   }
-
-  const { nik, kk, name, ...rest } = validated.data;
 
   const residentData = {
     ...rest,
@@ -109,6 +117,7 @@ export async function upsertResident(data: ResidentInput, id?: string) {
     name_enc: encrypt(name),
   };
 
+  const supabase = await createClient();
   try {
     let result;
     if (id) {
@@ -145,6 +154,9 @@ export async function getDusuns() {
 }
 
 export async function deleteResident(id: string) {
+  const user = await getAuthUser();
+  if (!user) return { error: 'Unauthorized' };
+
   const supabase = await createClient();
   try {
     const { data: resident } = await supabase.from('residents').select('name_enc').eq('id', id).single();
@@ -202,6 +214,9 @@ export async function logSensitiveView(residentId: string, residentName: string)
 }
 
 export async function importResidents(data: ResidentImportData[]) {
+  const user = await getAuthUser();
+  if (!user) return { error: 'Unauthorized' };
+
   if (data.length === 0) return { error: 'Tidak ada data.' };
   const supabase = await createClient();
   
@@ -249,6 +264,9 @@ export async function importResidents(data: ResidentImportData[]) {
 }
 
 export async function deleteAllResidents() {
+  const user = await getAuthUser();
+  if (!user) return { error: 'Unauthorized' };
+
   const supabase = await createClient();
   try {
     const { error } = await supabase.from('residents').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -285,8 +303,9 @@ const CHECK_FIELDS = [
 
 function getMissingFields(resident: ResidentDisplayData): string[] {
   const missing: string[] = [];
+  const residentRecord = resident as unknown as Record<string, unknown>;
   CHECK_FIELDS.forEach(field => {
-    const val = (resident as any)[field];
+    const val = residentRecord[field];
     if (val === null || val === undefined || val === '' || val === '-' || (typeof val === 'string' && val.toLowerCase() === 'belum diisi')) {
       missing.push(field);
     }
@@ -295,6 +314,9 @@ function getMissingFields(resident: ResidentDisplayData): string[] {
 }
 
 export async function getIncompleteStats() {
+  const user = await getAuthUser();
+  if (!user) return [];
+
   const supabase = await createClient();
   try {
     const { data, error } = await supabase.from('residents').select('*');
@@ -323,6 +345,9 @@ export async function getIncompleteStats() {
 }
 
 export async function getIncompleteResidents(dusun?: string) {
+  const user = await getAuthUser();
+  if (!user) return [];
+
   const supabase = await createClient();
   try {
     let query = supabase.from('residents').select('*');

@@ -1,25 +1,25 @@
 import { decrypt } from '@/lib/crypto';
 import type { ResidentDisplayData } from '@/actions/residents';
 
-export function mapResidentToDisplay(item: any): ResidentDisplayData {
+export function mapResidentToDisplay(item: Record<string, unknown>): ResidentDisplayData {
   return {
-    id: item.id,
-    nik: decrypt(item.nik_enc),
-    kk: decrypt(item.kk_enc),
-    name: decrypt(item.name_enc),
-    birth_place: item.birth_place,
-    birth_date: item.birth_date,
-    gender: item.gender,
-    education: item.education,
-    occupation: item.occupation,
-    marital_status: item.marital_status,
-    family_relationship: item.family_relationship,
-    father_name: item.father_name,
-    mother_name: item.mother_name,
-    dusun: item.dusun,
-    rt: item.rt,
-    rw: item.rw,
-    data_year: item.data_year
+    id: item.id as string,
+    nik: decrypt(item.nik_enc as string),
+    kk: decrypt(item.kk_enc as string),
+    name: decrypt(item.name_enc as string),
+    birth_place: item.birth_place as string,
+    birth_date: item.birth_date as string | null,
+    gender: item.gender as 'L' | 'P',
+    education: item.education as string,
+    occupation: item.occupation as string,
+    marital_status: item.marital_status as string,
+    family_relationship: item.family_relationship as string,
+    father_name: item.father_name as string,
+    mother_name: item.mother_name as string,
+    dusun: item.dusun as string,
+    rt: item.rt as string,
+    rw: item.rw as string,
+    data_year: item.data_year as number
   };
 }
 

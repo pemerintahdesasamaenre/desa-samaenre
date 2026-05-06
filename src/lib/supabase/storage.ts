@@ -37,3 +37,12 @@ export async function deleteImage(url: string) {
     console.error('Failed to delete image:', err)
   }
 }
+
+/**
+ * Deletes the old image from storage if the URL has changed.
+ */
+export async function handleImageUpdate(oldUrl: string | null | undefined, newUrl: string | null | undefined) {
+  if (oldUrl && oldUrl !== newUrl) {
+    await deleteImage(oldUrl);
+  }
+}

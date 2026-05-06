@@ -34,22 +34,38 @@ export async function getDemographics(): Promise<DemographicData> {
 
     data.forEach((item) => {
       const cat = item.category_slug;
+      const label = item.label.toLowerCase();
+      
       if (cat === 'population') {
-        const lbl = item.label.toLowerCase();
-        if (lbl.includes('total')) result.population.total = item.value;
-        else if (lbl.includes('laki')) result.population.male = item.value;
-        else if (lbl.includes('perempuan')) result.population.female = item.value;
-        else if (lbl.includes('keluarga')) result.population.households = item.value;
+        if (label.includes('total')) result.population.total = item.value;
+        else if (label.includes('laki')) result.population.male = item.value;
+        else if (label.includes('perempuan')) result.population.female = item.value;
+        else if (label.includes('keluarga')) result.population.households = item.value;
       } 
-      else if (cat === 'hamlets') result.hamlets.push({ name: item.label, value: item.value });
-      else if (cat === 'occupations') result.occupations.push({ label: item.label, value: item.value });
-      else if (cat === 'education') result.education.push({ label: item.label, value: item.value });
-      else if (cat === 'marital_status') result.marital_status.push({ label: item.label, value: item.value });
-      else if (cat === 'family_relationship') result.family_relationship.push({ label: item.label, value: item.value });
-      else if (cat === 'age_groups') result.age_groups.push({ label: item.label, value: item.value });
+      else if (Object.prototype.hasOwnProperty.call(result, cat)) {
+        const list = (result as unknown as Record<string, unknown>)[cat];
+        if (Array.isArray(list)) {
+          list.push({ name: item.label, label: item.label, value: item.value });
+        }
+      }
     });
 
-    // Pekerjaan: Ambil Top 5 dan Sortir
+    // Clean up demographics: Map names to labels consistently and sort
+    const categoriesToMap = ['hamlets', 'occupations', 'education', 'marital_status', 'family_relationship', 'age_groups'];
+    categoriesToMap.forEach(cat => {
+      const list = (result as unknown as Record<string, unknown>)[cat];
+      if (Array.isArray(list)) {
+        (result as unknown as Record<string, unknown>)[cat] = list.map((i) => {
+          const item = i as { label?: string; name?: string; value: number };
+          return {
+            label: (item.label || item.name) as string,
+            name: (item.name || item.label) as string,
+            value: item.value
+          };
+        });
+      }
+    });
+
     result.occupations.sort((a, b) => b.value - a.value);
     result.occupations = result.occupations.slice(0, 5);
     
@@ -124,29 +140,33 @@ export async function getAllVillageImages(): Promise<VillageImage[]> {
 
 export async function getHomepageData() {
   const supabase = await createClient();
-  const villageInfoPromise = supabase.from('village_info').select('name, logo_url, header_banner_url').single();
-  const postsPromise = supabase.from('posts').select('title, slug, image_url, created_at, categories(name)').eq('status', 'published').order('created_at', { ascending: false }).limit(3);
-  const staffCountPromise = supabase.from('staff_members').select('id', { count: 'exact' });
-  const staffPromise = supabase.from('staff_members').select('name, position, photo_url').order('order_index', { ascending: true }).limit(4);
-
-  const fetchBudget = async () => {
-    const currentYear = new Date().getFullYear();
-    const { data } = await supabase.from('finances').select('amount').eq('type', 'income').eq('year', currentYear);
-    return data?.reduce((sum: number, item: { amount: number }) => sum + item.amount, 0) || 0;
-  };
-
-  const fetchDemographicStats = async () => {
+  
+  const currentYear = new Date().getFullYear();
+  
+  // Helper for budget calculation
+  const budgetQuery = supabase.from('finances').select('amount').eq('type', 'income').eq('year', currentYear);
+  
+  // Helper for demo stats
+  const getDemoStats = async () => {
     const { data: yearRes } = await supabase.from('mv_demographic_stats').select('data_year').order('data_year', { ascending: false }).limit(1);
     const latestYear = yearRes?.[0]?.data_year || 2025;
     const { data } = await supabase.from('mv_demographic_stats').select('category_slug, label, value').eq('data_year', latestYear);
-    const population = data?.find(d => d.category_slug === 'population' && d.label.toLowerCase().includes('total'))?.value || 0;
-    const hamletCount = data?.filter(d => d.category_slug === 'hamlets').length || 0;
-    return { population, hamletCount };
+    return {
+      population: data?.find(d => d.category_slug === 'population' && d.label.toLowerCase().includes('total'))?.value || 0,
+      hamletCount: data?.filter(d => d.category_slug === 'hamlets').length || 0
+    };
   };
 
-  const [vInfo, posts, sCount, staff, budget, demo] = await Promise.all([
-    villageInfoPromise, postsPromise, staffCountPromise, staffPromise, fetchBudget(), fetchDemographicStats()
+  const [vInfo, posts, sCount, staff, budgetRes, demo] = await Promise.all([
+    supabase.from('village_info').select('name, logo_url, header_banner_url').single(),
+    supabase.from('posts').select('title, slug, image_url, created_at, categories(name)').eq('status', 'published').order('created_at', { ascending: false }).limit(3),
+    supabase.from('staff_members').select('id', { count: 'exact', head: true }),
+    supabase.from('staff_members').select('name, position, photo_url').order('order_index', { ascending: true }).limit(4),
+    budgetQuery,
+    getDemoStats()
   ]);
+
+  const budget = budgetRes.data?.reduce((sum, item) => sum + item.amount, 0) || 0;
 
   return {
     villageName: vInfo.data?.name || 'Desa Kami',
@@ -156,7 +176,10 @@ export async function getHomepageData() {
     budget,
     hamletCount: demo.hamletCount,
     staffCount: sCount.count || 0,
-    posts: (posts.data || []).map((p) => ({ ...p, categories: Array.isArray(p.categories) ? (p.categories[0] as {name: string}) : (p.categories as unknown as {name: string}) })),
+    posts: (posts.data || []).map((p) => ({
+      ...p,
+      categories: Array.isArray(p.categories) ? p.categories[0] : (p.categories as unknown as { name: string } | null)
+    })),
     staff: staff.data || [],
   };
 }
