@@ -1,31 +1,20 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, Users, Shield } from 'lucide-react';
 import { getStaffMembers } from '@/actions/staff';
 import { StaffTable } from '@/components/modules/village/StaffTable';
-import type { StaffMember } from '@/types';
 
-export default function AdminStaffPage() {
-  const [allStaff, setAllStaff] = useState<StaffMember[]>([]);
-  const [activeTab, setActiveTab] = useState<'pemdes' | 'bpd'>('pemdes');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await getStaffMembers();
-      setAllStaff(data);
-      setLoading(false);
-    }
-    fetchData();
-  }, []);
-
+export default async function AdminStaffPage(props: { 
+  searchParams: Promise<{ type?: string }> 
+}) {
+  const searchParams = await props.searchParams;
+  const type = searchParams.type;
+  const activeTab = (type === 'bpd' ? 'bpd' : 'pemdes') as 'pemdes' | 'bpd';
+  
+  const allStaff = await getStaffMembers();
   const filteredStaff = allStaff.filter(s => s.org_type === activeTab);
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-20">
-      {/* Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-border shadow-sm">
         <div className="flex items-center gap-4">
           <div className="p-2 sm:p-2.5 bg-muted rounded-xl border border-border flex items-center justify-center text-primary shrink-0">
@@ -45,10 +34,9 @@ export default function AdminStaffPage() {
         </Link>
       </div>
 
-      {/* Tabs Switcher */}
       <div className="flex p-2 bg-muted/50 rounded-2xl sm:rounded-3xl border border-border max-w-md mx-auto sm:mx-0">
-        <button 
-          onClick={() => setActiveTab('pemdes')}
+        <Link
+          href="/admin/staff?type=pemdes"
           className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl sm:rounded-2xl font-bold uppercase text-[10px] tracking-wider transition-all ${
             activeTab === 'pemdes' 
             ? 'bg-background text-primary shadow-sm border border-border' 
@@ -57,9 +45,9 @@ export default function AdminStaffPage() {
         >
           <Users size={16} />
           Pemdes
-        </button>
-        <button 
-          onClick={() => setActiveTab('bpd')}
+        </Link>
+        <Link
+          href="/admin/staff?type=bpd"
           className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl sm:rounded-2xl font-bold uppercase text-[10px] tracking-wider transition-all ${
             activeTab === 'bpd' 
             ? 'bg-background text-blue-600 shadow-sm border border-border' 
@@ -68,10 +56,9 @@ export default function AdminStaffPage() {
         >
           <Shield size={16} />
           BPD
-        </button>
+        </Link>
       </div>
 
-      {/* Content Section */}
       <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="flex items-center justify-between px-4 sm:px-0">
            <div className="flex items-center gap-4">
@@ -89,9 +76,7 @@ export default function AdminStaffPage() {
            </div>
         </div>
 
-        <StaffTable staff={filteredStaff} isLoading={loading} />
-
-
+        <StaffTable staff={filteredStaff} isLoading={false} />
       </div>
     </div>
   );
