@@ -1,7 +1,7 @@
 import { decrypt } from '@/lib/crypto';
-import type { ResidentDisplayData } from '@/actions/residents';
+import type { Resident } from '@/types';
 
-export function mapResidentToDisplay(item: Record<string, unknown>): ResidentDisplayData {
+export function mapResidentToDisplay(item: Record<string, unknown>): Resident {
   return {
     id: item.id as string,
     nik: decrypt(item.nik_enc as string),
@@ -19,7 +19,9 @@ export function mapResidentToDisplay(item: Record<string, unknown>): ResidentDis
     dusun: item.dusun as string,
     rt: item.rt as string,
     rw: item.rw as string,
-    data_year: item.data_year as number
+    data_year: item.data_year as number,
+    created_at: item.created_at as string,
+    updated_at: item.updated_at as string
   };
 }
 

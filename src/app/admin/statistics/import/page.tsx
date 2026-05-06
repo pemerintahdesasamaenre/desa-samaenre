@@ -210,7 +210,7 @@ export default function StatisticsImportPage() {
             rw: '',
             data_year: currentYear
           };
-        }).filter((d): d is ResidentImportData => d !== null);
+        }).filter((d): d is ResidentInput => d !== null);
 
         allFormattedData = [...allFormattedData, ...sheetProcessedData];
         setLogs(prev => [...prev, `Sheet ${sheetName}: ${sheetProcessedData.length} data siap.`]);

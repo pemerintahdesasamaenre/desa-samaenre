@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Loader2, Eye, EyeOff, ShieldAlert, Edit2 } from 'lucide-react';
-import { getResidents, getDusuns, deleteResident, logSensitiveView, type ResidentDisplayData } from '@/actions/residents';
+import { getResidents, getDusuns, deleteResident, logSensitiveView } from '@/actions/residents';
+import { type Resident } from '@/types';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { ResidentTableHeader } from './table/ResidentTableHeader';
 import { ResidentPagination } from './table/ResidentPagination';
@@ -11,7 +12,7 @@ import { DataTable, Column } from '@/components/ui/DataTable';
 import Link from 'next/link';
 
 export default function ResidentTable() {
-  const [data, setData] = useState<ResidentDisplayData[]>([]);
+  const [data, setData] = useState<Resident[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -94,7 +95,7 @@ export default function ResidentTable() {
 
   const totalPages = Math.ceil(total / limit);
 
-  const columns: Column<ResidentDisplayData>[] = [
+  const columns: Column<Resident>[] = [
     {
       header: 'Penduduk',
       accessor: (item) => (
@@ -167,7 +168,7 @@ export default function ResidentTable() {
     },
   ];
 
-  const renderExpandedRow = (item: ResidentDisplayData) => (
+  const renderExpandedRow = (item: Resident) => (
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-4 bg-background/50 p-4 rounded-2xl border border-border/50">
         <div className="space-y-1">
