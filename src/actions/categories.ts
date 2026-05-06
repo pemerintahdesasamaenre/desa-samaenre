@@ -1,7 +1,8 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { revalidateCategory } from '@/lib/utils/revalidate'
+import { getAuthUser } from '@/lib/utils/auth'
 import { z } from 'zod'
 
 const categorySchema = z.object({
@@ -14,37 +15,44 @@ const categorySchema = z.object({
 export type CategoryInput = z.infer<typeof categorySchema>
 
 export async function createCategory(data: CategoryInput) {
-  const supabase = await createClient()
-  
+  const user = await getAuthUser()
+  if (!user) return { error: 'Unauthorized' }
+
   const validated = categorySchema.safeParse(data)
   if (!validated.success) return { error: validated.error.flatten().fieldErrors }
 
+  const supabase = await createClient()
   const { error } = await supabase.from('categories').insert(validated.data)
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/categories')
+  revalidateCategory()
   return { success: true }
 }
 
 export async function updateCategory(id: string, data: CategoryInput) {
-  const supabase = await createClient()
-  
+  const user = await getAuthUser()
+  if (!user) return { error: 'Unauthorized' }
+
   const validated = categorySchema.safeParse(data)
   if (!validated.success) return { error: validated.error.flatten().fieldErrors }
 
+  const supabase = await createClient()
   const { error } = await supabase.from('categories').update(validated.data).eq('id', id)
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/categories')
+  revalidateCategory()
   return { success: true }
 }
 
 export async function deleteCategory(id: string) {
+  const user = await getAuthUser()
+  if (!user) return { error: 'Unauthorized' }
+
   const supabase = await createClient()
   const { error } = await supabase.from('categories').delete().eq('id', id)
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/categories')
+  revalidateCategory()
   return { success: true }
 }
 

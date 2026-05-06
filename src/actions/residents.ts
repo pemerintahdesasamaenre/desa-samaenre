@@ -5,6 +5,7 @@ import { hashNIK, encrypt, decrypt } from '@/lib/crypto';
 import { revalidatePath } from 'next/cache';
 import { residentSchema, type ResidentInput } from '@/lib/validations';
 import { logActivity } from '@/actions/analytics';
+import { mapResidentToDisplay } from '@/lib/utils/resident';
 
 export interface ResidentImportData {
   nik: string;
@@ -50,25 +51,7 @@ export async function getResidents(params: {
     if (error) throw error;
     if (!data) return { data: [], total: 0 };
 
-    let decryptedData: ResidentDisplayData[] = data.map(item => ({
-      id: item.id,
-      nik: decrypt(item.nik_enc),
-      kk: decrypt(item.kk_enc),
-      name: decrypt(item.name_enc),
-      birth_place: item.birth_place,
-      birth_date: item.birth_date,
-      gender: item.gender,
-      education: item.education,
-      occupation: item.occupation,
-      marital_status: item.marital_status,
-      family_relationship: item.family_relationship,
-      father_name: item.father_name,
-      mother_name: item.mother_name,
-      dusun: item.dusun,
-      rt: item.rt,
-      rw: item.rw,
-      data_year: item.data_year
-    }));
+    let decryptedData: ResidentDisplayData[] = data.map(mapResidentToDisplay);
 
     if (search) {
       const s = search.toLowerCase();
@@ -96,25 +79,7 @@ export async function getResidentById(id: string) {
     if (error) throw error;
     if (!data) return null;
 
-    const resident: ResidentDisplayData = {
-      id: data.id,
-      nik: decrypt(data.nik_enc),
-      kk: decrypt(data.kk_enc),
-      name: decrypt(data.name_enc),
-      birth_place: data.birth_place,
-      birth_date: data.birth_date,
-      gender: data.gender,
-      education: data.education,
-      occupation: data.occupation,
-      marital_status: data.marital_status,
-      family_relationship: data.family_relationship,
-      father_name: data.father_name,
-      mother_name: data.mother_name,
-      dusun: data.dusun,
-      rt: data.rt,
-      rw: data.rw,
-      data_year: data.data_year
-    };
+    const resident = mapResidentToDisplay(data);
 
     await logSensitiveView(id, resident.name + ' (Form Edit)');
 
@@ -336,25 +301,7 @@ export async function getIncompleteStats() {
     if (error) throw error;
     if (!data) return [];
 
-    const residents: ResidentDisplayData[] = data.map(item => ({
-      id: item.id,
-      nik: decrypt(item.nik_enc),
-      kk: decrypt(item.kk_enc),
-      name: decrypt(item.name_enc),
-      birth_place: item.birth_place,
-      birth_date: item.birth_date,
-      gender: item.gender,
-      education: item.education,
-      occupation: item.occupation,
-      marital_status: item.marital_status,
-      family_relationship: item.family_relationship,
-      father_name: item.father_name,
-      mother_name: item.mother_name,
-      dusun: item.dusun,
-      rt: item.rt,
-      rw: item.rw,
-      data_year: item.data_year
-    }));
+    const residents: ResidentDisplayData[] = data.map(mapResidentToDisplay);
 
     const statsMap: Record<string, number> = {};
     residents.forEach(r => {
@@ -389,25 +336,7 @@ export async function getIncompleteResidents(dusun?: string) {
 
     const result: IncompleteResidentDetail[] = [];
     data.forEach(item => {
-      const resident: ResidentDisplayData = {
-        id: item.id,
-        nik: decrypt(item.nik_enc),
-        kk: decrypt(item.kk_enc),
-        name: decrypt(item.name_enc),
-        birth_place: item.birth_place,
-        birth_date: item.birth_date,
-        gender: item.gender,
-        education: item.education,
-        occupation: item.occupation,
-        marital_status: item.marital_status,
-        family_relationship: item.family_relationship,
-        father_name: item.father_name,
-        mother_name: item.mother_name,
-        dusun: item.dusun,
-        rt: item.rt,
-        rw: item.rw,
-        data_year: item.data_year
-      };
+      const resident = mapResidentToDisplay(item);
 
       const missing = getMissingFields(resident);
       if (missing.length > 0) {

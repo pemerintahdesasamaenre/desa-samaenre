@@ -2,24 +2,23 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { financeSchema, type FinanceInput } from '@/lib/validations'
-import { revalidatePath } from 'next/cache'
+import { revalidateFinance } from '@/lib/utils/revalidate'
+import { getAuthUser } from '@/lib/utils/auth'
 import type { Finance } from '@/types'
 
 export async function addFinanceEntry(data: FinanceInput) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) return { error: 'Unauthorized' }
 
   const validated = financeSchema.safeParse(data)
   if (!validated.success) return { error: validated.error.flatten().fieldErrors }
 
+  const supabase = await createClient()
   const { error } = await supabase.from('finances').insert(validated.data)
 
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/finances')
-  revalidatePath('/transparansi')
+  revalidateFinance()
   return { success: true }
 }
 
@@ -42,11 +41,10 @@ export async function getFinances(year?: number) {
 }
 
 export async function deleteFinanceEntry(id: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) return { error: 'Unauthorized' }
 
+  const supabase = await createClient()
   const { error } = await supabase
     .from('finances')
     .delete()
@@ -54,7 +52,6 @@ export async function deleteFinanceEntry(id: string) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/finances')
-  revalidatePath('/transparansi')
+  revalidateFinance()
   return { success: true }
 }

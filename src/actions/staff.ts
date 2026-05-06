@@ -2,18 +2,18 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { staffMemberSchema, type StaffMemberInput } from '@/lib/validations'
-import { revalidatePath } from 'next/cache'
+import { revalidateStaff } from '@/lib/utils/revalidate'
+import { getAuthUser } from '@/lib/utils/auth'
 import { deleteImage } from '../lib/supabase/storage'
 
 export async function upsertStaffMember(data: StaffMemberInput, id?: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) return { error: 'Unauthorized' }
 
   const validated = staffMemberSchema.safeParse(data)
   if (!validated.success) return { error: validated.error.flatten().fieldErrors }
 
+  const supabase = await createClient()
   // 1. If updating (ID exists), check for old photo to delete
   if (id) {
     const { data: currentStaff } = await supabase.from('staff_members').select('photo_url').eq('id', id).single()
@@ -27,8 +27,7 @@ export async function upsertStaffMember(data: StaffMemberInput, id?: string) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/staff')
-  revalidatePath('/tentang')
+  revalidateStaff()
   return { success: true }
 }
 
@@ -54,11 +53,10 @@ export async function getStaffMembers(orgType?: 'pemdes' | 'bpd') {
 }
 
 export async function deleteStaffMember(id: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) return { error: 'Unauthorized' }
 
+  const supabase = await createClient()
   // 1. Delete photo from storage first
   const { data: staff } = await supabase.from('staff_members').select('photo_url').eq('id', id).single()
   if (staff?.photo_url) {
@@ -73,7 +71,6 @@ export async function deleteStaffMember(id: string) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/staff')
-  revalidatePath('/tentang')
+  revalidateStaff()
   return { success: true }
 }

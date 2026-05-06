@@ -2,13 +2,17 @@
 
 import { createClient } from '../lib/supabase/server'
 import { postSchema, type PostInput } from '../lib/validations'
-import { revalidatePath } from 'next/cache'
+import { revalidatePost } from '@/lib/utils/revalidate'
 import { deleteImage } from '../lib/supabase/storage'
 
-export async function createPost(data: PostInput) {
+async function getAuthUser() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  return user
+}
 
+export async function createPost(data: PostInput) {
+  const user = await getAuthUser()
   if (!user) return { error: 'Unauthorized' }
 
   const validated = postSchema.safeParse(data)
@@ -23,21 +27,20 @@ export async function createPost(data: PostInput) {
     event_date: validated.data.event_date || null
   }
 
+  const supabase = await createClient()
   const { error } = await supabase.from('posts').insert(postData)
 
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/posts')
-  revalidatePath('/')
+  revalidatePost()
   return { success: true }
 }
 
 export async function updatePost(id: string, data: PostInput) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) return { error: 'Unauthorized' }
 
+  const supabase = await createClient()
   // 1. Get current post data to check for old image
   const { data: currentPost } = await supabase.from('posts').select('image_url').eq('id', id).single()
 
@@ -61,17 +64,15 @@ export async function updatePost(id: string, data: PostInput) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/posts')
-  revalidatePath('/')
+  revalidatePost()
   return { success: true }
 }
 
 export async function deletePost(id: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) return { error: 'Unauthorized' }
 
+  const supabase = await createClient()
   // 1. Delete image from storage first
   const { data: post } = await supabase.from('posts').select('image_url').eq('id', id).single()
   if (post?.image_url) {
@@ -83,8 +84,7 @@ export async function deletePost(id: string) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/admin/posts')
-  revalidatePath('/')
+  revalidatePost()
   return { success: true }
 }
 
