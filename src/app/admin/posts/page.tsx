@@ -1,24 +1,11 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import { getPosts } from '@/actions/posts';
 import Link from 'next/link';
 import { Plus, FileText } from 'lucide-react';
 import { PostTable } from '@/components/modules/posts/PostTable';
 import { Post } from '@/types';
 
-export default function AdminPostsPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadData() {
-      const data = await getPosts();
-      setPosts(data as Post[]);
-      setLoading(false);
-    }
-    loadData();
-  }, []);
+export default async function AdminPostsPage() {
+  const posts = await getPosts();
 
   return (
     <div className="space-y-6 sm:space-y-8 pb-20">
@@ -41,7 +28,7 @@ export default function AdminPostsPage() {
         </Link>
       </div>
 
-      <PostTable posts={posts} isLoading={loading} />
+      <PostTable posts={posts as Post[]} isLoading={false} />
     </div>
   );
 }
