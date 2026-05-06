@@ -16,7 +16,7 @@
 - Modify: `src/lib/validations/index.ts`
 - Modify: `src/actions/categories.ts`
 
-- [ ] **Step 1: Add categorySchema to centralized validations**
+- [x] **Step 1: Add categorySchema to centralized validations**
 
 Move the schema from `actions/categories.ts` to `lib/validations/index.ts`.
 
@@ -32,15 +32,15 @@ export const categorySchema = z.object({
 export type CategoryInput = z.infer<typeof categorySchema>
 ```
 
-- [ ] **Step 2: Refactor Category Actions**
+- [x] **Step 2: Refactor Category Actions**
 
 Update `src/actions/categories.ts` to import the schema and ensure all actions are consistent.
 
-- [ ] **Step 3: Verify Category Actions**
+- [x] **Step 3: Verify Category Actions**
 
 Run tests or verify manually via admin UI.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/lib/validations/index.ts src/actions/categories.ts
@@ -52,15 +52,15 @@ git commit -m "refactor: centralize category schema and standardize actions"
 **Files:**
 - Modify: `src/actions/residents.ts`
 
-- [ ] **Step 1: Clean up redundant interfaces and imports**
+- [x] **Step 1: Clean up redundant interfaces and imports**
 
 Ensure `getAuthUser` and `protectedAction` (if applicable) are used consistently. Remove `ResidentImportData` and `ResidentDisplayData` if they are redundant with `ResidentInput` or `Resident` types.
 
-- [ ] **Step 2: Refactor upsertResident**
+- [x] **Step 2: Refactor upsertResident**
 
 Ensure it uses `protectedAction` and returns a consistent error format.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/actions/residents.ts
@@ -73,7 +73,7 @@ git commit -m "refactor: standardize resident actions and cleanup"
 - Modify: `src/app/admin/posts/page.tsx`
 - Modify: `src/components/modules/posts/PostTable.tsx` (if needed for prop changes)
 
-- [ ] **Step 1: Convert page.tsx to Async Server Component**
+- [x] **Step 1: Convert page.tsx to Async Server Component**
 
 Remove `useState`, `useEffect`, and fetch data directly.
 
@@ -93,9 +93,9 @@ export default async function AdminPostsPage() {
 }
 ```
 
-- [ ] **Step 2: Verify page functionality**
+- [x] **Step 2: Verify page functionality**
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/app/admin/posts/page.tsx
@@ -107,11 +107,11 @@ git commit -m "refactor: convert admin posts page to server component"
 **Files:**
 - Modify: `src/app/admin/staff/page.tsx`
 
-- [ ] **Step 1: Convert page.tsx to Async Server Component**
+- [x] **Step 1: Convert page.tsx to Async Server Component**
 
 Fetch all staff on server. Filter logic for tabs can remain client-side in a wrapper if needed, or handle with search params for better KISS/YAGNI.
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add src/app/admin/staff/page.tsx
@@ -124,15 +124,15 @@ git commit -m "refactor: convert admin staff page to server component"
 - Delete: Redundant route directories (e.g. `src/app/admin/categories/[id]/edit` or `src/app/admin/posts/[id]/edit`)
 - Modify: Links in components (Header, Sidebar, Tables) to point to normalized routes.
 
-- [ ] **Step 1: Identify and delete redundant directories**
+- [x] **Step 1: Identify and delete redundant directories**
 
-- [ ] **Step 2: Update navigation links**
+- [x] **Step 2: Update navigation links**
 
-- [ ] **Step 3: Final verification and linting**
+- [x] **Step 3: Final verification and linting**
 
 Run: `npm run lint`
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git commit -m "refactor: normalize admin routes and final cleanup"
