@@ -1,0 +1,55 @@
+<h2>Proposed Codebase Refactor Design</h2>
+<p class="subtitle">Applying KISS, YAGNI, and DRY principles across the Admin module.</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">CURRENT (MESSY)</div>
+    <div class="mockup-body">
+      <ul style="font-size: 0.8rem; list-style: none; padding: 0;">
+        <li style="color: var(--destructive); margin-bottom: 8px;">❌ <code>admin/module/[id]/edit</code> & <code>admin/module/edit/[id]</code> (Mixed routes)</li>
+        <li style="color: var(--destructive); margin-bottom: 8px;">❌ Client-side fetching with <code>useEffect</code> (Slow & verbose)</li>
+        <li style="color: var(--destructive); margin-bottom: 8px;">❌ Schemas duplicated in <code>actions/</code> and <code>validations/</code></li>
+        <li style="color: var(--destructive); margin-bottom: 8px;">❌ Manual auth checks repeated in every action</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="mockup">
+    <div class="mockup-header">PROPOSED (CLEAN)</div>
+    <div class="mockup-body">
+      <ul style="font-size: 0.8rem; list-style: none; padding: 0;">
+        <li style="color: var(--primary); margin-bottom: 8px;">✅ Unified route pattern: <code>admin/module/edit/[id]</code></li>
+        <li style="color: var(--primary); margin-bottom: 8px;">✅ Server-side fetching (Fast, SEO-friendly, KISS)</li>
+        <li style="color: var(--primary); margin-bottom: 8px;">✅ Single Source of Truth for schemas in <code>lib/validations</code></li>
+        <li style="color: var(--primary); margin-bottom: 8px;">✅ Consistent use of <code>protectedAction</code> helper</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Rencana Aksi (Action Plan):</h3>
+  <ol>
+    <li><strong>Konsolidasi Skema:</strong> Pindahkan semua Zod schema ke <code>lib/validations/index.ts</code>.</li>
+    <li><strong>Standarisasi Actions:</strong> Gunakan <code>protectedAction</code> untuk semua mutasi data.</li>
+    <li><strong>Server Components:</strong> Refaktor halaman List di Admin untuk menggunakan server-side fetching.</li>
+    <li><strong>Pembersihan Route:</strong> Hapus folder route yang redundan.</li>
+  </ol>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="approve-all" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Setujui Semua</h3>
+      <p>Lanjutkan dengan pembuatan spesifikasi dan rencana implementasi.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="revise-structure" onclick="toggleSelect(this)">
+    <div class="letter">✎</div>
+    <div class="content">
+      <h3>Revisi Struktur</h3>
+      <p>Saya ingin mengubah pola route atau aspek lainnya.</p>
+    </div>
+  </div>
+</div>

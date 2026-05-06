@@ -1,0 +1,52 @@
+<h2>KISS, YAGNI, & DRY Codebase Audit</h2>
+<p class="subtitle">Initial findings focused on the Admin module and Server Actions</p>
+
+<div class="section">
+  <h3>1. Redundansi Route & Direktori (Admin)</h3>
+  <p>Ada beberapa direktori yang tampak redundan atau tidak konsisten:</p>
+  <ul>
+    <li><code>admin/categories/[id]/edit</code> VS <code>admin/categories/edit/[id]</code> (DRY Violation)</li>
+    <li>Struktur <code>posts</code> juga memiliki pola serupa.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>2. Inkonsistensi Data Fetching (KISS Violation)</h3>
+  <ul>
+    <li><strong>Categories:</strong> Menggunakan <code>services/data-service.ts</code> di Server Component.</li>
+    <li><strong>Posts:</strong> Menggunakan <code>actions/posts.ts</code> dengan <code>useEffect</code> di Client Component.</li>
+  </ul>
+  <p>Rekomendasi: Standarisasi menggunakan Server Components untuk list data guna performa lebih baik (KISS).</p>
+</div>
+
+<div class="section">
+  <h3>3. Duplikasi Skema Validasi (DRY Violation)</h3>
+  <ul>
+    <li><code>categorySchema</code> didefinisikan di <code>actions/categories.ts</code> DAN <code>validations/index.ts</code>.</li>
+    <li>Rekomendasi: Konsolidasikan semua skema ke satu tempat (<code>lib/validations</code>).</li>
+  </ul>
+</div>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="refactor-actions" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Refaktor Server Actions</h3>
+      <p>Konsolidasi validasi dan standarisasi error handling (DRY).</p>
+    </div>
+  </div>
+  <div class="option" data-choice="standardize-pages" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Standarisasi Admin Pages</h3>
+      <p>Gunakan Server Components & bereskan struktur route (KISS/DRY).</p>
+    </div>
+  </div>
+  <div class="option" data-choice="clean-services" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Pembersihan Services & Utils</h3>
+      <p>Hapus kode YAGNI dan gabungkan logic serupa (YAGNI/DRY).</p>
+    </div>
+  </div>
+</div>
