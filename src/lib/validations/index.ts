@@ -102,3 +102,12 @@ export const residentSchema = z.object({
 });
 
 export type ResidentInput = z.infer<typeof residentSchema>;
+
+export const categorySchema = z.object({
+  name: z.string().min(2, "Nama minimal 2 karakter"),
+  slug: z.string().min(2, "Slug minimal 2 karakter"),
+  type: z.enum(['post', 'demographic', 'finance', 'gallery']),
+  description: z.string().optional(),
+})
+
+export type CategoryInput = z.infer<typeof categorySchema>

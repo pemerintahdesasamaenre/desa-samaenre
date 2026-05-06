@@ -3,16 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidateCategory } from '@/lib/utils/revalidate'
 import { protectedAction } from '@/lib/utils/action-handler'
-import { z } from 'zod'
-
-const categorySchema = z.object({
-  name: z.string().min(2, "Nama minimal 2 karakter"),
-  slug: z.string().min(2, "Slug minimal 2 karakter"),
-  type: z.enum(['post', 'demographic', 'finance', 'gallery']),
-  description: z.string().optional(),
-})
-
-export type CategoryInput = z.infer<typeof categorySchema>
+import { categorySchema, type CategoryInput } from '@/lib/validations'
 
 export async function createCategory(data: CategoryInput) {
   return protectedAction(async () => {

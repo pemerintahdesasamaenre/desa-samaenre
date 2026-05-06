@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createCategory, updateCategory, type CategoryInput } from '@/actions/categories'
+import { createCategory, updateCategory } from '@/actions/categories'
+import { type CategoryInput } from '@/lib/validations'
 import { Save, Loader2, ArrowLeft, Layers } from 'lucide-react'
 import Link from 'next/link'
 import { Label } from '@/components/ui/label'
