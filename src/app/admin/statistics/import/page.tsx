@@ -77,7 +77,7 @@ export default function StatisticsImportPage() {
   const handleUpload = async () => {
     if (!file || sheets.length === 0) return;
     setLoading(true);
-    setLogs(prev => [...prev, 'Memulai proses import massal...', 'Menganalisis struktur kolom perdusun...']);
+    setLogs(prev => [...prev, 'Memulai proses impor massal...', 'Menganalisis struktur kolom perdusun...']);
 
     try {
       const data = await file.arrayBuffer();
@@ -250,7 +250,7 @@ export default function StatisticsImportPage() {
         if (result.success) totalSuccess += result.count || 0;
       }
 
-      setLogs(prev => [...prev, `IMPORT SELESAI! Total Sukses: ${totalSuccess} data.`]);
+      setLogs(prev => [...prev, `IMPOR SELESAI! Total Sukses: ${totalSuccess} data.`]);
       setLoading(false);
       setSuccess(`Berhasil mengimpor ${totalSuccess} data penduduk! Mengalihkan...`);
 
@@ -287,7 +287,7 @@ export default function StatisticsImportPage() {
               <div className="p-3 bg-primary/10 text-primary rounded-2xl">
                 <FileSpreadsheet size={28} />
               </div>
-              Import Master Data
+              Impor Data Master
             </h1>
             <p className="text-muted-foreground font-medium italic">Sistem otomatis memetakan nomor KK bagi anggota keluarga.</p>
           </div>
@@ -340,7 +340,7 @@ export default function StatisticsImportPage() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-foreground tracking-tight">{file.name}</h3>
-                    <p className="text-primary text-[10px] font-bold uppercase tracking-widest mt-1">{(file.size / 1024).toFixed(1)} KB • Siap Import</p>
+                    <p className="text-primary text-[10px] font-bold uppercase tracking-widest mt-1">{(file.size / 1024).toFixed(1)} KB • Siap Impor</p>
                   </div>
                 </div>
                 <button 
@@ -391,7 +391,7 @@ export default function StatisticsImportPage() {
             className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-5 rounded-full font-bold flex items-center justify-center gap-4 hover:opacity-90 disabled:opacity-30 disabled:grayscale transition-all shadow-2xl shadow-primary/30 active:scale-95 text-sm tracking-widest uppercase"
           >
             {loading ? <Loader2 className="animate-spin" size={24} /> : <Upload size={24} />}
-            {loading ? 'Mengirim Data...' : 'Mulai Import Akhir'}
+            {loading ? 'Mengirim Data...' : 'Mulai Impor Data'}
           </button>
         </div>
       </div>

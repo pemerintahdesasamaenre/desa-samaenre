@@ -15,13 +15,27 @@ export default async function AdminStatisticsPage() {
     return acc;
   }, {} as Record<string, Demographic[]>);
 
+  const getCategoryName = (slug: string) => {
+    const mapping: Record<string, string> = {
+      'POPULATION': 'Kependudukan',
+      'HAMLETS': 'Wilayah / Dusun',
+      'OCCUPATIONS': 'Pekerjaan',
+      'EDUCATION': 'Pendidikan',
+      'MARITAL STATUS': 'Status Perkawinan',
+      'FAMILY RELATIONSHIP': 'Hubungan Keluarga',
+      'AGE GROUPS': 'Kelompok Usia',
+      'RELIGION': 'Agama',
+    };
+    return mapping[slug] || slug;
+  };
+
   const getCategoryIcon = (name: string) => {
     const lowerName = name.toLowerCase();
-    if (lowerName.includes('populasi')) return <Users size={18} className="text-primary" />;
+    if (lowerName.includes('populasi') || lowerName.includes('kependudukan')) return <Users size={18} className="text-primary" />;
     if (lowerName.includes('pendidikan')) return <GraduationCap size={18} className="text-purple-500" />;
     if (lowerName.includes('pekerjaan')) return <Briefcase size={18} className="text-amber-500" />;
-    if (lowerName.includes('dusun')) return <MapPin size={18} className="text-emerald-500" />;
-    if (lowerName.includes('perkawinan')) return <Heart size={18} className="text-rose-500" />;
+    if (lowerName.includes('dusun') || lowerName.includes('wilayah')) return <MapPin size={18} className="text-emerald-500" />;
+    if (lowerName.includes('perkawinan') || lowerName.includes('agama')) return <Heart size={18} className="text-rose-500" />;
     if (lowerName.includes('keluarga') || lowerName.includes('hubungan')) return <Users size={18} className="text-orange-500" />;
     if (lowerName.includes('usia')) return <Baby size={18} className="text-indigo-500" />;
     return <Layers size={18} className="text-muted-foreground" />;
@@ -63,9 +77,9 @@ export default async function AdminStatisticsPage() {
             <div key={category} className="bg-card rounded-2xl sm:rounded-3xl border border-border shadow-sm overflow-hidden flex flex-col">
               <div className="px-4 py-3 sm:px-8 sm:py-6 bg-muted/30 border-b border-border flex items-center gap-3 sm:gap-4">
                 <div className="p-2 sm:p-3 bg-background rounded-xl sm:rounded-2xl border border-border shadow-sm shrink-0">
-                  {getCategoryIcon(category)}
+                  {getCategoryIcon(getCategoryName(category))}
                 </div>
-                <h2 className="font-bold text-sm sm:text-xl text-foreground tracking-tight uppercase truncate">{category}</h2>
+                <h2 className="font-bold text-sm sm:text-xl text-foreground tracking-tight uppercase truncate">{getCategoryName(category)}</h2>
                 <span className="ml-auto text-xs font-bold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full uppercase tracking-widest shrink-0">
                   {items.length} Data
                 </span>
@@ -75,7 +89,7 @@ export default async function AdminStatisticsPage() {
                 <table className="w-full text-left border-collapse table-auto">
                   <thead>
                     <tr className="border-b border-border bg-muted/10">
-                      <th className="px-5 py-3 sm:px-10 sm:py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Label</th>
+                      <th className="px-5 py-3 sm:px-10 sm:py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Keterangan</th>
                       <th className="px-5 py-3 sm:px-10 sm:py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right">Jumlah</th>
                     </tr>
                   </thead>
@@ -86,7 +100,7 @@ export default async function AdminStatisticsPage() {
                           {item.label}
                         </td>
                         <td className="px-5 py-3 sm:px-10 sm:py-5 text-sm sm:text-lg text-foreground font-bold text-right tracking-tighter tabular-nums">
-                          {item.value.toLocaleString()}
+                          {item.value.toLocaleString('id-ID')}
                         </td>
                       </tr>
                     ))}
