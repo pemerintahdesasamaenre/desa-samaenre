@@ -5,7 +5,8 @@ import { ArrowLeft, FileSpreadsheet, Upload, Loader2, BarChart, Trash2, Activity
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import * as XLSX from 'xlsx';
-import { importResidents, type ResidentImportData } from '@/actions/residents';
+import { importResidents } from '@/actions/residents';
+import { type ResidentInput } from '@/lib/validations';
 
 export default function StatisticsImportPage() {
   const router = useRouter();
@@ -83,7 +84,7 @@ export default function StatisticsImportPage() {
       const data = await file.arrayBuffer();
       const workbook = XLSX.read(data, { type: 'array' });
       
-      let allFormattedData: ResidentImportData[] = [];
+      let allFormattedData: ResidentInput[] = [];
 
       for (const sheetName of sheets) {
         const worksheet = workbook.Sheets[sheetName];
@@ -222,7 +223,7 @@ export default function StatisticsImportPage() {
       }
 
       // DEDUPLIKASI & TANGGAL CLEANUP
-      const uniqueDataMap = new Map<string, ResidentImportData>();
+      const uniqueDataMap = new Map<string, ResidentInput>();
       allFormattedData.forEach(item => {
         const key = `${item.nik}-${item.data_year}`;
         uniqueDataMap.set(key, item);
@@ -247,7 +248,7 @@ export default function StatisticsImportPage() {
       for (let i = 0; i < finalCleanData.length; i += BATCH_SIZE) {
         const batch = finalCleanData.slice(i, i + BATCH_SIZE);
         const result = await importResidents(batch);
-        if (result.success) totalSuccess += result.count || 0;
+        if (result.success && result.data) totalSuccess += result.data.count || 0;
       }
 
       setLogs(prev => [...prev, `IMPOR SELESAI! Total Sukses: ${totalSuccess} data.`]);

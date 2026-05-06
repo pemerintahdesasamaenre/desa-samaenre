@@ -7,29 +7,8 @@ import { residentSchema, type ResidentInput } from '@/lib/validations';
 import { logActivity } from '@/actions/analytics';
 import { mapResidentToDisplay } from '@/lib/utils/resident';
 import { getAuthUser } from '@/lib/utils/auth';
-
-export interface ResidentImportData {
-  nik: string;
-  kk: string;
-  name: string;
-  birth_place: string;
-  birth_date: string | null;
-  gender: 'L' | 'P';
-  education: string;
-  occupation: string;
-  marital_status: string;
-  family_relationship: string;
-  father_name: string;
-  mother_name: string;
-  dusun: string;
-  rt: string;
-  rw: string;
-  data_year: number;
-}
-
-export interface ResidentDisplayData extends ResidentImportData {
-  id: string;
-}
+import { protectedAction, type ActionResponse } from '@/lib/utils/action-handler';
+import { Resident } from '@/types';
 
 export async function getResidents(params: { 
   page: number, 
@@ -55,7 +34,7 @@ export async function getResidents(params: {
     if (error) throw error;
     if (!data) return { data: [], total: 0 };
 
-    let decryptedData: ResidentDisplayData[] = data.map(mapResidentToDisplay);
+    let decryptedData = data.map(mapResidentToDisplay);
 
     if (search) {
       const s = search.toLowerCase();
@@ -97,28 +76,26 @@ export async function getResidentById(id: string) {
   }
 }
 
-export async function upsertResident(data: ResidentInput, id?: string) {
-  const user = await getAuthUser();
-  if (!user) return { error: 'Unauthorized' };
+export async function upsertResident(data: ResidentInput, id?: string): Promise<ActionResponse> {
+  return protectedAction(async () => {
+    const validated = residentSchema.safeParse(data);
+    if (!validated.success) {
+      return { error: validated.error.flatten().fieldErrors };
+    }
 
-  const { nik, kk, name, ...rest } = data; // Note: assuming data is already validated by caller or handled here
-  
-  const validated = residentSchema.safeParse(data);
-  if (!validated.success) {
-    return { error: validated.error.flatten().fieldErrors };
-  }
+    const { nik, kk, name, ...rest } = validated.data;
 
-  const residentData = {
-    ...rest,
-    nik_hash: hashNIK(nik),
-    kk_hash: hashNIK(kk),
-    nik_enc: encrypt(nik),
-    kk_enc: encrypt(kk),
-    name_enc: encrypt(name),
-  };
+    const residentData = {
+      ...rest,
+      nik_hash: hashNIK(nik),
+      kk_hash: hashNIK(kk),
+      nik_enc: encrypt(nik),
+      kk_enc: encrypt(kk),
+      name_enc: encrypt(name),
+    };
 
-  const supabase = await createClient();
-  try {
+    const supabase = await createClient();
+    
     let result;
     if (id) {
       result = await supabase.from('residents').update(residentData).eq('id', id);
@@ -138,9 +115,7 @@ export async function upsertResident(data: ResidentInput, id?: string) {
     revalidatePath('/admin/residents');
     revalidatePath('/admin/statistics');
     return { success: true };
-  } catch (e: unknown) {
-    return { error: e instanceof Error ? e.message : 'Gagal menyimpan data.' };
-  }
+  });
 }
 
 export async function getDusuns() {
@@ -153,12 +128,10 @@ export async function getDusuns() {
   } catch { return []; }
 }
 
-export async function deleteResident(id: string) {
-  const user = await getAuthUser();
-  if (!user) return { error: 'Unauthorized' };
-
-  const supabase = await createClient();
-  try {
+export async function deleteResident(id: string): Promise<ActionResponse> {
+  return protectedAction(async () => {
+    const supabase = await createClient();
+    
     const { data: resident } = await supabase.from('residents').select('name_enc').eq('id', id).single();
     const residentName = resident ? decrypt(resident.name_enc) : id;
 
@@ -175,9 +148,7 @@ export async function deleteResident(id: string) {
     revalidatePath('/admin/residents');
     revalidatePath('/admin/statistics');
     return { success: true };
-  } catch (e: unknown) {
-    return { error: e instanceof Error ? e.message : 'Gagal menghapus data.' };
-  }
+  });
 }
 
 export async function verifyResidentNIK(nik: string) {
@@ -213,14 +184,12 @@ export async function logSensitiveView(residentId: string, residentName: string)
   return { success: true };
 }
 
-export async function importResidents(data: ResidentImportData[]) {
-  const user = await getAuthUser();
-  if (!user) return { error: 'Unauthorized' };
-
-  if (data.length === 0) return { error: 'Tidak ada data.' };
-  const supabase = await createClient();
-  
-  try {
+export async function importResidents(data: ResidentInput[]): Promise<ActionResponse<{ count: number }>> {
+  return protectedAction(async () => {
+    if (data.length === 0) return { error: 'Tidak ada data.' };
+    
+    const supabase = await createClient();
+    
     const formattedData = data.map(item => ({
       nik_hash: hashNIK(item.nik),
       kk_hash: hashNIK(item.kk),
@@ -257,18 +226,13 @@ export async function importResidents(data: ResidentImportData[]) {
 
     revalidatePath('/admin/statistics');
     revalidatePath('/admin/residents');
-    return { success: true, count: formattedData.length };
-  } catch (e: unknown) {
-    return { error: e instanceof Error ? e.message : 'Gagal import data.' };
-  }
+    return { success: true, data: { count: formattedData.length } };
+  });
 }
 
-export async function deleteAllResidents() {
-  const user = await getAuthUser();
-  if (!user) return { error: 'Unauthorized' };
-
-  const supabase = await createClient();
-  try {
+export async function deleteAllResidents(): Promise<ActionResponse> {
+  return protectedAction(async () => {
+    const supabase = await createClient();
     const { error } = await supabase.from('residents').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     if (error) throw error;
 
@@ -280,32 +244,21 @@ export async function deleteAllResidents() {
     });
 
     revalidatePath('/admin/statistics');
+    revalidatePath('/admin/residents');
     return { success: true };
-  } catch (e: unknown) {
-    return { error: e instanceof Error ? e.message : 'Gagal menghapus data.' };
-  }
+  });
 }
 
-export interface IncompleteDusunStat {
-  dusun: string;
-  count: number;
-}
-
-export interface IncompleteResidentDetail extends ResidentDisplayData {
-  missing_fields: string[];
-}
-
-const CHECK_FIELDS = [
+const CHECK_FIELDS: (keyof Resident)[] = [
   'nik', 'kk', 'name', 'birth_place', 'birth_date', 
   'gender', 'education', 'occupation', 'marital_status', 
   'family_relationship', 'father_name', 'mother_name', 'dusun'
 ];
 
-function getMissingFields(resident: ResidentDisplayData): string[] {
+function getMissingFields(resident: Partial<Resident>): string[] {
   const missing: string[] = [];
-  const residentRecord = resident as unknown as Record<string, unknown>;
   CHECK_FIELDS.forEach(field => {
-    const val = residentRecord[field];
+    const val = resident[field];
     if (val === null || val === undefined || val === '' || val === '-' || (typeof val === 'string' && val.toLowerCase() === 'belum diisi')) {
       missing.push(field);
     }
@@ -323,7 +276,7 @@ export async function getIncompleteStats() {
     if (error) throw error;
     if (!data) return [];
 
-    const residents: ResidentDisplayData[] = data.map(mapResidentToDisplay);
+    const residents = data.map(mapResidentToDisplay);
 
     const statsMap: Record<string, number> = {};
     residents.forEach(r => {
@@ -359,9 +312,9 @@ export async function getIncompleteResidents(dusun?: string) {
     if (error) throw error;
     if (!data) return [];
 
-    const result: IncompleteResidentDetail[] = [];
+    const result: (Resident & { missing_fields: string[] })[] = [];
     data.forEach(item => {
-      const resident = mapResidentToDisplay(item);
+      const resident = mapResidentToDisplay(item) as Resident;
 
       const missing = getMissingFields(resident);
       if (missing.length > 0) {
