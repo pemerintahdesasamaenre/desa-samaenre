@@ -43,7 +43,7 @@ export default function StaffForm({ staffList, initialData }: StaffFormProps) {
       position: position,
       photo_url: photoUrl,
       parent_id: parent_id ? parent_id : null,
-      order_index: parseInt(formData.get('order_index') as string || '0'),
+      order_index: 0,
       org_type: orgType,
     };
 
@@ -127,16 +127,6 @@ export default function StaffForm({ staffList, initialData }: StaffFormProps) {
                       value={position}
                       onChange={(e) => setPosition(e.target.value)}
                       placeholder="Contoh: Kepala Desa"
-                      className="h-12 text-sm font-medium rounded-xl border focus:border-primary transition-all" 
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest opacity-60">Urutan (Indeks)</Label>
-                    <Input 
-                      type="number" 
-                      name="order_index" 
-                      defaultValue={initialData?.order_index || 0}
                       className="h-12 text-sm font-medium rounded-xl border focus:border-primary transition-all" 
                     />
                   </div>

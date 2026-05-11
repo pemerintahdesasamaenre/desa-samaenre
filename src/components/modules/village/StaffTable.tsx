@@ -2,7 +2,7 @@
 
 
 import Link from 'next/link';
-import { Edit2, Layers, Hash } from 'lucide-react';
+import { Edit2, Layers } from 'lucide-react';
 import DeleteStaffButton from '@/components/modules/village/DeleteStaffButton';
 import { StaffMember } from '@/types';
 import { DataTable, Column } from '@/components/ui/DataTable';
@@ -57,11 +57,6 @@ export const StaffTable = ({ staff, isLoading }: StaffTableProps) => {
       accessor: (item) => <span className="text-xs font-bold text-muted-foreground truncate">{getParentName(item.parent_id)}</span>,
     },
     {
-      header: 'Urutan',
-      hideOnMobile: true,
-      accessor: (item) => <span className="font-mono font-bold text-primary text-xs">{item.order_index}</span>,
-    },
-    {
       header: 'Aksi',
       hideOnMobile: true,
       align: 'right',
@@ -89,15 +84,6 @@ export const StaffTable = ({ staff, isLoading }: StaffTableProps) => {
             <div>
                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Hirarki / Atasan</p>
                <p className="text-xs font-bold text-foreground mt-0.5">{getParentName(item.parent_id)}</p>
-            </div>
-         </div>
-         <div className="flex items-start gap-3">
-            <div className="p-1.5 bg-background rounded-lg border border-border">
-               <Hash size={12} className="text-primary" />
-            </div>
-            <div>
-               <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Indeks Urutan</p>
-               <p className="text-xs font-bold font-mono text-primary mt-0.5">{item.order_index}</p>
             </div>
          </div>
       </div>
