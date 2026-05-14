@@ -16,6 +16,13 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
 
+ALTER TABLE public.profiles 
+ADD COLUMN IF NOT EXISTS nip TEXT,
+ADD COLUMN IF NOT EXISTS position TEXT,
+ADD COLUMN IF NOT EXISTS phone TEXT,
+ADD COLUMN IF NOT EXISTS address TEXT,
+ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+
 -- Categories
 CREATE TABLE IF NOT EXISTS public.categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -175,8 +182,15 @@ $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name, role)
-  VALUES (new.id, COALESCE(new.raw_user_meta_data->>'full_name', 'User Baru'), 'admin');
+  INSERT INTO public.profiles (id, full_name, role, nip, position, phone)
+  VALUES (
+    new.id, 
+    COALESCE(new.raw_user_meta_data->>'full_name', 'User Baru'), 
+    COALESCE(new.raw_user_meta_data->>'role', 'admin'),
+    new.raw_user_meta_data->>'nip',
+    new.raw_user_meta_data->>'position',
+    new.raw_user_meta_data->>'phone'
+  );
   RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
