@@ -11,7 +11,7 @@ export default function LoginForm({ error: initialError }: { error?: string | un
     <form action={action} className="mt-8 space-y-6">
       <div className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-1">
+          <label htmlFor="email" className="block text-sm font-semibold text-secondary-foreground/80 mb-2 ml-1">
             Alamat Email
           </label>
           <input
@@ -19,12 +19,12 @@ export default function LoginForm({ error: initialError }: { error?: string | un
             name="email"
             type="email"
             required
-            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            className="w-full px-5 py-3.5 rounded-2xl bg-black/20 border border-white/10 text-secondary-foreground placeholder:text-secondary-foreground/30 focus:ring-2 focus:ring-primary focus:bg-black/40 outline-none transition-all duration-300"
             placeholder="admin@desa.id"
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-1">
+          <label htmlFor="password" className="block text-sm font-semibold text-secondary-foreground/80 mb-2 ml-1">
             Kata Sandi
           </label>
           <input
@@ -32,14 +32,14 @@ export default function LoginForm({ error: initialError }: { error?: string | un
             name="password"
             type="password"
             required
-            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            className="w-full px-5 py-3.5 rounded-2xl bg-black/20 border border-white/10 text-secondary-foreground placeholder:text-secondary-foreground/30 focus:ring-2 focus:ring-primary focus:bg-black/40 outline-none transition-all duration-300"
             placeholder="••••••••"
           />
         </div>
       </div>
 
       {(initialError || state?.error) && (
-        <div className="bg-red-500/20 border border-red-500/50 p-4 rounded-xl text-red-200 text-sm">
+        <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-2xl text-destructive-foreground text-sm font-medium backdrop-blur-md">
           {initialError === 'Invalid credentials' || state?.error === 'Invalid credentials' 
             ? 'Email atau kata sandi salah.' 
             : (initialError || state?.error)}
@@ -49,7 +49,7 @@ export default function LoginForm({ error: initialError }: { error?: string | un
       <button
         type="submit"
         disabled={isPending}
-        className="w-full flex justify-center items-center py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-lg shadow-blue-900/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+        className="w-full flex justify-center items-center py-4 px-4 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none"
       >
         {isPending ? (
           <>
