@@ -11,8 +11,14 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- Profiles (linked to Supabase auth)
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT,
   full_name TEXT,
   role TEXT DEFAULT 'admin' NOT NULL,
+  nip TEXT,
+  position TEXT,
+  phone TEXT,
+  address TEXT,
+  avatar_url TEXT,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
 
@@ -182,9 +188,10 @@ $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name, role, nip, position, phone, address)
+  INSERT INTO public.profiles (id, email, full_name, role, nip, position, phone, address)
   VALUES (
     new.id, 
+    new.email,
     COALESCE(new.raw_user_meta_data->>'full_name', 'User Baru'), 
     COALESCE(new.raw_user_meta_data->>'role', 'admin'),
     new.raw_user_meta_data->>'nip',

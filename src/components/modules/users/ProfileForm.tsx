@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { User, Briefcase, Phone, MapPin, Save } from 'lucide-react';
+import { User, Briefcase, Phone, MapPin, Save, Mail } from 'lucide-react';
 import { updateProfile } from '@/actions/users';
 import { toast } from 'sonner';
 import { Profile } from '@/types';
@@ -62,6 +62,18 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/80 ml-1">Email</label>
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+              <input 
+                value={user.email || ''}
+                disabled
+                className="w-full h-12 pl-10 pr-4 rounded-2xl border border-border bg-muted/50 text-muted-foreground cursor-not-allowed font-bold tracking-tight text-sm" 
+              />
+            </div>
+          </div>
+
           <div className="space-y-2">
             <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/80 ml-1">Nama Lengkap</label>
             <div className="relative">

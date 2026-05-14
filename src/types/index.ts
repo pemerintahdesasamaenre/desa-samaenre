@@ -12,6 +12,7 @@ export interface Category {
 
 export interface Profile {
   id: string;
+  email: string | null;
   full_name: string | null;
   role: 'admin' | 'editor';
   nip: string | null;
