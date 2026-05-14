@@ -9,13 +9,13 @@ import { revalidatePath } from 'next/cache'
  */
 export async function createUser(data: any) {
   const supabase = createAdminClient()
-  const { email, password, full_name, role, nip, position, phone } = data
+  const { email, password, full_name, role, nip, position, phone, address, avatar_url } = data
 
   const { data: user, error } = await supabase.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
-    user_metadata: { full_name, role, nip, position, phone }
+    user_metadata: { full_name, role, nip, position, phone, address, avatar_url }
   })
 
   if (error) return { error: error.message }

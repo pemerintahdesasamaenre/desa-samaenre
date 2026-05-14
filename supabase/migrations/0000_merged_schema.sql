@@ -182,14 +182,15 @@ $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name, role, nip, position, phone)
+  INSERT INTO public.profiles (id, full_name, role, nip, position, phone, address)
   VALUES (
     new.id, 
     COALESCE(new.raw_user_meta_data->>'full_name', 'User Baru'), 
     COALESCE(new.raw_user_meta_data->>'role', 'admin'),
     new.raw_user_meta_data->>'nip',
     new.raw_user_meta_data->>'position',
-    new.raw_user_meta_data->>'phone'
+    new.raw_user_meta_data->>'phone',
+    new.raw_user_meta_data->>'address'
   );
   RETURN new;
 END;

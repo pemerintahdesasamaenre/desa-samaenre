@@ -74,6 +74,7 @@ export const UserManagement = ({ initialProfiles }: UserManagementProps) => {
 
             <div className="p-8 overflow-y-auto">
               <UserForm 
+                key={editingUser?.id || "new"} 
                 user={editingUser} 
                 onSuccess={handleClose} 
                 onCancel={handleClose} 

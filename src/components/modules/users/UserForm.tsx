@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Lock, User, Briefcase, Phone, Shield, Save, X } from 'lucide-react';
+import { Mail, Lock, User, Briefcase, Phone, Shield, Save, X, MapPin } from 'lucide-react';
 import { createUser, updateProfile } from '@/actions/users';
 import { toast } from 'sonner';
 import { Profile } from '@/types';
+import { useRouter } from 'next/navigation';
+import ImageUpload from '@/components/ui/ImageUpload';
 
 interface UserFormProps {
   user?: Profile | undefined;
@@ -14,6 +16,8 @@ interface UserFormProps {
 
 export const UserForm = ({ user, onSuccess, onCancel }: UserFormProps) => {
   const [loading, setLoading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatar_url || '');
+  const router = useRouter();
   const isEditing = !!user;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -38,6 +42,7 @@ export const UserForm = ({ user, onSuccess, onCancel }: UserFormProps) => {
         toast.error(result.error, { id: toastId });
       } else {
         toast.success(isEditing ? 'Profil berhasil diperbarui' : 'Akun berhasil dibuat', { id: toastId });
+        router.refresh();
         if (!isEditing) (e.target as HTMLFormElement).reset();
         onSuccess?.();
       }
@@ -50,6 +55,18 @@ export const UserForm = ({ user, onSuccess, onCancel }: UserFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="flex justify-center mb-6">
+        <div className="w-full max-w-[200px]">
+          <ImageUpload 
+            value={avatarUrl} 
+            onChange={setAvatarUrl} 
+            folder="avatars" 
+            label="Foto Profil" 
+          />
+          <input type="hidden" name="avatar_url" value={avatarUrl} />
+        </div>
+      </div>
+
       {!isEditing && (
         <>
           <div className="space-y-2">
@@ -133,6 +150,19 @@ export const UserForm = ({ user, onSuccess, onCancel }: UserFormProps) => {
               defaultValue={user?.phone || ''}
               placeholder="0812..."
               className="w-full h-12 pl-10 pr-4 rounded-2xl border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight text-sm" 
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2 sm:col-span-2">
+          <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/80 ml-1">Alamat</label>
+          <div className="relative">
+            <MapPin className="absolute left-4 top-4 text-muted-foreground" size={16} />
+            <textarea 
+              name="address" 
+              defaultValue={user?.address || ''}
+              placeholder="Jl. Merdeka No. 1..."
+              className="w-full pl-10 pr-4 py-3 rounded-2xl border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold tracking-tight text-sm min-h-[80px]" 
             />
           </div>
         </div>

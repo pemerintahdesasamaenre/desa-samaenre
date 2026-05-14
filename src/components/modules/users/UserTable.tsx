@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { User as UserIcon, Clock, Shield, Edit2, Trash2, Phone, Briefcase } from 'lucide-react';
 import { Profile } from '@/types';
 import { DataTable, Column } from '@/components/ui/DataTable';
+import { useRouter } from "next/navigation";
 import { deleteUser } from '@/actions/users';
 import { toast } from 'sonner';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
@@ -16,6 +17,7 @@ interface UserTableProps {
 export const UserTable = ({ profiles, onEdit }: UserTableProps) => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleDelete = async () => {
     if (!deletingId) return;
