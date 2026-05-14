@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -25,19 +24,4 @@ export async function logout() {
   await supabase.auth.signOut()
   revalidatePath('/', 'layout')
   redirect('/login')
-}
-
-export async function inviteAdmin(email: string) {
-  const supabase = createAdminClient()
-
-  const { data, error } = await supabase.auth.admin.inviteUserByEmail(email, {
-    data: { role: 'admin' }
-  })
-
-  if (error) {
-    return { error: error.message }
-  }
-
-  revalidatePath('/admin/users')
-  return { data }
 }
