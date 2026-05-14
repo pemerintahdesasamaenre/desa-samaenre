@@ -14,6 +14,11 @@ export interface Profile {
   id: string;
   full_name: string | null;
   role: 'admin' | 'editor';
+  nip: string | null;
+  position: string | null;
+  phone: string | null;
+  address: string | null;
+  avatar_url: string | null;
   updated_at: string;
 }
 
