@@ -142,7 +142,7 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
                   { id: 'finance', name: 'Laporan Keuangan' },
                 ]}
                 value={formData.type}
-                onChange={(val) => setFormData(prev => ({ ...prev, type: val as any }))}
+                onChange={(val) => setFormData(prev => ({ ...prev, type: val as 'post' | 'finance' }))}
                 required
               />
 

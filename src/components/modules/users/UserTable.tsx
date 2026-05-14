@@ -7,6 +7,7 @@ import { DataTable, Column } from '@/components/ui/DataTable';
 import { deleteUser } from '@/actions/users';
 import { toast } from 'sonner';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import Image from 'next/image';
 
 interface UserTableProps {
   profiles: Profile[];
@@ -43,9 +44,14 @@ export const UserTable = ({ profiles, onEdit }: UserTableProps) => {
       header: 'Administrator',
       accessor: (profile) => (
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 relative overflow-hidden">
             {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="w-full h-full rounded-xl object-cover" />
+              <Image 
+                src={profile.avatar_url} 
+                alt={profile.full_name || ''} 
+                fill 
+                className="rounded-xl object-cover" 
+              />
             ) : (
               <UserIcon size={18} />
             )}

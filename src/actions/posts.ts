@@ -5,6 +5,7 @@ import { postSchema, type PostInput } from '../lib/validations'
 import { revalidatePost } from '@/lib/utils/revalidate'
 import { handleImageUpdate, deleteImage } from '../lib/supabase/storage'
 import { protectedAction } from '@/lib/utils/action-handler'
+import { stripHtml } from '@/lib/utils'
 
 export async function createPost(data: PostInput) {
   return protectedAction(async (user) => {
@@ -83,6 +84,7 @@ export async function getPosts(status?: 'draft' | 'published') {
   if (error) return []
   return (data || []).map((post) => ({
     ...post,
+    excerpt: stripHtml(post.content).substring(0, 160) + '...',
     categories: Array.isArray(post.categories) ? post.categories[0] : post.categories
   }))
 }

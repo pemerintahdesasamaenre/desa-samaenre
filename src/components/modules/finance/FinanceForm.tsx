@@ -127,7 +127,7 @@ export default function FinanceForm({ categories }: FinanceFormProps) {
                   { id: 'financing', name: 'Pembiayaan' }
                 ]}
                 value={formData.type}
-                onChange={(val) => setFormData(prev => ({ ...prev, type: val as any }))}
+                onChange={(val) => setFormData(prev => ({ ...prev, type: val as 'income' | 'expense' | 'financing' }))}
                 required
               />
 

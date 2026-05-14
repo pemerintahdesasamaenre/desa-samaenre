@@ -56,3 +56,8 @@ export function getMapsLinks(input: string | null | undefined, fallbackQuery?: s
     external: url
   };
 }
+
+export function stripHtml(html: string): string {
+  if (!html) return '';
+  return html.replace(/<[^>]*>?/gm, '');
+}

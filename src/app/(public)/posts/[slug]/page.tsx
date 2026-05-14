@@ -6,6 +6,7 @@ import { incrementPostView } from '@/actions/analytics';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import ShareButtons from '@/components/modules/posts/ShareButtons';
+import { marked } from 'marked';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
@@ -56,6 +57,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
   await incrementPostView(post.id);
 
   const postUrl = `${process.env.NEXT_PUBLIC_APP_URL}/posts/${post.slug}`;
+
+  // Parse markdown content to HTML
+  const contentHtml = marked.parse(post.content || '');
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -128,11 +132,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
               </div>
 
               {/* Body Content */}
-              <div className="prose prose-xl prose-slate dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:font-light prose-headings:font-bold prose-p:text-muted-foreground">
-                {post.content.split('\n').map((para: string, i: number) => (
-                  para ? <p key={i} className="mb-8">{para}</p> : <br key={i} />
-                ))}
-              </div>
+              <div 
+                className="prose prose-lg md:prose-xl dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:font-light prose-headings:font-bold prose-p:text-muted-foreground prose-a:text-primary prose-img:rounded-2xl prose-headings:text-foreground"
+                dangerouslySetInnerHTML={{ __html: contentHtml }}
+              />
 
               {/* Footer / Sharing Component */}
               <ShareButtons title={post.title} url={postUrl} />

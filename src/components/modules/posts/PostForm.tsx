@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import ImageUpload from '@/components/ui/ImageUpload'
 import { toast } from 'sonner'
+import RichTextEditor from '@/components/ui/RichTextEditor'
 
 interface Category {
   id: string
@@ -208,12 +209,9 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
 
               <div className="md:col-span-2 space-y-2">
                 <Label>Konten Lengkap</Label>
-                <textarea
-                  required
-                  rows={12}
-                  value={formData.content}
-                  onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                  className="w-full p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all resize-none font-medium leading-relaxed hover:border-primary/50 text-sm sm:text-base"
+                <RichTextEditor 
+                  content={formData.content}
+                  onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
                   placeholder="Tulis isi berita atau detail agenda di sini..."
                 />
               </div>
