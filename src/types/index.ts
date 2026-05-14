@@ -14,7 +14,7 @@ export interface Profile {
   id: string;
   email: string | null;
   full_name: string | null;
-  role: 'admin' | 'editor';
+  role: 'admin' | 'staff';
   nip: string | null;
   position: string | null;
   phone: string | null;

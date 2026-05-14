@@ -58,14 +58,30 @@ const menuGroups = [
   }
 ];
 
-export const Sidebar = () => {
+export const Sidebar = ({ role = 'staff' }: { role?: 'admin' | 'staff' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+
+  // Filter menu groups based on role
+  const filteredMenuGroups = menuGroups.map(group => {
+    if (role === 'admin') return group;
+
+    if (group.name === 'Kependudukan') return null;
+    
+    if (group.name === 'Sistem') {
+      return {
+        ...group,
+        items: group.items.filter(item => item.name === 'Konten Desa')
+      };
+    }
+
+    return group;
+  }).filter(Boolean) as typeof menuGroups;
   
   // State for accordion groups
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {
     const initialExpanded: Record<string, boolean> = { 'Utama': true };
-    menuGroups.forEach(group => {
+    filteredMenuGroups.forEach(group => {
       if (group.items.some(item => pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/admin'))) {
         initialExpanded[group.name] = true;
       }
@@ -81,7 +97,7 @@ export const Sidebar = () => {
     
     // Auto-expand group on navigation
     const nextExpanded = { ...expandedGroups };
-    menuGroups.forEach(group => {
+    filteredMenuGroups.forEach(group => {
       if (group.items.some(item => pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/admin'))) {
         nextExpanded[group.name] = true;
       }
@@ -135,7 +151,7 @@ export const Sidebar = () => {
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-4 mt-2 overflow-y-auto custom-scrollbar">
-          {menuGroups.map((group) => {
+          {filteredMenuGroups.map((group) => {
             const isExpanded = !!expandedGroups[group.name];
             const hasActiveChild = group.items.some(item => pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/admin'));
             

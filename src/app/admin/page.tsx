@@ -58,7 +58,6 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activity / Audit Log ACTUAL */}
         <div className="bg-card p-6 rounded-3xl border border-border shadow-sm flex flex-col relative overflow-hidden">
           <div className="flex items-center justify-between mb-4 sm:mb-6 pb-4 border-b border-border">
             <h2 className="text-base sm:text-lg font-bold text-foreground tracking-tight uppercase">Audit Aktivitas</h2>
@@ -70,8 +69,8 @@ export default async function AdminDashboard() {
             {auditLogs.data.length > 0 ? auditLogs.data.map((log) => (
               <div key={log.id} className="flex items-start gap-3 p-3 rounded-xl sm:rounded-2xl hover:bg-muted/50 transition-colors border border-transparent hover:border-border group">
                 <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 ${log.method === 'DELETE' ? 'bg-red-500/10 text-red-600' :
-                    log.method === 'CREATE' ? 'bg-emerald-500/10 text-emerald-600' :
-                      'bg-primary/10 text-primary'
+                  log.method === 'CREATE' ? 'bg-emerald-500/10 text-emerald-600' :
+                    'bg-primary/10 text-primary'
                   }`}>
                   <Activity size={14} className="sm:w-4 sm:h-4" />
                 </div>

@@ -67,7 +67,7 @@ export const UserTable = ({ profiles, onEdit }: UserTableProps) => {
             ? 'bg-primary/10 text-primary border-primary/20' 
             : 'bg-muted text-muted-foreground border-border'
         }`}>
-          {profile.role}
+          {profile.role === 'admin' ? 'admin' : 'staff'}
         </span>
       ),
     },

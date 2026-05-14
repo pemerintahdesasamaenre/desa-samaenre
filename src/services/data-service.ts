@@ -119,6 +119,21 @@ export async function getProfiles() {
   return data;
 }
 
+export async function getCurrentProfile() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+  
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+    
+  if (error) return null;
+  return data;
+}
+
 export async function getAllVillageImages(): Promise<VillageImage[]> {
   const supabase = await createClient();
   const [postsRes, infoRes] = await Promise.all([
