@@ -25,7 +25,6 @@ interface DemographicData {
   age_groups: ChartDataPoint[];
   education: ChartDataPoint[];
   marital_status: ChartDataPoint[];
-  family_relationship: ChartDataPoint[];
   hamlets: { name: string; value: number }[];
   occupations: ChartDataPoint[];
 }
@@ -174,26 +173,8 @@ export const DemographicCharts = ({ data }: ChartProps) => {
         </div>
       </div>
 
-      {/* Row 3: Family Relationship & Hamlets */}
+      {/* Row 3: Hamlets & Top Occupations */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 pt-10 border-t border-slate-100 dark:border-slate-800/50">
-        {/* Family Relationship */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 border-l-4 border-orange-500 pl-4">
-            <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground/70">Hubungan Keluarga</h3>
-          </div>
-          <div className="h-[320px] w-full min-h-[320px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.family_relationship} layout="vertical" margin={{ left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="currentColor" className="opacity-5" />
-                <XAxis type="number" hide />
-                <YAxis dataKey="label" type="category" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800, fill: 'currentColor' }} width={120} className="opacity-70" />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'currentColor', opacity: 0.05 }} />
-                <Bar dataKey="value" fill="#f59e0b" radius={[0, 6, 6, 0]} barSize={20} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
         {/* Hamlet Distribution */}
         <div className="space-y-6">
           <div className="flex items-center gap-3 border-l-4 border-blue-500 pl-4">
@@ -211,10 +192,8 @@ export const DemographicCharts = ({ data }: ChartProps) => {
             </ResponsiveContainer>
           </div>
         </div>
-      </div>
 
-      {/* Row 4: Top Occupations */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 pt-10 border-t border-slate-100 dark:border-slate-800/50">
+        {/* Top Occupations */}
         <div className="space-y-6">
           <div className="flex items-center gap-3 border-l-4 border-rose-500 pl-4">
             <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-foreground/70">5 Besar Pekerjaan</h3>
