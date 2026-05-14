@@ -18,13 +18,13 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://profil-desa.id';
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
   title: {
-    default: "Profil Resmi Desa Digital",
-    template: "%s | Desa Digital"
+    default: "Website Resmi Desa Samaenre",
+    template: "%s | Desa Samaenre"
   },
-  description: "Portal informasi publik, statistik penduduk, transparansi anggaran, dan pelayanan desa digital yang mandiri dan inovatif.",
-  keywords: ["desa digital", "profil desa", "pelayanan publik", "transparansi anggaran", "statistik desa"],
-  authors: [{ name: "KKN 78 UINAM" }],
-  creator: "Desa Digital",
+  description: "Portal informasi publik, statistik penduduk, transparansi anggaran, dan pelayanan desa digital yang mandiri dan inovatif di Desa Samaenre.",
+  keywords: ["Desa Samaenre", "Profil Desa", "Pelayanan Publik", "Transparansi Anggaran", "Statistik Desa"],
+  authors: [{ name: "Pemerintah Desa Samaenre" }],
+  creator: "Pemerintah Desa Samaenre",
   icons: {
     icon: [
       { url: '/favicon.ico' },
@@ -38,22 +38,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "id_ID",
     url: appUrl,
-    title: "Profil Resmi Desa Digital",
-    description: "Informasi publik, statistik, dan pelayanan desa digital.",
-    siteName: "Desa Digital",
+    title: "Website Resmi Desa Samaenre",
+    description: "Portal informasi publik, statistik, dan pelayanan digital Desa Samaenre.",
+    siteName: "Desa Samaenre",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Profil Desa Digital",
+        alt: "Profil Desa Samaenre",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Profil Resmi Desa Digital",
-    description: "Portal informasi dan pelayanan desa digital.",
+    title: "Website Resmi Desa Samaenre",
+    description: "Portal informasi dan pelayanan digital Desa Samaenre.",
     images: ["/og-image.png"],
   },
   robots: {
