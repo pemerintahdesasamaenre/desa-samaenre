@@ -64,7 +64,11 @@ export const UserTable = ({ profiles, onEdit }: UserTableProps) => {
       header: 'Role',
       hideOnMobile: true,
       accessor: (profile) => (
-        <span className="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-bold uppercase tracking-widest">
+        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
+          profile.role === 'admin' 
+            ? 'bg-primary/10 text-primary border-primary/20' 
+            : 'bg-muted text-muted-foreground border-border'
+        }`}>
           {profile.role}
         </span>
       ),
