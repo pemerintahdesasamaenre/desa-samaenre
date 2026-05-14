@@ -26,7 +26,7 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
     const toastId = toast.loading('Memperbarui profil...');
     
     try {
-      const result = await updateProfile(user.id, data);
+      const result = await updateProfile(user.id, data as Record<string, string | number | boolean | null>);
 
       if (result.error) {
         toast.error(result.error, { id: toastId });

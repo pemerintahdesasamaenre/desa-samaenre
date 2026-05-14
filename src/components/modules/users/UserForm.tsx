@@ -32,10 +32,12 @@ export const UserForm = ({ user, onSuccess, onCancel }: UserFormProps) => {
       let result;
       if (isEditing) {
         // Update profile doesn't include email/password
-        const { email, password, ...profileData } = data;
-        result = await updateProfile(user.id, profileData);
+        const profileData = { ...data };
+        delete profileData.email;
+        delete profileData.password;
+        result = await updateProfile(user.id, profileData as Record<string, string | number | boolean | null>);
       } else {
-        result = await createUser(data);
+        result = await createUser(data as Record<string, string | number | boolean | null>);
       }
 
       if (result.error) {

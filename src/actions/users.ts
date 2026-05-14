@@ -7,13 +7,13 @@ import { revalidatePath } from 'next/cache'
 /**
  * Create a new user directly in Auth and Profile
  */
-export async function createUser(data: any) {
+export async function createUser(data: Record<string, string | number | boolean | null>) {
   const supabase = createAdminClient()
   const { email, password, full_name, role, nip, position, phone, address, avatar_url } = data
 
   const { data: user, error } = await supabase.auth.admin.createUser({
-    email,
-    password,
+    email: email as string,
+    password: password as string,
     email_confirm: true,
     user_metadata: { full_name, role, nip, position, phone, address, avatar_url }
   })
@@ -40,7 +40,7 @@ export async function deleteUser(id: string) {
 /**
  * Update any profile data
  */
-export async function updateProfile(id: string, data: any) {
+export async function updateProfile(id: string, data: Record<string, string | number | boolean | null>) {
   const supabase = await createClient()
   const { error } = await supabase
     .from('profiles')

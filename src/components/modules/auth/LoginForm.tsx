@@ -4,7 +4,7 @@ import { useActionState } from 'react';
 import { login } from '@/actions/auth';
 import { Loader2 } from 'lucide-react';
 
-export default function LoginForm({ error: initialError }: { error?: string }) {
+export default function LoginForm({ error: initialError }: { error?: string | undefined }) {
   const [state, action, isPending] = useActionState(login, null);
 
   return (
