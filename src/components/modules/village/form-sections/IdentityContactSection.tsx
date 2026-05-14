@@ -4,6 +4,7 @@ import { Globe, HelpCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import ImageUpload from '@/components/ui/ImageUpload';
+import { extractMapsUrl } from '@/lib/utils';
 
 interface IdentityContactSectionProps {
   initialData: {
@@ -45,19 +46,7 @@ export default function IdentityContactSection({
   };
 
   const handleMapsInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const trimmedInput = e.target.value.trim();
-    if (!trimmedInput) { 
-      setMapsUrl(''); 
-      return; 
-    }
-    if (trimmedInput.includes('<iframe')) {
-      const srcMatch = trimmedInput.match(/src="([^"]+)"/);
-      if (srcMatch && srcMatch[1]) {
-        setMapsUrl(srcMatch[1]);
-        return;
-      }
-    }
-    setMapsUrl(trimmedInput);
+    setMapsUrl(extractMapsUrl(e.target.value));
   };
 
   return (

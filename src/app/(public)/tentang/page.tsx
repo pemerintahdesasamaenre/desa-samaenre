@@ -5,6 +5,7 @@ import { MapPin, Mail, Phone, Map as MapIcon, Compass, Network, Shield } from 'l
 import { Timeline } from '@/components/ui/Timeline';
 import ExpandableHistory from '@/components/modules/village/ExpandableHistory';
 import { FormerLeader, MissionSection } from '@/types';
+import { getMapsLinks } from '@/lib/utils';
 
 interface MissionRaw {
   title?: string;
@@ -54,16 +55,10 @@ export default async function TentangPage() {
     )
   }));
 
-  const getMapsUrls = (url: string) => {
-    const fallbackSearch = `https://www.google.com/maps/search/${encodeURIComponent(`${villageInfo.name} ${contact.address || ''}`)}`;
-    if (!url) return { embed: `${fallbackSearch}&output=embed`, external: fallbackSearch };
-    if (url.includes('/maps/embed') || url.includes('output=embed')) {
-      return { embed: url, external: url.includes('/maps/embed') ? fallbackSearch : url };
-    }
-    return { embed: `${url}&output=embed`, external: url };
-  };
-
-  const { embed: embedUrl, external: externalUrl } = getMapsUrls(contact.maps_url);
+  const { embed: embedUrl, external: externalUrl } = getMapsLinks(
+    contact.maps_url,
+    `Desa ${villageInfo.name} ${contact.address || ''}`
+  );
 
   // Section label letters (a, b, c, ...)
   const sectionLetters = 'abcdefghij'.split('');
@@ -100,7 +95,7 @@ export default async function TentangPage() {
                 <p className="text-5xl font-bold tracking-tighter">{villageInfo.area_size || 'N/A'}</p>
               </div>
               <p className="text-emerald-50/70 font-medium leading-relaxed relative z-10">
-                Total cakupan wilayah administratif Desa {villageInfo.name} yang terdiri dari beberapa dusun dan area produktif.
+                Total cakupan wilayah administratif Desa {villageInfo.name} yang terdiri dari beberapa dusun and area produktif.
               </p>
            </div>
 

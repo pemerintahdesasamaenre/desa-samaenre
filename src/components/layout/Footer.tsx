@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, Phone, MapPin, Globe, MessageCircle, Share2, Eye, TrendingUp } from 'lucide-react';
+import { Mail, Phone, MapPin, MessageCircle, Eye, TrendingUp } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { VillageInfo } from '@/types';
+import { getMapsLinks } from '@/lib/utils';
 
 interface FooterProps {
   initialData?: VillageInfo | null;
@@ -50,6 +51,10 @@ export const Footer = ({ initialData }: FooterProps) => {
   }
 
   const contact = villageInfo?.contact_info || {};
+  const { external: externalUrl } = getMapsLinks(
+    contact.maps_url, 
+    `Desa ${villageInfo?.name || ''} ${contact.address || ''}`
+  );
 
   return (
     <footer className="bg-secondary text-secondary-foreground pt-20 pb-10 border-t border-white/5">
@@ -140,22 +145,23 @@ export const Footer = ({ initialData }: FooterProps) => {
           <div>
             <h3 className="font-bold mb-8 uppercase tracking-[0.2em] text-[10px] opacity-50">Media Sosial</h3>
             <div className="flex gap-4 mb-8">
-              <a href="#" aria-label="Kunjungi Website Resmi" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all shadow-xl">
-                <Globe size={20} />
-              </a>
-              <a href="#" aria-label="Hubungi via WhatsApp" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all shadow-xl">
-                <MessageCircle size={20} />
-              </a>
-              {contact.maps_url && (
-                <a href={contact.maps_url} target="_blank" aria-label="Bagikan Lokasi" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all shadow-xl">
-                  <Share2 size={20} />
+              {contact.phone && (
+                <a 
+                  href={`https://wa.me/${contact.phone.replace(/\D/g, '').startsWith('0') ? '62' + contact.phone.replace(/\D/g, '').slice(1) : contact.phone.replace(/\D/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Hubungi via WhatsApp" 
+                  className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all shadow-xl"
+                >
+                  <MessageCircle size={20} />
                 </a>
               )}
             </div>
-            {contact.maps_url && (
+            {externalUrl && (
               <a
-                href={contact.maps_url}
+                href={externalUrl}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest text-primary bg-primary/10 px-5 py-2.5 rounded-xl hover:bg-primary/20 transition-all uppercase"
               >
                 <MapPin size={14} />
