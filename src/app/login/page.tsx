@@ -1,5 +1,7 @@
-import { login } from '@/actions/auth';
+import { getVillageInfo } from '@/services/data-service';
+import LoginForm from '@/components/modules/auth/LoginForm';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default async function LoginPage({
   searchParams,
@@ -7,82 +9,51 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
+  const villageInfo = await getVillageInfo();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8 font-[family-name:var(--font-geist-sans)]">
-      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Admin Login
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Masuk ke dashboard pengelola profil desa
-          </p>
-        </div>
-        
-        <form className="mt-8 space-y-6" action={login}>
-          <div className="space-y-4 rounded-md shadow-sm">
-            <div>
-              <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 mb-1">
-                Alamat Email
-              </label>
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="relative block w-full rounded-md border-0 py-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 px-3 shadow-sm"
-                placeholder="admin@desa.id"
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
+      {/* Background Image with Blur */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url(${villageInfo?.header_banner_url || '/placeholder-bg.jpg'})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(20px) brightness(0.5)',
+          transform: 'scale(1.1)'
+        }}
+      />
+      
+      {/* Login Card */}
+      <div className="relative z-10 w-full max-w-md">
+        <div className="backdrop-blur-2xl bg-white/10 border border-white/20 p-8 rounded-[2.5rem] shadow-2xl">
+          <div className="flex flex-col items-center mb-8">
+            {villageInfo?.logo_url && (
+              <Image 
+                src={villageInfo.logo_url} 
+                alt="Logo Desa" 
+                width={80} 
+                height={80} 
+                className="mb-4 drop-shadow-md"
               />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Kata Sandi
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="relative block w-full rounded-md border-0 py-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 px-3 shadow-sm"
-                placeholder="••••••••"
-              />
-            </div>
+            )}
+            <h1 className="text-2xl font-bold text-white text-center">
+              {villageInfo?.name || 'Desa Samaenre'}
+            </h1>
+            <p className="text-white/60 text-sm mt-1">Portal Administrasi Desa</p>
           </div>
 
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-red-700">
-                    {error === 'Invalid credentials' ? 'Email atau kata sandi salah.' : error}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          <LoginForm error={error} />
 
-          <div>
-            <button
-              type="submit"
-              className="group relative flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors duration-200"
+          <div className="mt-8 text-center">
+            <Link 
+              href="/" 
+              className="text-white/40 hover:text-white text-sm transition-colors inline-flex items-center gap-2"
             >
-              Masuk
-            </button>
+              &larr; Kembali ke Beranda
+            </Link>
           </div>
-        </form>
-        
-        <div className="text-center mt-4">
-          <Link href="/" className="text-sm text-blue-600 hover:text-blue-500">
-            &larr; Kembali ke Beranda
-          </Link>
         </div>
       </div>
     </div>
