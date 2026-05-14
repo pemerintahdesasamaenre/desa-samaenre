@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Mail, UserPlus, ShieldCheck } from 'lucide-react';
-import { inviteAdmin } from '@/actions/auth';
+import { createUser } from '@/actions/users';
 import { toast } from 'sonner';
 
 export const InviteForm = () => {
@@ -13,13 +13,23 @@ export const InviteForm = () => {
     setInviting(true);
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
-    const toastId = toast.loading(`Mengirim undangan ke ${email}...`);
+    const toastId = toast.loading(`Membuat akun untuk ${email}...`);
     try {
-      await inviteAdmin(email);
-      toast.success(`Undangan berhasil dikirim ke ${email}`, { id: toastId });
-      (e.target as HTMLFormElement).reset();
+      // For now, setting a random password since we're using createUser directly.
+      // In a real scenario, this would trigger an email invite flow.
+      const result = await createUser({
+        email,
+        password: Math.random().toString(36).slice(-12),
+        role: 'admin'
+      });
+      if (result.error) {
+        toast.error(result.error, { id: toastId });
+      } else {
+        toast.success(`Akun berhasil dibuat untuk ${email}`, { id: toastId });
+        (e.target as HTMLFormElement).reset();
+      }
     } catch {
-      toast.error('Gagal mengirim undangan. Silakan coba lagi.', { id: toastId });
+      toast.error('Gagal membuat akun. Silakan coba lagi.', { id: toastId });
     } finally {
       setInviting(false);
     }
