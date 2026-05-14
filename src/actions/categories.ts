@@ -36,6 +36,18 @@ export async function updateCategory(id: string, data: CategoryInput) {
 export async function deleteCategory(id: string) {
   return protectedAction(async () => {
     const supabase = await createClient()
+
+    // Check if category is in use by posts
+    const { count, error: countError } = await supabase
+      .from('posts')
+      .select('*', { count: 'exact', head: true })
+      .eq('category_id', id)
+
+    if (countError) return { error: countError.message }
+    if (count && count > 0) {
+      return { error: 'Kategori tidak dapat dihapus karena masih digunakan oleh beberapa postingan.' }
+    }
+
     const { error } = await supabase.from('categories').delete().eq('id', id)
     if (error) return { error: error.message }
 

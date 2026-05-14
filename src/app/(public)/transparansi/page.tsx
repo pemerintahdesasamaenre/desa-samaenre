@@ -93,11 +93,11 @@ async function PageContent({ searchParams }: PageProps) {
 
         {finances.length > 0 ? (
           <div className="space-y-16">
-            <div className="glass p-8 md:p-12 rounded-[3.5rem] shadow-2xl border-white/5">
+            <div className="glass p-8 md:p-12 rounded-2xl shadow-2xl border-white/5">
                <FinanceCharts data={finances} />
             </div>
             
-            <div className="glass rounded-[3.5rem] shadow-2xl border-white/5 overflow-hidden">
+            <div className="glass rounded-2xl shadow-2xl border-white/5 overflow-hidden">
               <div className="p-10 border-b border-white/10 flex items-center justify-between bg-white/5">
                 <h3 className="text-2xl font-bold tracking-tight">Detail Alokasi Anggaran</h3>
                 <div className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
@@ -143,7 +143,7 @@ async function PageContent({ searchParams }: PageProps) {
             </div>
           </div>
         ) : (
-          <div className="glass rounded-[3.5rem] p-24 text-center border-2 border-dashed border-white/10 space-y-4">
+          <div className="glass rounded-2xl p-24 text-center border-2 border-dashed border-white/10 space-y-4">
             <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto text-muted-foreground/30">
                <Wallet size={40} />
             </div>

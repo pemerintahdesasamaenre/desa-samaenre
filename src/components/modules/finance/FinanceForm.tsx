@@ -4,16 +4,25 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { addFinanceEntry } from '@/actions/finances';
 import type { FinanceInput } from '@/lib/validations';
-import { Save, Loader2, ArrowLeft, TrendingUp } from 'lucide-react';
+import { Save, Loader2, ArrowLeft, TrendingUp, Tag, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import CustomSelect from '@/components/ui/CustomSelect';
 
-export default function FinanceForm() {
+interface FinanceFormProps {
+  categories: { id: string; name: string }[];
+}
+
+export default function FinanceForm({ categories }: FinanceFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    type: 'income' as 'income' | 'expense' | 'financing',
+    category_id: '',
+  });
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -21,15 +30,24 @@ export default function FinanceForm() {
     setError('');
     const toastId = toast.loading('Menyimpan data anggaran...');
 
-    const formData = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const rawData = new FormData(form);
     
+    const selectedCategory = categories.find(c => c.id === formData.category_id);
+
     const data: FinanceInput = {
-      year: parseInt(formData.get('year') as string),
-      type: formData.get('type') as 'income' | 'expense' | 'financing',
-      category_name: formData.get('category_name') as string,
-      amount: parseInt(formData.get('amount') as string),
-      note: formData.get('note') as string,
+      year: parseInt(rawData.get('year') as string),
+      type: formData.type,
+      category_name: selectedCategory ? selectedCategory.name : '',
+      amount: parseInt(rawData.get('amount') as string),
+      note: rawData.get('note') as string,
     };
+
+    if (!data.category_name) {
+      toast.error('Silakan pilih kategori anggaran', { id: toastId });
+      setLoading(false);
+      return;
+    }
 
     try {
       const result = await addFinanceEntry(data);
@@ -66,7 +84,7 @@ export default function FinanceForm() {
 
       <div className="bg-card rounded-2xl sm:rounded-3xl border border-border shadow-sm overflow-hidden">
         <div className="p-6 sm:p-10 border-b border-border bg-muted/30">
-          <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight uppercase">
             Tambah Data Anggaran
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">
@@ -81,7 +99,7 @@ export default function FinanceForm() {
             </div>
           )}
           
-          <div className="space-y-6 sm:space-y-10">
+          <div className="space-y-8 sm:space-y-10">
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-xl">
                 <TrendingUp size={18} />
@@ -100,25 +118,28 @@ export default function FinanceForm() {
                 />
               </div>
               
-              <div className="space-y-2">
-                <Label>Tipe Anggaran</Label>
-                <select 
-                  name="type" 
-                  required 
-                  className="w-full h-14 px-6 rounded-full border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold hover:border-primary/50"
-                >
-                  <option value="income">Pendapatan</option>
-                  <option value="expense">Pengeluaran</option>
-                  <option value="financing">Pembiayaan</option>
-                </select>
-              </div>
+              <CustomSelect
+                label="Tipe Anggaran"
+                icon={Wallet}
+                options={[
+                  { id: 'income', name: 'Pendapatan' },
+                  { id: 'expense', name: 'Pengeluaran' },
+                  { id: 'financing', name: 'Pembiayaan' }
+                ]}
+                value={formData.type}
+                onChange={(val) => setFormData(prev => ({ ...prev, type: val as any }))}
+                required
+              />
 
-              <div className="space-y-2 md:col-span-2">
-                <Label>Kategori / Nama Akun</Label>
-                <Input 
-                  name="category_name" 
-                  required 
-                  placeholder="Contoh: Dana Desa (DDS)" 
+              <div className="md:col-span-2">
+                <CustomSelect
+                  label="Kategori / Nama Akun"
+                  placeholder="Pilih Kategori Anggaran..."
+                  icon={Tag}
+                  options={categories}
+                  value={formData.category_id}
+                  onChange={(val) => setFormData(prev => ({ ...prev, category_id: val }))}
+                  required
                 />
               </div>
 
@@ -147,16 +168,9 @@ export default function FinanceForm() {
 
           <div className="pt-8 border-t border-border flex justify-end gap-4">
             <button 
-              type="button" 
-              onClick={() => router.back()} 
-              className="px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest text-muted-foreground hover:bg-muted transition-all"
-            >
-              Batal
-            </button>
-            <button 
               type="submit" 
               disabled={loading} 
-              className="bg-primary text-primary-foreground px-12 py-4 rounded-full font-bold flex items-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl shadow-primary/30 active:scale-95 text-xs sm:text-sm tracking-widest uppercase"
+              className="w-full sm:w-auto bg-primary text-primary-foreground px-12 py-4 rounded-full font-bold flex items-center justify-center gap-4 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl shadow-primary/30 active:scale-95 text-xs sm:text-sm tracking-widest uppercase"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
               Simpan Data

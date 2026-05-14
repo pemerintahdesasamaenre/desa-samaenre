@@ -7,6 +7,45 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Camera, Calendar, ExternalLink, Loader2, ChevronDown } from 'lucide-react'
 
+function GalleryCard({ img }: { img: GalleryImage }) {
+  return (
+    <div className="cursor-pointer overflow-hidden relative card h-[400px] rounded-2xl shadow-xl max-w-sm mx-auto flex flex-col justify-between p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20">
+      {/* Background Image with Fallback */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src={img.url || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80'}
+          alt={img.title}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover transition-transform duration-700 group-hover/card:scale-110"
+        />
+        <div className="absolute inset-0 transition duration-300 group-hover/card:bg-black/60 bg-black/40"></div>
+      </div>
+      
+      <div className="flex flex-row items-center space-x-4 z-10">
+        <div className="h-10 px-5 bg-primary text-primary-foreground flex items-center justify-center rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20 shadow-lg">
+          {img.source === 'post' ? 'Warta Desa' : 'Galeri'}
+        </div>
+      </div>
+
+      <div className="text content z-10 space-y-4">
+        <div className="flex items-center gap-2 text-white/80 font-bold text-xs uppercase tracking-widest">
+          <Calendar size={14} className="text-primary" />
+          {new Date(img.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+        </div>
+        <h2 className="font-bold text-xl md:text-2xl text-gray-50 relative leading-tight tracking-tight line-clamp-3">
+          {img.title}
+        </h2>
+        {img.link && (
+          <div className="flex items-center gap-2 text-primary font-bold uppercase text-[10px] tracking-widest pt-2 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
+            Lihat Detail <ExternalLink size={14} />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function GalleryPage() {
   const [images, setImages] = useState<GalleryImage[]>([])
   const [page, setPage] = useState(1)
@@ -82,60 +121,16 @@ export default function GalleryPage() {
 
         {images.length > 0 ? (
           <div className="space-y-20">
-            {/* Mechanism: Standard Grid like Articles, but look is "Visual/Image" focused */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {images.map((img, idx) => (
-                <div key={`${img.url}-${idx}`} className="group h-full">
-                  <div className="bg-card h-full rounded-[2rem] overflow-hidden border border-border/60 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 flex flex-col">
-                    {/* Image Section */}
-                    <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                      {img.url ? (
-                        <Image 
-                          src={img.url} 
-                          alt={img.title}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Camera className="w-10 h-10 text-muted-foreground/20" />
-                        </div>
-                      )}
-                      
-                      {/* Source Badge */}
-                      <div className="absolute top-4 left-4 px-3 py-1 bg-background/90 backdrop-blur-sm border border-border/50 rounded-full text-[8px] font-bold uppercase tracking-widest text-primary z-10">
-                        {img.source === 'post' ? 'Warta Desa' : 'Profil Desa'}
-                      </div>
-
-                      {/* Link Overlay - Subtle */}
-                      {img.link && (
-                        <Link href={img.link} className="absolute inset-0 z-20 flex items-center justify-center bg-primary/0 group-hover:bg-primary/10 transition-all duration-300">
-                           <div className="bg-background/90 p-3 rounded-full shadow-xl translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                             <ExternalLink size={18} className="text-primary" />
-                           </div>
-                        </Link>
-                      )}
-                    </div>
-
-                    {/* Content Section - Cleaner than articles */}
-                    <div className="p-6 flex flex-col flex-1">
-                      <h3 className="text-base font-bold text-foreground leading-tight line-clamp-2 mb-4 group-hover:text-primary transition-colors">
-                        {img.title}
-                      </h3>
-                      
-                      <div className="mt-auto pt-4 border-t border-border/40 flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground/70">
-                          <Calendar size={12} className="text-primary/60" />
-                          {new Date(img.date).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })}
-                        </div>
-                        <div className="px-2 py-0.5 bg-muted rounded text-[8px] font-bold uppercase tracking-widest text-muted-foreground/50">
-                          {img.source}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div key={`${img.url}-${idx}`} className="w-full group/card">
+                  {img.link ? (
+                    <Link href={img.link}>
+                      <GalleryCard img={img} />
+                    </Link>
+                  ) : (
+                    <GalleryCard img={img} />
+                  )}
                 </div>
               ))}
             </div>
@@ -160,7 +155,7 @@ export default function GalleryPage() {
             )}
           </div>
         ) : (
-          <div className="bg-card border border-dashed border-border rounded-[3rem] p-24 text-center space-y-4">
+          <div className="bg-card border border-dashed border-border rounded-2xl p-24 text-center space-y-4">
             <Camera size={48} className="mx-auto text-muted-foreground/20" />
             <h3 className="text-2xl font-bold text-foreground uppercase tracking-tight">Koleksi Masih Kosong</h3>
             <p className="text-muted-foreground text-sm font-medium">Foto kegiatan akan muncul di sini segera setelah artikel dipublikasikan.</p>

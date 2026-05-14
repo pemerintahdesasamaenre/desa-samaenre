@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
+import CustomSelect from '@/components/ui/CustomSelect'
 
 interface CategoryFormProps {
   initialData?: CategoryInput & { id?: string }
@@ -29,12 +30,19 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value
-    const slug = name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '')
-    
-    setFormData(prev => ({ ...prev, name, slug }))
+
+    setFormData(prev => {
+      const newData = { ...prev, name }
+
+      if (!isEditing) {
+        newData.slug = name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '')
+      }
+
+      return newData
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,8 +57,8 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
         : await createCategory(formData)
 
       if (result.error) {
-        const msg = typeof result.error === 'object' 
-          ? Object.values(result.error).flat().join(', ') 
+        const msg = typeof result.error === 'object'
+          ? Object.values(result.error).flat().join(', ')
           : result.error
         setError(msg)
         toast.error('Gagal: ' + msg, { id: toastId })
@@ -72,8 +80,8 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
   return (
     <div className="max-w-2xl mx-auto pb-20 px-4 sm:px-0">
       <div className="mb-6">
-        <Link 
-          href="/admin/categories" 
+        <Link
+          href="/admin/categories"
           className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors font-bold uppercase text-[10px] tracking-widest"
         >
           <ArrowLeft size={18} />
@@ -126,19 +134,17 @@ export default function CategoryForm({ initialData, isEditing }: CategoryFormPro
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label>Tipe Konten</Label>
-                <select
-                  value={formData.type}
-                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CategoryInput['type'] }))}
-                  className="w-full h-12 px-5 rounded-xl border border-border bg-background text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold hover:border-primary/50 text-sm"
-                >
-                  <option value="post">Berita & Agenda (Post)</option>
-                  <option value="demographic">Data Statistik (Demographic)</option>
-                  <option value="finance">Keuangan (Finance)</option>
-                  <option value="gallery">Galeri Foto (Gallery)</option>
-                </select>
-              </div>
+              <CustomSelect
+                label="Tipe Konten"
+                icon={Layers}
+                options={[
+                  { id: 'post', name: 'Berita & Pengumuman' },
+                  { id: 'finance', name: 'Laporan Keuangan' },
+                ]}
+                value={formData.type}
+                onChange={(val) => setFormData(prev => ({ ...prev, type: val as any }))}
+                required
+              />
 
               <div className="space-y-2">
                 <Label>Deskripsi (Opsional)</Label>

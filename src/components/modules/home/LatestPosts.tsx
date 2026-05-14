@@ -48,7 +48,7 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
               <Link href={`/posts/${post.slug}`}>
                 <div
                   className={cn(
-                    "cursor-pointer overflow-hidden relative card h-[450px] rounded-[2.5rem] shadow-xl max-w-sm mx-auto flex flex-col justify-between p-6 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20"
+                    "cursor-pointer overflow-hidden relative card h-[400px] rounded-2xl shadow-xl max-w-sm mx-auto flex flex-col justify-between p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20"
                   )}
                 >
                   {/* Background Image with Fallback */}
@@ -59,31 +59,32 @@ export default function LatestPosts({ posts }: LatestPostsProps) {
                         : post.image_url}
                       alt={post.title}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover/card:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-700 group-hover/card:scale-110"
                     />
-                    <div className="absolute w-full h-full top-0 left-0 transition duration-300 group-hover/card:bg-black/40 bg-black/20"></div>
+                    <div className="absolute w-full h-full top-0 left-0 transition duration-300 group-hover/card:bg-black/60 bg-black/40"></div>
                   </div>
 
                   
                   <div className="flex flex-row items-center space-x-4 z-10">
-                    <div className="h-10 px-4 bg-primary text-primary-foreground flex items-center justify-center rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">
+                    <div className="h-10 px-5 bg-primary text-primary-foreground flex items-center justify-center rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20 shadow-lg">
                       {post.categories?.name || 'Berita'}
                     </div>
                   </div>
 
                   <div className="text content z-10 space-y-4">
-                    <div className="flex items-center gap-2 text-white/70 font-bold text-xs uppercase tracking-widest">
-                      <Calendar size={14} />
+                    <div className="flex items-center gap-2 text-white/80 font-bold text-xs uppercase tracking-widest">
+                      <Calendar size={14} className="text-primary" />
                       {new Date(post.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                     </div>
-                    <h3 className="font-bold text-2xl md:text-3xl text-gray-50 relative leading-tight tracking-tight">
+                    <h3 className="font-bold text-2xl md:text-3xl text-gray-50 relative leading-[1.1] tracking-tight">
                       {post.title}
                     </h3>
                     <p className="font-medium text-sm text-gray-200 relative my-4 line-clamp-2 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
-                      Baca selengkapnya mengenai kontribusi dan dampak dari berita ini bagi warga desa...
+                      Baca selengkapnya mengenai berita ini untuk mendapatkan rincian lebih lanjut bagi warga desa...
                     </p>
-                    <div className="flex items-center gap-2 text-primary font-bold uppercase text-xs tracking-widest">
-                      Selengkapnya <ChevronRight size={16} />
+                    <div className="flex items-center gap-2 text-primary font-bold uppercase text-xs tracking-widest pt-2">
+                      Baca Selengkapnya <ChevronRight size={16} />
                     </div>
                   </div>
                 </div>

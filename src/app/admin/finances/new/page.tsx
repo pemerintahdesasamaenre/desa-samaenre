@@ -1,8 +1,11 @@
 import FinanceForm from '@/components/modules/finance/FinanceForm';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
+import { getCategories } from '@/services/data-service';
 
-export default function NewFinancePage() {
+export default async function NewFinancePage() {
+  const categories = await getCategories('finance');
+
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-4">
@@ -15,7 +18,7 @@ export default function NewFinancePage() {
         </div>
       </div>
       <div className="max-w-3xl">
-        <FinanceForm />
+        <FinanceForm categories={categories} />
       </div>
     </div>
   );

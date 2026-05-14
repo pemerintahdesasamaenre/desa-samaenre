@@ -15,6 +15,7 @@ import { toast } from 'sonner'
 interface Category {
   id: string
   name: string
+  slug: string
 }
 
 interface PostFormProps {
@@ -59,6 +60,19 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
     setFormData(prev => ({ ...prev, title, slug }))
   }
 
+  // Handle category selection and auto-derive type
+  const handleCategoryChange = (val: string) => {
+    const selectedCat = categories.find(c => c.id === val)
+    // If slug is 'agenda-kegiatan', set type to 'agenda', else 'news'
+    const derivedType = selectedCat?.slug === 'agenda-kegiatan' ? 'agenda' : 'news'
+    
+    setFormData(prev => ({ 
+      ...prev, 
+      category_id: val,
+      type: derivedType
+    }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -67,9 +81,9 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
     const toastId = toast.loading(isEditing ? 'Memperbarui postingan...' : 'Mempublikasikan konten...')
 
     try {
-      const result = isEditing && initialData?.id
-        ? await updatePost(initialData.id, formData)
-        : await createPost(formData)
+      const result = await (isEditing && initialData?.id
+        ? updatePost(initialData.id, formData)
+        : createPost(formData))
 
       if (result.error) {
         const msg = typeof result.error === 'object' 
@@ -155,19 +169,7 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
                 icon={FolderOpen}
                 options={categories}
                 value={formData.category_id || ''}
-                onChange={(val) => setFormData(prev => ({ ...prev, category_id: val }))}
-                required
-              />
-
-              <CustomSelect
-                label="Tipe Konten"
-                icon={Tag}
-                options={[
-                  { id: 'news', name: 'Berita Desa' },
-                  { id: 'agenda', name: 'Agenda Kegiatan' }
-                ]}
-                value={formData.type}
-                onChange={(val) => setFormData(prev => ({ ...prev, type: val as 'news' | 'agenda' }))}
+                onChange={handleCategoryChange}
                 required
               />
 
@@ -184,12 +186,13 @@ export default function PostForm({ categories, initialData, isEditing }: PostFor
               />
 
               {formData.type === 'agenda' && (
-                <div className="space-y-2">
-                  <Label>Tanggal Kegiatan</Label>
+                <div className="space-y-2 md:col-span-2">
+                  <Label>Tanggal & Waktu Kegiatan</Label>
                   <Input
                     type="datetime-local"
                     value={formData.event_date}
                     onChange={(e) => setFormData(prev => ({ ...prev, event_date: e.target.value }))}
+                    required
                   />
                 </div>
               )}

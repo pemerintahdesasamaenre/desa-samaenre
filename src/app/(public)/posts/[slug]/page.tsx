@@ -71,9 +71,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
             KEMBALI KE BERITA
           </Link>
 
-          <div className="glass rounded-[4rem] overflow-hidden shadow-2xl border-white/5">
+          <div className="glass rounded-2xl overflow-hidden shadow-2xl border-white/5">
             {/* Header Section */}
-            <div className="p-10 md:p-20 space-y-10">
+            <div className="p-10 md:p-16 space-y-10">
               <div className="space-y-6">
                 <div className="flex flex-wrap gap-4 items-center">
                   <span className="px-4 py-1.5 bg-primary/10 text-primary rounded-xl text-xs font-bold uppercase tracking-widest">
@@ -81,9 +81,13 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
                   </span>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground font-bold">
                     <Calendar size={16} className="text-primary" />
-                    <span>{new Date(post.created_at).toLocaleDateString('id-ID', {
-                      day: 'numeric', month: 'long', year: 'numeric'
-                    })}</span>
+                    <span>
+                      {post.type === 'agenda' && post.event_date ? 'Jadwal: ' : 'Terbit: '}
+                      {new Date(post.type === 'agenda' && post.event_date ? post.event_date : post.created_at).toLocaleDateString('id-ID', {
+                        day: 'numeric', month: 'long', year: 'numeric',
+                        ...(post.type === 'agenda' ? { hour: '2-digit', minute: '2-digit' } : {})
+                      })}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground font-bold">
                     <Clock size={16} className="text-primary" />
@@ -111,10 +115,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
               </div>
 
               {/* Cover Image */}
-              <div className="relative aspect-video rounded-[3rem] overflow-hidden shadow-2xl">
+              <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl">
                 <Image
-                  src={(!post.image_url || post.image_url.includes('placeholder-bg.jpg')) 
-                    ? 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80' 
+                  src={(!post.image_url || post.image_url.includes('placeholder-bg.jpg'))
+                    ? 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1000&q=80'
                     : post.image_url}
                   alt={post.title}
                   fill
