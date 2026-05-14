@@ -227,6 +227,40 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ==========================================
+-- 4.5 ANALYTICS FUNCTIONS (NEW)
+-- ==========================================
+
+-- Fungsi untuk menghitung pengunjung per halaman
+CREATE OR REPLACE FUNCTION public.increment_page_views(path TEXT)
+RETURNS void AS $$
+BEGIN
+  -- Update atau insert ke tabel page_analytics
+  INSERT INTO public.page_analytics (page_path, views_count, last_visited)
+  VALUES (path, 1, NOW())
+  ON CONFLICT (page_path)
+  DO UPDATE SET 
+    views_count = public.page_analytics.views_count + 1,
+    last_visited = NOW();
+
+  -- Update atau insert ke tabel daily_analytics (untuk "Hari Ini")
+  INSERT INTO public.daily_analytics (visit_date, views_count)
+  VALUES (CURRENT_DATE, 1)
+  ON CONFLICT (visit_date)
+  DO UPDATE SET views_count = public.daily_analytics.views_count + 1;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Fungsi untuk menghitung pengunjung per berita/post
+CREATE OR REPLACE FUNCTION public.increment_post_views(post_id UUID)
+RETURNS void AS $$
+BEGIN
+  UPDATE public.posts
+  SET views = views + 1
+  WHERE id = post_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ==========================================
 -- 5. MATERIALIZED VIEW (TUKANG KESIMPULAN)
 -- ==========================================
 
@@ -341,6 +375,8 @@ CREATE POLICY "Allow public read access" ON public.village_info FOR SELECT USING
 CREATE POLICY "Allow public read access" ON public.staff_members FOR SELECT USING (true);
 CREATE POLICY "Allow public read access on published posts" ON public.posts FOR SELECT USING (status = 'published');
 CREATE POLICY "Allow public read access" ON public.finances FOR SELECT USING (true);
+CREATE POLICY "Allow public read analytics" ON public.page_analytics FOR SELECT USING (true);
+CREATE POLICY "Allow public read daily analytics" ON public.daily_analytics FOR SELECT USING (true);
 
 -- Admin Only Policies
 CREATE POLICY "Admins manage all" ON public.profiles FOR ALL USING (public.is_admin());
