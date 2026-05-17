@@ -24,6 +24,8 @@ export const villageInfoSchema = z.object({
   former_leaders: z.array(z.object({
     name: z.string().min(1),
     period: z.string().min(1),
+    note: z.string().optional(),
+    role_title: z.string().optional(),
   })).default([]),
   history: z.string().optional(),
   logo_url: z.string().url().optional().or(z.literal('')).nullable(),

@@ -66,8 +66,15 @@ export const Sidebar = ({ role = 'staff' }: { role?: 'admin' | 'staff' }) => {
   const filteredMenuGroups = menuGroups.map(group => {
     if (role === 'admin') return group;
 
-    if (group.name === 'Kependudukan') return null;
+    // Staff can only see 'Struktur Organisasi' in Kependudukan
+    if (group.name === 'Kependudukan') {
+      return {
+        ...group,
+        items: group.items.filter(item => item.name === 'Struktur Organisasi')
+      };
+    }
     
+    // Staff can only see 'Konten Desa' in Sistem
     if (group.name === 'Sistem') {
       return {
         ...group,
@@ -75,8 +82,9 @@ export const Sidebar = ({ role = 'staff' }: { role?: 'admin' | 'staff' }) => {
       };
     }
 
+    // Staff can see all of 'Publikasi' and 'Utama'
     return group;
-  }).filter(Boolean) as typeof menuGroups;
+  }).filter(group => group && group.items.length > 0) as typeof menuGroups;
   
   // State for accordion groups
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {

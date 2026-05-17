@@ -16,6 +16,8 @@ import HistoryLeadershipSection from './form-sections/HistoryLeadershipSection';
 interface FormerLeader {
   name: string;
   period: string;
+  note?: string;
+  role_title?: string;
 }
 
 interface MissionSection {
@@ -68,7 +70,14 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
   const [mapsUrl, setMapsUrl] = useState(initialData.contact_info?.maps_url || '');
   const [phoneNumber, setPhoneNumber] = useState(initialData.contact_info?.phone || '');
   const [missionSections, setMissionSections] = useState<MissionSection[]>(parseMissions(initialData.mission));
-  const [formerLeaders, setFormerLeaders] = useState<FormerLeader[]>(Array.isArray(initialData.former_leaders) ? initialData.former_leaders : []);
+  const [formerLeaders, setFormerLeaders] = useState<FormerLeader[]>(
+    (Array.isArray(initialData.former_leaders) ? initialData.former_leaders : []).map(l => ({
+      name: l.name || '',
+      period: l.period || '',
+      note: l.note || '',
+      role_title: l.role_title || 'Aparatur Berjasa'
+    }))
+  );
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

@@ -38,6 +38,8 @@ export interface Demographic {
 export interface FormerLeader {
   name: string;
   period: string;
+  note?: string;
+  role_title?: string;
 }
 
 export interface MissionSection {

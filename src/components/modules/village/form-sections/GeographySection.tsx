@@ -31,10 +31,22 @@ export default function GeographySection({ initialData }: GeographySectionProps)
             <Input name="area_size" defaultValue={initialData.area_size || ''} placeholder="KM2 / Ha" className="h-11 sm:h-12 text-sm" />
          </div>
          <div className="grid grid-cols-2 gap-4">
-            <Input name="boundary_north" defaultValue={initialData.boundaries?.north || ''} placeholder="Utara" className="h-11 text-xs" />
-            <Input name="boundary_south" defaultValue={initialData.boundaries?.south || ''} placeholder="Selatan" className="h-11 text-xs" />
-            <Input name="boundary_east" defaultValue={initialData.boundaries?.east || ''} placeholder="Timur" className="h-11 text-xs" />
-            <Input name="boundary_west" defaultValue={initialData.boundaries?.west || ''} placeholder="Barat" className="h-11 text-xs" />
+            <div className="space-y-2">
+               <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Utara</Label>
+               <Input name="boundary_north" defaultValue={initialData.boundaries?.north || ''} placeholder="Batas Utara" className="h-11 text-xs" />
+            </div>
+            <div className="space-y-2">
+               <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Selatan</Label>
+               <Input name="boundary_south" defaultValue={initialData.boundaries?.south || ''} placeholder="Batas Selatan" className="h-11 text-xs" />
+            </div>
+            <div className="space-y-2">
+               <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Timur</Label>
+               <Input name="boundary_east" defaultValue={initialData.boundaries?.east || ''} placeholder="Batas Timur" className="h-11 text-xs" />
+            </div>
+            <div className="space-y-2">
+               <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Barat</Label>
+               <Input name="boundary_west" defaultValue={initialData.boundaries?.west || ''} placeholder="Batas Barat" className="h-11 text-xs" />
+            </div>
          </div>
       </div>
     </section>

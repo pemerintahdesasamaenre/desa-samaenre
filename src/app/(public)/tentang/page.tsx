@@ -45,11 +45,13 @@ export default async function TentangPage() {
           {leader.name}
         </h4>
         <p className="text-muted-foreground text-sm md:text-lg font-medium leading-relaxed max-w-2xl">
-          Beliau menjabat dan mengabdi sebagai Kepala Desa pada periode tahun {leader.period}, memberikan kontribusi nyata bagi fondasi kemajuan desa yang kita nikmati saat ini.
+          {leader.note || `Beliau menjabat dan mengabdi sebagai Kepala Desa pada periode tahun ${leader.period}, memberikan kontribusi nyata bagi fondasi kemajuan desa yang kita nikmati saat ini.`}
         </p>
         <div className="flex items-center gap-3">
            <div className="h-px w-10 bg-primary/30" />
-           <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">Aparatur Berjasa</span>
+           <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+             {leader.role_title || 'Aparatur Berjasa'}
+           </span>
         </div>
       </div>
     )
