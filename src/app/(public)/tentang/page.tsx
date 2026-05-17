@@ -34,7 +34,15 @@ export default async function TentangPage() {
   const missionSections = parseMissions(villageInfo.mission);
 
   const formerLeaders = Array.isArray(villageInfo.former_leaders) 
-    ? [...villageInfo.former_leaders].reverse() 
+    ? [...villageInfo.former_leaders].sort((a, b) => {
+        const getYear = (p: string) => {
+          const match = p.match(/\d{4}/);
+          return match ? parseInt(match[0]) : 0;
+        };
+        if (a.period.toLowerCase().includes('sekarang')) return -1;
+        if (b.period.toLowerCase().includes('sekarang')) return 1;
+        return getYear(b.period) - getYear(a.period);
+      })
     : [];
 
   const timelineData = formerLeaders.map((leader: FormerLeader, idx: number) => ({

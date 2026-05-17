@@ -70,14 +70,26 @@ export default function VillageInfoForm({ initialData }: VillageInfoFormProps) {
   const [mapsUrl, setMapsUrl] = useState(initialData.contact_info?.maps_url || '');
   const [phoneNumber, setPhoneNumber] = useState(initialData.contact_info?.phone || '');
   const [missionSections, setMissionSections] = useState<MissionSection[]>(parseMissions(initialData.mission));
-  const [formerLeaders, setFormerLeaders] = useState<FormerLeader[]>(
-    (Array.isArray(initialData.former_leaders) ? initialData.former_leaders : []).map(l => ({
+  const [formerLeaders, setFormerLeaders] = useState<FormerLeader[]>(() => {
+    const leaders = (Array.isArray(initialData.former_leaders) ? initialData.former_leaders : []).map(l => ({
       name: l.name || '',
       period: l.period || '',
       note: l.note || '',
       role_title: l.role_title || 'Aparatur Berjasa'
-    }))
-  );
+    }));
+
+    // Sort by period descending (newest first)
+    return leaders.sort((a, b) => {
+      const getYear = (p: string) => {
+        const match = p.match(/\d{4}/);
+        return match ? parseInt(match[0]) : 0;
+      };
+      // If one contains "Sekarang", it should be at the top
+      if (a.period.toLowerCase().includes('sekarang')) return -1;
+      if (b.period.toLowerCase().includes('sekarang')) return 1;
+      return getYear(b.period) - getYear(a.period);
+    });
+  });
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

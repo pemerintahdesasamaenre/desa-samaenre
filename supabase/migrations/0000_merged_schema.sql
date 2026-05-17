@@ -184,6 +184,17 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
+-- Staff or Admin Check
+CREATE OR REPLACE FUNCTION public.is_staff_or_admin()
+RETURNS boolean AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role IN ('admin', 'staff')
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
 -- New User Profile Trigger
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
@@ -246,7 +257,7 @@ BEGIN
     DELETE FROM public.resident_audit_logs
     WHERE created_at < (NOW() - INTERVAL '2 months');
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE psql SECURITY DEFINER;
 
 -- ==========================================
 -- 4.5 ANALYTICS FUNCTIONS (NEW)
@@ -400,14 +411,17 @@ CREATE POLICY "Allow public read access" ON public.finances FOR SELECT USING (tr
 CREATE POLICY "Allow public read analytics" ON public.page_analytics FOR SELECT USING (true);
 CREATE POLICY "Allow public read daily analytics" ON public.daily_analytics FOR SELECT USING (true);
 
--- Admin Only Policies
-CREATE POLICY "Admins manage all" ON public.profiles FOR ALL USING (public.is_admin());
-CREATE POLICY "Admins manage categories" ON public.categories FOR ALL USING (public.is_admin());
-CREATE POLICY "Admins manage village_info" ON public.village_info FOR ALL USING (public.is_admin());
-CREATE POLICY "Admins manage staff" ON public.staff_members FOR ALL USING (public.is_admin());
+-- Admin Only Policies (Strict)
 CREATE POLICY "Admins manage residents" ON public.residents FOR ALL USING (public.is_admin());
-CREATE POLICY "Admins manage posts" ON public.posts FOR ALL USING (public.is_admin());
-CREATE POLICY "Admins manage finances" ON public.finances FOR ALL USING (public.is_admin());
-CREATE POLICY "Admins view logs" ON public.activity_logs FOR SELECT USING (public.is_admin());
-CREATE POLICY "Admins insert logs" ON public.activity_logs FOR INSERT WITH CHECK (public.is_admin());
 CREATE POLICY "Admins view audit" ON public.resident_audit_logs FOR SELECT USING (public.is_admin());
+
+-- Staff and Admin Policies (Content Management)
+CREATE POLICY "Admins manage all profiles" ON public.profiles FOR ALL USING (public.is_admin());
+CREATE POLICY "Users can view their own profile" ON public.profiles FOR SELECT USING (auth.uid() = id OR public.is_staff_or_admin());
+CREATE POLICY "Staff and Admins manage categories" ON public.categories FOR ALL USING (public.is_staff_or_admin());
+CREATE POLICY "Staff and Admins manage village_info" ON public.village_info FOR ALL USING (public.is_staff_or_admin());
+CREATE POLICY "Staff and Admins manage staff" ON public.staff_members FOR ALL USING (public.is_staff_or_admin());
+CREATE POLICY "Staff and Admins manage posts" ON public.posts FOR ALL USING (public.is_staff_or_admin());
+CREATE POLICY "Staff and Admins manage finances" ON public.finances FOR ALL USING (public.is_staff_or_admin());
+CREATE POLICY "Admins view logs" ON public.activity_logs FOR SELECT USING (public.is_admin());
+CREATE POLICY "Staff and Admins can insert logs" ON public.activity_logs FOR INSERT WITH CHECK (public.is_staff_or_admin());
